@@ -23,15 +23,12 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 
 @Service
 public class RoleServiceImpl implements RoleService{
-
-
     @Autowired
     RoleMapper roleMapper;
     @Autowired
     RoleRepository roleRepository;
     @Autowired
     HotelRepository hotelRepository;
-
 
     @Override
     public Page<RoleResponseDto> GetAllRoles(Long hotelId, Pageable pageable) {
@@ -75,6 +72,10 @@ public class RoleServiceImpl implements RoleService{
 
     @Override
     public RoleRequestDto updateRole(Long id, RoleRequestDto roleRequestDto) {
+        if (id == null || id <= 0) {
+            throw new IllegalArgumentException("Invalid role ID");
+        }
+
         if (roleRequestDto.getName()==null || roleRequestDto.getName().trim().isEmpty()){
             throw new IllegalArgumentException(ValidationMessages.REQUIRED_FIELD_MISSING);
         }
