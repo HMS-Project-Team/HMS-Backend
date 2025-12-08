@@ -12,9 +12,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingPathVariableException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.NoHandlerFoundException;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -119,7 +121,7 @@ public class GlobalExceptionHandler {
             HttpRequestMethodNotSupportedException e) {
 
         List<ErrorDetail> errorDetails = new ArrayList<>();
-        ErrorDetail errorDetail = new ErrorDetail(new Date(), e.getMessage(), errorCodes.getNotFound());
+        ErrorDetail errorDetail = new ErrorDetail(new Date(), e.getMessage(), errorCodes.getMethodNotAllowed());
         errorDetails.add(errorDetail);
 
         return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(
@@ -189,7 +191,7 @@ public class GlobalExceptionHandler {
             Exception e) {
 
         List<ErrorDetail> errorDetails = new ArrayList<>();
-        ErrorDetail errorDetail = new ErrorDetail(new Date(), e.getMessage(), errorCodes.getNotFound());
+        ErrorDetail errorDetail = new ErrorDetail(new Date(), e.getMessage(), errorCodes.getBadRequest());
         errorDetails.add(errorDetail);
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
@@ -202,6 +204,35 @@ public class GlobalExceptionHandler {
     }
 
 
+    @ExceptionHandler(MissingPathVariableException.class)
+    public ResponseEntity<ResponseWrapper<?>> handleMissingPathVariableException(MissingPathVariableException e){
+        List<ErrorDetail> errorDetails = new ArrayList<>();
+        ErrorDetail errorDetail = new ErrorDetail(new Date(), ValidationMessages.MISSING_PATHVARIABLE+e.getVariableName(), errorCodes.getInvalidId());
+        errorDetails.add(errorDetail);
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                new ResponseWrapper<>(
+                        RestApiResponseStatusCodes.BAD_REQUEST.getCode(),
+                        ValidationMessages.MISSING_PATHVARIABLE,
+                        errorDetails
+                )
+        );
+    }
+
+    @ExceptionHandler(NoHandlerFoundException.class)
+    public ResponseEntity<ResponseWrapper<?>> handleNoHandlerFoundException(NoHandlerFoundException e){
+        List<ErrorDetail> errorDetails = new ArrayList<>();
+        ErrorDetail errorDetail = new ErrorDetail(new Date(), ValidationMessages.WRONG_API_CALL, errorCodes.getInvalidId());
+        errorDetails.add(errorDetail);
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                new ResponseWrapper<>(
+                        RestApiResponseStatusCodes.BAD_REQUEST.getCode(),
+                        ValidationMessages.WRONG_API_CALL,
+                        errorDetails
+                )
+        );
+    }
 
 
 }
