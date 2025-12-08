@@ -1,7 +1,9 @@
 package com.example.hms.HMS.controllers;
 
 
+import com.example.hms.HMS.dtos.responses.HotelResponseDto;
 import com.example.hms.HMS.enums.RestApiResponseStatusCodes;
+import com.example.hms.HMS.exceptionHandlers.InvalidPageSizeException;
 import com.example.hms.HMS.exceptionHandlers.ResourceNotFoundException;
 import com.example.hms.HMS.services.HotelService;
 import com.example.hms.HMS.utils.EndpointBundle;
@@ -9,12 +11,13 @@ import com.example.hms.HMS.utils.ResponseWrapper;
 import com.example.hms.HMS.utils.ValidationMessages;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import static com.example.hms.HMS.exceptionHandlers.InvalidPageSizeException.INVALID_PAGE_SIZE_MSG;
 
 @RequiredArgsConstructor
 @RestController
@@ -46,5 +49,31 @@ public class HotelController {
                 )
         );
 
+    }
+
+    @GetMapping("/{page}/{size}")
+    public ResponseEntity<ResponseWrapper<Page<HotelResponseDto>>> getHotels(
+            @PathVariable("page") int page,
+            @PathVariable("size") int size
+    ) {
+
+        // Validate page and size
+        if (page < 0 || size <= 0) {
+            throw new InvalidPageSizeException(INVALID_PAGE_SIZE_MSG);
+        }
+
+        Pageable pageable = PageRequest.of(page, size);
+        Page<HotelResponseDto> hotels = hotelService.getHotels(pageable);
+
+        if (hotels.isEmpty()) {
+            throw new ResourceNotFoundException("No hotels found for this page");
+        }
+
+        return ResponseEntity.ok(
+                new ResponseWrapper<>(
+                        RestApiResponseStatusCodes.OK.getCode(),
+                        ValidationMessages.SUCCESS,
+                        hotels)
+        );
     }
 }
