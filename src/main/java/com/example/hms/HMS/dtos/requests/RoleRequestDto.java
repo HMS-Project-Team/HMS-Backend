@@ -2,7 +2,6 @@ package com.example.hms.HMS.dtos.requests;
 
 import com.example.hms.HMS.utils.ValidationMessages;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
