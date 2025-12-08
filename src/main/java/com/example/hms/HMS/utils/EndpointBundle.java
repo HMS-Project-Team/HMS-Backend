@@ -5,4 +5,8 @@ public final class  EndpointBundle {
     public static final String ID ="/{id}";
     public static final String SEARCH = "/search";
 
+    //Login
+    public static final String AUTH=BASE_URL+"/auth";
+    public static final String LOGOUT="/logout";
+
 }
