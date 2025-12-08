@@ -12,7 +12,7 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface RoleMapper {
     @Mapping(source = "hotel.id", target = "hotelId")
-    RoleRequestDto toDto(Role role);
-    RoleResponseDto toDto(Role role);
+    RoleRequestDto toRequestDto(Role role);
+    RoleResponseDto toResponseDto(Role role);
     Role toEntity(RoleResponseDto roleResponseDto);
 }
