@@ -2,13 +2,20 @@ package com.example.hms.HMS.services;
 
 import com.example.hms.HMS.dtos.requests.RoleRequestDto;
 import com.example.hms.HMS.dtos.responses.RoleResponseDto;
+import com.example.hms.HMS.entities.Hotel;
 import com.example.hms.HMS.entities.Role;
+import com.example.hms.HMS.exceptionHandlers.InvalidPageSizeException;
 import com.example.hms.HMS.exceptionHandlers.ResourceNotFoundException;
 import com.example.hms.HMS.mappers.RoleMapper;
+import com.example.hms.HMS.repositories.HotelRepository;
 import com.example.hms.HMS.repositories.RoleRepository;
+import jakarta.persistence.EntityManager;
 import com.example.hms.HMS.utils.ValidationMessages;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -16,6 +23,33 @@ import org.springframework.stereotype.Service;
 public class RoleServiceImpl implements RoleService {
     private final RoleRepository roleRepository;
     private final RoleMapper roleMapper;
+    private final HotelRepository hotelRepository;
+
+    @Override
+    public Page<RoleResponseDto> GetAllRoles(Long hotelId, Pageable pageable) {
+
+        int page = pageable.getPageNumber();
+        int size = pageable.getPageSize();
+
+        if (page < 0 || size <= 0) {
+            throw new InvalidPageSizeException(
+                    "Invalid pagination values! page=" + page + ", size=" + size +
+                            ". Page must be >= 0 and size > 0"
+            );
+        }
+
+        Hotel hotel = hotelRepository.findById(hotelId).orElseThrow(()->new ResourceNotFoundException(ValidationMessages.NOT_FOUND));
+
+        Page<Role> rolePage = roleRepository.findByHotelId(hotelId, pageable);
+
+        if (rolePage.isEmpty()) {
+            throw new ResourceNotFoundException(
+                    "No roles found for hotel " + hotelId
+            );
+        }
+
+        return rolePage.map(roleMapper::toResponseDto);
+    }
 
     @Override
     public RoleResponseDto getRoleById(Long id) {
@@ -25,14 +59,13 @@ public class RoleServiceImpl implements RoleService {
         RoleResponseDto dto = roleMapper.toResponseDto(getRolebyId);
 
         if (getRolebyId.getHotel()!=null){
-           dto.setHotelId(getRolebyId.getHotel().getId());
+            dto.setHotelId(getRolebyId.getHotel().getId());
         }
 
         return dto;
     }
 
     @Override
-    @Transactional
     public RoleRequestDto updateRole(Long id, RoleRequestDto roleRequestDto) {
         if (roleRequestDto.getName()==null || roleRequestDto.getName().trim().isEmpty()){
             throw new IllegalArgumentException(ValidationMessages.REQUIRED_FIELD_MISSING);
