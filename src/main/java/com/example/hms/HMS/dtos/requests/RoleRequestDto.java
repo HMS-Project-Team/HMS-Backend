@@ -6,11 +6,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@AllArgsConstructor
-@NoArgsConstructor
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class RoleRequestDto {
-
+    private Long id;
     @NotBlank(message = ValidationMessages.REQUIRED_FIELD_MISSING)
     private String name;
     private Long hotelId;
