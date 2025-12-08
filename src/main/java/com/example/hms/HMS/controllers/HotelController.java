@@ -4,6 +4,7 @@ package com.example.hms.HMS.controllers;
 import com.example.hms.HMS.enums.RestApiResponseStatusCodes;
 import com.example.hms.HMS.exceptionHandlers.ResourceNotFoundException;
 import com.example.hms.HMS.services.HotelService;
+import com.example.hms.HMS.utils.EndpointBundle;
 import com.example.hms.HMS.utils.ResponseWrapper;
 import com.example.hms.HMS.utils.ValidationMessages;
 import lombok.RequiredArgsConstructor;
@@ -17,12 +18,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("api/v1/hotel")
+@RequestMapping(EndpointBundle.HOTEL)
 public class HotelController {
     @Autowired
     private HotelService hotelService;
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping(EndpointBundle.ID)
     public ResponseEntity<ResponseWrapper<Boolean>> deleteHotel(@PathVariable Long id){
 
         boolean isDeleted = hotelService.deleteHotel(id);
