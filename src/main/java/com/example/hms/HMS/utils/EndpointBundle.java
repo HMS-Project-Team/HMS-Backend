@@ -8,5 +8,4 @@ public final class  EndpointBundle {
     public static final String HOTEL = SETTINGS+"/hotel";
 
 
-
 }
