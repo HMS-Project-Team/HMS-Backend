@@ -10,8 +10,7 @@ import com.example.hms.HMS.repositories.UserRepository;
 import com.example.hms.HMS.utils.ValidationMessages;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import java.util.stream.Collectors;
 
 @Service
@@ -45,5 +44,13 @@ public class UserServiceImpl implements UserService{
         }
 
         return userDetailsDto;
+    }
+
+    @Override
+    public Boolean deleteUser(Long id) throws HttpRequestMethodNotSupportedException {
+
+        User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException ("user not found"));
+        userRepository.deleteById(id);
+        return true;
     }
 }
