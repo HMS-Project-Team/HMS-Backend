@@ -10,18 +10,20 @@ import com.example.hms.HMS.utils.ValidationMessages;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(EndpointBundle.SETTINGS)
+@RequiredArgsConstructor
 public class RoleController {
-    @Autowired
-    private RoleService roleService;
+    private final RoleService roleService;
 
     @GetMapping(EndpointBundle.ROLES_BY_ID)
     public ResponseEntity<ResponseWrapper<RoleResponseDto>> getRoleById(@PathVariable Long id){
@@ -43,5 +45,18 @@ public class RoleController {
                 RestApiResponseStatusCodes.OK.getCode(),
                 ValidationMessages.UPDATED_SUCCESSFULLY,
                 updated));
+    }
+
+    @DeleteMapping(EndpointBundle.ROLES_BY_ID)
+    public ResponseEntity<ResponseWrapper<Void>> deleteRole(@PathVariable Long id){
+        roleService.deleteRole(id);
+
+        ResponseWrapper<Void> res =new ResponseWrapper<>();
+        res.setStatusCode(RestApiResponseStatusCodes.OK.getCode());
+        res.setStatusMessage(ValidationMessages.DELETED_SUCCESSFULLY);
+        res.setData(null);
+
+        return ResponseEntity.ok(res);
+
     }
 }

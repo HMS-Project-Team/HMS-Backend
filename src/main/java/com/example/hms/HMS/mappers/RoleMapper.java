@@ -7,7 +7,7 @@ import com.example.hms.HMS.entities.Role;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-
+import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface RoleMapper {
@@ -15,4 +15,9 @@ public interface RoleMapper {
     RoleRequestDto toRequestDto(Role role);
     RoleResponseDto toResponseDto(Role role);
     Role toEntity(RoleResponseDto roleResponseDto);
+
+    @Mapping(source="hotelId",target="hotel.id")
+    Role toEntity(RoleRequestDto dto);
+
+
 }

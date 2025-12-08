@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class RoleServiceImpl implements RoleService {
-
     private final RoleRepository roleRepository;
     private final RoleMapper roleMapper;
 
@@ -55,5 +54,18 @@ public class RoleServiceImpl implements RoleService {
 
         Role updatedRole = roleRepository.save(existingRole);
         return roleMapper.toRequestDto(updatedRole);
+    }
+
+    @Override
+    public void deleteRole(Long roleId) {
+        Role role = roleRepository.findById(roleId)
+                .orElseThrow(() -> new ResourceNotFoundException("Role not found with id: " + roleId));
+
+        if (role.getUsers() != null) {
+            role.getUsers().forEach(user -> user.getRoles().remove(role));
+            role.getUsers().clear();
+        }
+
+        roleRepository.delete(role);
     }
 }
