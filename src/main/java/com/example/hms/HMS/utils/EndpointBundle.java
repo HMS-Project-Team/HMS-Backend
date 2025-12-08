@@ -5,4 +5,11 @@ public final class  EndpointBundle {
     public static final String ID ="/{id}";
     public static final String SEARCH = "/search";
 
+    //Settings
+    public static final String SETTINGS = BASE_URL + "/settings";
+
+    //Roles
+    public static final String ROLES = "/roles";
+    public static final String ROLES_BY_HOTEL = "/{hotelId}" + ROLES;
+
 }
