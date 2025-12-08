@@ -1,7 +1,6 @@
 package com.example.hms.HMS.controllers;
 
 import com.example.hms.HMS.dtos.requests.RoleRequestDto;
-import com.example.hms.HMS.dtos.responses.RoleResponseDto;
 import com.example.hms.HMS.enums.RestApiResponseStatusCodes;
 import com.example.hms.HMS.services.RoleService;
 import com.example.hms.HMS.utils.EndpointBundle;
@@ -12,7 +11,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.*;
@@ -30,8 +28,8 @@ public class RoleController {
     RoleService roleService;
 
     @GetMapping(EndpointBundle.ROLES_BY_ID)
-    public ResponseEntity<ResponseWrapper<RoleResponseDto>> getRoleById(@PathVariable Long id){
-        RoleResponseDto response = roleService.getRoleById(id);
+    public ResponseEntity<ResponseWrapper<RoleRequestDto>> getRoleById(@PathVariable Long id){
+        RoleRequestDto response = roleService.getRoleById(id);
         return  ResponseEntity
                 .status(HttpStatus.OK)
                 .body(new ResponseWrapper<>(
@@ -42,11 +40,11 @@ public class RoleController {
     }
 
     @GetMapping(EndpointBundle.ROLES_BY_HOTEL)
-    public ResponseEntity<ResponseWrapper<Page<RoleResponseDto>>> GetAllRoles(
+    public ResponseEntity<ResponseWrapper<Page<RoleRequestDto>>> GetAllRoles(
             @PathVariable Long hotelId,
             Pageable pageable){
 
-        Page<RoleResponseDto> roles = roleService.GetAllRoles(hotelId, pageable);
+        Page<RoleRequestDto> roles = roleService.GetAllRoles(hotelId, pageable);
 
         return ResponseEntity.status(HttpStatus.OK).body(new ResponseWrapper<>(
                 RestApiResponseStatusCodes.OK.getCode(), ValidationMessages.RETRIEVED_SUCCESSFULLY,roles
@@ -77,9 +75,9 @@ public class RoleController {
     }
 
     @PostMapping(EndpointBundle.CREATE_ROLE)
-    public ResponseEntity<ResponseWrapper<RoleResponseDto>> createRole(@PathVariable Long hotelId, @RequestBody RoleRequestDto roleRequestDto){
+    public ResponseEntity<ResponseWrapper<RoleRequestDto>> createRole(@PathVariable Long hotelId, @RequestBody RoleRequestDto roleRequestDto){
         try{
-            RoleResponseDto createRole = roleService.createRole(hotelId,roleRequestDto);
+            RoleRequestDto createRole = roleService.createRole(hotelId,roleRequestDto);
             if(createRole != null){
                 return ResponseEntity.status(HttpStatus.OK).body(new ResponseWrapper<>(
                         RestApiResponseStatusCodes.OK.getCode(),
