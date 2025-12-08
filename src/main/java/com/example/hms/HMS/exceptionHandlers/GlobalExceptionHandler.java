@@ -201,7 +201,23 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(PasswordMismatchException.class)
+    public ResponseEntity<ResponseWrapper<?>> handlePasswordMismatchException(PasswordMismatchException e) {
 
+        List<ErrorDetail> errorDetails = new ArrayList<>();
+        errorDetails.add(new ErrorDetail(
+                new Date(),
+                e.getMessage(),
+                errorCodes.getNotValid()
+        ));
 
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                new ResponseWrapper<>(
+                        RestApiResponseStatusCodes.BAD_REQUEST.getCode(),
+                        ValidationMessages.INVALID_INPUT,
+                        errorDetails
+                )
+        );
+    }
 
 }
