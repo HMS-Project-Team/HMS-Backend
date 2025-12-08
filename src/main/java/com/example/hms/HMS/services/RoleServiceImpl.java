@@ -50,7 +50,7 @@ public class RoleServiceImpl implements RoleService {
             );
         }
 
-        return rolePage.map(roleMapper::toDto);
+        return rolePage.map(roleMapper::toResponseDto);
     }
 
     @Override
@@ -68,7 +68,6 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    @Transactional
     public RoleRequestDto updateRole(Long id, RoleRequestDto roleRequestDto) {
         if (roleRequestDto.getName()==null || roleRequestDto.getName().trim().isEmpty()){
             throw new IllegalArgumentException(ValidationMessages.REQUIRED_FIELD_MISSING);
