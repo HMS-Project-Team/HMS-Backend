@@ -1,8 +1,10 @@
 package com.example.hms.HMS.controllers;
 
+import com.example.hms.HMS.enums.RestApiResponseStatusCodes;
 import com.example.hms.HMS.services.RoleService;
 import com.example.hms.HMS.utils.EndpointBundle;
 import com.example.hms.HMS.utils.ResponseWrapper;
+import com.example.hms.HMS.utils.ValidationMessages;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,8 +23,8 @@ public class RoleController {
         roleService.deleteRole(id);
 
         ResponseWrapper<Void> res =new ResponseWrapper<>();
-        res.setStatusCode(2000);
-        res.setStatusMessage("Role Deleted Successfully");
+        res.setStatusCode(RestApiResponseStatusCodes.OK.getCode());
+        res.setStatusMessage(ValidationMessages.DELETED_SUCCESSFULLY);
         res.setData(null);
 
         return ResponseEntity.ok(res);
