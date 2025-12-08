@@ -1,17 +1,17 @@
-package com.example.hms.HMS.dtos.requests;
+package com.example.hms.HMS.dtos.responses;
 
 import com.example.hms.HMS.utils.ValidationMessages;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class RoleRequestDto {
+@NoArgsConstructor
+public class RoleResponseDto {
     private Long id;
-    @NotBlank(message = ValidationMessages.REQUIRED_FIELD_MISSING)
+    @NotEmpty(message = ValidationMessages.REQUIRED_FIELD_MISSING)
     private String name;
     private Long hotelId;
 }
