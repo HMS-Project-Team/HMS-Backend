@@ -1,16 +1,14 @@
 package com.example.hms.HMS.services;
 
 import com.example.hms.HMS.dtos.requests.RoleRequestDto;
-import com.example.hms.HMS.dtos.responses.RoleResponseDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import com.example.hms.HMS.dtos.requests.RoleRequestDto;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 
 public interface RoleService {
-    RoleResponseDto createRole(Long hotelId, RoleRequestDto roleRequestDto) throws HttpRequestMethodNotSupportedException;
-    RoleResponseDto getRoleById(Long id);
+    RoleRequestDto createRole(Long hotelId, RoleRequestDto roleRequestDto) throws HttpRequestMethodNotSupportedException;
+    RoleRequestDto getRoleById(Long id);
     RoleRequestDto updateRole(Long id, RoleRequestDto roleRequestDto);
     void deleteRole(Long id);
-    Page<RoleResponseDto> GetAllRoles(Long hotelId, Pageable pageable);
+    Page<RoleRequestDto> GetAllRoles(Long hotelId, Pageable pageable);
 }
