@@ -32,7 +32,7 @@ public class HotelController {
                     new ResponseWrapper<>(
                             RestApiResponseStatusCodes.NO_CONTENT.getCode(),
                             ValidationMessages.DELETED_SUCCESSFULLY,
-                            true
+                            null
                     )
             );
         }
