@@ -57,6 +57,29 @@ public class HotelController {
         }
     }
 
+    @PostMapping(EndpointBundle.CREATE_HOTEL)
+    public ResponseEntity<ResponseWrapper<HotelResponseDto>> createHotel(@RequestBody HotelRequestDto hotelRequestDto){
+        try{
+            HotelResponseDto createHotel = hotelService.createHotel(hotelRequestDto);
+            if (createHotel != null){
+                return ResponseEntity.status(HttpStatus.OK).body(new ResponseWrapper<>(
+                        RestApiResponseStatusCodes.OK.getCode(),
+                        ValidationMessages.SAVED_SUCCESSFULLY,
+                        createHotel
+                ));
+            }
+            else{
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseWrapper<>(
+                        RestApiResponseStatusCodes.BAD_REQUEST.getCode(),
+                        ValidationMessages.BAD_REQUEST,
+                        null
+                ));
+            }
+        }catch(HttpRequestMethodNotSupportedException e){
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
     @DeleteMapping(EndpointBundle.ID)
     public ResponseEntity<ResponseWrapper<Boolean>> deleteHotel(@PathVariable Long id){
 
