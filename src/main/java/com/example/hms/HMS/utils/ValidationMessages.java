@@ -39,6 +39,7 @@ public class ValidationMessages {
     public static final String OTP_NOT_FOUND = "OTP not found.";
     public static final String INVALID_OTP = "Invalid OTP.";
     public static final String MISSING_PARAMETER = "Missing parameter.";
+    public static final String MISSING_PATHVARIABLE = "Missing pathvariable.";
 
     // ==== Errors ====
     public static final String NOT_FOUND = "Resource not found.";
