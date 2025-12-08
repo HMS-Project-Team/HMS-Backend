@@ -14,4 +14,5 @@ public class HotelRequestDto {
     private String website;
     private byte[] logoImage;
     private String email;
+    private Long hotelId;
 }

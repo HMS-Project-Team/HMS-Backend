@@ -7,4 +7,5 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 public interface HotelService {
     HotelResponseDto updateHotel(Long id, HotelRequestDto hotelRequestDto) throws HttpRequestMethodNotSupportedException;
 
+    boolean deleteHotel(Long id);
 }

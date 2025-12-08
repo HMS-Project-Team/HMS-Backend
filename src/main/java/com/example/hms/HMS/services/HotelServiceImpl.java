@@ -15,10 +15,19 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 public class HotelServiceImpl implements HotelService{
 
     @Autowired
-    HotelRepository hotelRepository;
+    private HotelRepository hotelRepository;
 
     @Autowired
     HotelMapper hotelMapper;
+
+    @Override
+    public boolean deleteHotel(Long id) {
+        if (!hotelRepository.existsById(id)){
+            throw new ResourceNotFoundException("Hotel ID " + id + " Not Found");
+        }
+        hotelRepository.deleteById(id);
+        return true;
+    }
 
     @Override
     public HotelResponseDto updateHotel(Long id, HotelRequestDto hotelRequestDto) throws HttpRequestMethodNotSupportedException {
