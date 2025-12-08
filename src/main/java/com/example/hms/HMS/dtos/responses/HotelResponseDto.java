@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class HotelResponseDto {
+
     private Long id;
     private String hotelName;
     private String address;
@@ -15,5 +16,6 @@ public class HotelResponseDto {
     private String country;
     private String phoneNumber;
     private String website;
+    private byte[] logoImage;
     private String email;
 }
