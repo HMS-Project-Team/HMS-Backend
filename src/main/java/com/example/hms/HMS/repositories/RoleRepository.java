@@ -8,5 +8,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface RoleRepository extends JpaRepository<Role, Long> {
+    boolean existsByNameAndHotelIdAndIdNot(String name, Long hotelId, Long id);
     Page<Role> findByHotelId(Long hotelId, Pageable pageable);
 }

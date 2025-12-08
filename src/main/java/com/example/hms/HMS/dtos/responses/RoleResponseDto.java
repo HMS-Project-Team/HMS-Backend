@@ -15,5 +15,4 @@ public class RoleResponseDto {
     @NotEmpty(message = ValidationMessages.REQUIRED_FIELD_MISSING)
     private String name;
     private Long hotelId;
-
 }
