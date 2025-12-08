@@ -26,11 +26,11 @@ public class Hotel extends DateAudit {
     private String website;
     @Lob
     private byte[] logoImage;
+    private String email;
 
 
-    @OneToOne
-    @JoinColumn(name = "emailId")
-    private Email email;
+    @OneToOne(mappedBy = "hotel", cascade = CascadeType.ALL)
+    private Email emailConfig;
 
     @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL)
     @JsonIgnore

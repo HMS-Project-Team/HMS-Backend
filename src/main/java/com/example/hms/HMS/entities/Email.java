@@ -22,7 +22,8 @@ public class Email extends DateAudit {
     private String password;
     private String ccMailAddress;
 
-    @OneToOne(mappedBy = "email", cascade = CascadeType.ALL)
+    @OneToOne
+    @JoinColumn(name = "hotel_id")
     private Hotel hotel;
 
 }
