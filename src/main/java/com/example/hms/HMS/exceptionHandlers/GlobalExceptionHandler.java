@@ -10,16 +10,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 
 @ControllerAdvice
@@ -201,7 +199,15 @@ public class GlobalExceptionHandler {
         );
     }
 
-
-
+    // -------------------- BAD CREDENTIALS --------------------
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ResponseWrapper<?>> handleBadCredentials(BadCredentialsException e) {
+        ErrorDetail d = new ErrorDetail(new Date(), e.getMessage(), errorCodes.getBadRequest());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseWrapper<>(
+                RestApiResponseStatusCodes.INVALID_CREDENTIALS.getCode(),
+                ValidationMessages.INVALID_CREDENTIALS,
+                Collections.singletonList(d)
+        ));
+    }
 
 }
