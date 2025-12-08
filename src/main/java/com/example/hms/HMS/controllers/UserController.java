@@ -10,21 +10,20 @@ import com.example.hms.HMS.utils.ValidationMessages;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(EndpointBundle.SETTINGS)
 public class UserController {
-
     @Autowired
     private UserService userService;
 
     @PostMapping(EndpointBundle.CREATE_ROLE)
     public ResponseEntity<ResponseWrapper<UserResponseDto>> createUser(
             @PathVariable("hotelId") Long hotelId,
-            @Valid  @RequestBody UserRequestDto userRequestDto){
+            @Valid @RequestBody UserRequestDto userRequestDto){
 
         UserResponseDto createdUser = userService.createUser(hotelId,userRequestDto);
 
@@ -43,4 +42,25 @@ public class UserController {
 
     }
 
+    @GetMapping(EndpointBundle.USERS_BY_ID)
+    public ResponseEntity<ResponseWrapper<UserResponseDto>> getUser(@PathVariable Long id){
+        UserResponseDto user = userService.getUserById(id);
+        return ResponseEntity.status(HttpStatus.OK).body(new ResponseWrapper<>(RestApiResponseStatusCodes.OK.getCode(), ValidationMessages.RETRIEVED_SUCCESSFULLY,user));
+    }
+
+    @DeleteMapping(EndpointBundle.USERS_BY_ID)
+    public ResponseEntity<ResponseWrapper<Boolean>> deleteUser(@PathVariable Long id){
+
+        try {
+            Boolean deleteUser = userService.deleteUser(id);
+            return ResponseEntity.status(HttpStatus.OK).body(new ResponseWrapper<>(
+                    RestApiResponseStatusCodes.OK.getCode(),
+                    ValidationMessages.DELETED_SUCCESSFULLY,
+                    deleteUser
+            ));
+        }
+        catch(HttpRequestMethodNotSupportedException e){
+            throw new RuntimeException(e.getMessage());
+        }
+    }
 }

@@ -1,17 +1,15 @@
 package com.example.hms.HMS.dtos.responses;
 
-import com.example.hms.HMS.entities.Role;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import java.util.List;
 
+import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserResponseDto {
-
     private Long id;
     private String firstname;
     private String lastname;
@@ -23,5 +21,4 @@ public class UserResponseDto {
     private String city;
     private Long hotelId;
     private List<Long> roles;
-
 }

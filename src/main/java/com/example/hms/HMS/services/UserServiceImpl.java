@@ -2,8 +2,8 @@ package com.example.hms.HMS.services;
 
 import com.example.hms.HMS.dtos.requests.UserRequestDto;
 import com.example.hms.HMS.dtos.responses.UserResponseDto;
-import com.example.hms.HMS.entities.Hotel;
 import com.example.hms.HMS.entities.Role;
+import com.example.hms.HMS.entities.Hotel;
 import com.example.hms.HMS.entities.User;
 import com.example.hms.HMS.exceptionHandlers.ResourceNotFoundException;
 import com.example.hms.HMS.mappers.UserMapper;
@@ -11,65 +11,57 @@ import com.example.hms.HMS.repositories.HotelRepository;
 import com.example.hms.HMS.repositories.RoleRepository;
 import com.example.hms.HMS.repositories.UserRepository;
 import com.example.hms.HMS.utils.ValidationMessages;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
+import java.util.stream.Collectors;
 
 import java.util.List;
 
 @Service
-public class UserServiceImpl implements UserService {
+@RequiredArgsConstructor
+public class UserServiceImpl implements UserService{
+    private final UserRepository userRepository;
+    private final UserMapper userMapper;
+    private final RoleRepository roleRepository;
+    private final HotelRepository hotelRepository;
 
-    @Autowired
-    private UserRepository userRepository;
+    @Override
+    public UserResponseDto getUserById(Long id) {
+        if (id == null || id <= 0) {
+            throw new IllegalArgumentException("Invalid user ID");
+        }
 
-    @Autowired
-    private RoleRepository roleRepository;
+        User user = userRepository.findById(id).orElseThrow(()->new ResourceNotFoundException(ValidationMessages.NOT_FOUND));
+        UserResponseDto userDetailsDto = userMapper.toResponseDto(user);
 
-    @Autowired
-    private HotelRepository hotelRepository;
+        if (user.getRoles() != null && !user.getRoles().isEmpty()) {
+            userDetailsDto.setRoles(user.getRoles().stream()
+                    .map(Role::getId)
+                    .collect(Collectors.toList()));
 
-    @Autowired
-    private UserMapper userMapper;
+            if (user.getRoles().get(0).getHotel() != null) {
+                userDetailsDto.setHotelId(user.getRoles().get(0).getHotel().getId());
+            } else {
+                throw new ResourceNotFoundException("User's role is not linked to any hotel");
+            }
+        } else {
+            throw new ResourceNotFoundException("User has no roles assigned");
+        }
+
+        return userDetailsDto;
+    }
+
+    @Override
+    public Boolean deleteUser(Long id) throws HttpRequestMethodNotSupportedException {
+
+        User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException ("user not found"));
+        userRepository.deleteById(id);
+        return true;
+    }
 
     @Override
     public UserResponseDto createUser(Long hotelId, UserRequestDto userRequestDto) {
-
-//        if (userRequestDto.getFirstname() == null || userRequestDto.getFirstname().isBlank()) {
-//            throw new IllegalArgumentException("Firstname cannot be empty");
-//        }
-//        if (userRequestDto.getLastname() == null || userRequestDto.getLastname().isBlank()) {
-//            throw new IllegalArgumentException("Lastname cannot be empty");
-//        }
-//        if (userRequestDto.getEmail() == null || userRequestDto.getEmail().isBlank()) {
-//            throw new IllegalArgumentException("Email cannot be empty");
-//        }
-//        if (userRequestDto.getPhone() == null || userRequestDto.getPhone().isBlank()) {
-//            throw new IllegalArgumentException("Phone cannot be empty");
-//        }
-//        if (userRequestDto.getNIC() == null || userRequestDto.getNIC().isBlank()) {
-//            throw new IllegalArgumentException("NIC cannot be empty");
-//        }
-//        if (userRequestDto.getRoles() == null || userRequestDto.getRoles().isEmpty()) {
-//            throw new IllegalArgumentException("At least one role must be assigned to user");
-//        }
-//
-//        if (!userRequestDto.getNIC().matches("^\\d{12}$")) {
-//            throw new IllegalArgumentException("NIC must be 12 digits");
-//        }
-//
-//
-//        if (userRepository.existsByEmail(userRequestDto.getEmail())) {
-//            throw new IllegalArgumentException("Email already exists");
-//        }
-//
-//        if (userRepository.existsByPhone(userRequestDto.getPhone())) {
-//            throw new IllegalArgumentException("Phone number already exists");
-//        }
-//
-//        if (userRepository.existsByNIC(userRequestDto.getNIC())) {
-//            throw new IllegalArgumentException("NIC already exists");
-//        }
-
         if (userRepository.existsByEmail(userRequestDto.getEmail())) {
             throw new RuntimeException(ValidationMessages.DUPLICATE_ENTRY);
         }
@@ -103,4 +95,5 @@ public class UserServiceImpl implements UserService {
 
         return userMapper.toResponseDto(create);
     }
+
 }
