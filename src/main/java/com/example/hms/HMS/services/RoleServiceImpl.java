@@ -23,7 +23,7 @@ public class RoleServiceImpl implements RoleService {
         Role getRolebyId = roleRepository.findById(id)
                 .orElseThrow(()->new ResourceNotFoundException(ValidationMessages.NOT_FOUND));
 
-        RoleResponseDto dto = roleMapper.toDto(getRolebyId);
+        RoleResponseDto dto = roleMapper.toResponseDto(getRolebyId);
 
         if (getRolebyId.getHotel()!=null){
            dto.setHotelId(getRolebyId.getHotel().getId());
@@ -54,6 +54,6 @@ public class RoleServiceImpl implements RoleService {
         existingRole.setName(roleRequestDto.getName());
 
         Role updatedRole = roleRepository.save(existingRole);
-        return roleMapper.toDto(updatedRole);
+        return roleMapper.toRequestDto(updatedRole);
     }
 }
