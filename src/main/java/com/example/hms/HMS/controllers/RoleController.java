@@ -29,7 +29,6 @@ public class RoleController {
     @Autowired
     RoleService roleService;
 
-
     @GetMapping(EndpointBundle.ROLES_BY_ID)
     public ResponseEntity<ResponseWrapper<RoleResponseDto>> getRoleById(@PathVariable Long id){
         RoleResponseDto response = roleService.getRoleById(id);
@@ -42,13 +41,10 @@ public class RoleController {
                 ));
     }
 
-
     @GetMapping(EndpointBundle.ROLES_BY_HOTEL)
     public ResponseEntity<ResponseWrapper<Page<RoleResponseDto>>> GetAllRoles(
             @PathVariable Long hotelId,
             Pageable pageable){
-
-
 
         Page<RoleResponseDto> roles = roleService.GetAllRoles(hotelId, pageable);
 
