@@ -8,4 +8,6 @@ public final class  EndpointBundle {
     // Login
     public static final String LOGIN = "/login";
 
+    public static final String NEW_PASSWORD = "/new-Password";
+
 }

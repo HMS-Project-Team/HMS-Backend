@@ -34,6 +34,10 @@ public class ValidationMessages {
     public static final String INVALID_EMAIL = "An email should be in the form of: your-email@example.com.";
     public static final String PASSWORD_REQUIRED = "Password is required and must be at least 8 characters.";
     public static final String PASSWORD_MIN_LENGTH = "Password must be at least 8 characters.";
+    public static final String PASSWORD_COMPLEXITY = "Password must contain uppercase, lowercase, number, and special character";
+    public static final String PASSWORD_MISMATCH = "New password and confirm password do not match";
+    public static final String NEW_PASSWORD_SAME_AS_OLD = "New password cannot be the same as the old password";
+
 
     // ==== OTP ====
     public static final String OTP_NOT_FOUND = "OTP not found.";

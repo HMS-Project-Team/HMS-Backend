@@ -1,13 +1,17 @@
 package com.example.hms.HMS.services;
 
 import com.example.hms.HMS.dtos.requests.LoginDto;
+import com.example.hms.HMS.dtos.requests.NewPasswordRequestDto;
 import com.example.hms.HMS.dtos.responses.AuthenticationResponseDto;
 import com.example.hms.HMS.entities.Token;
 import com.example.hms.HMS.entities.User;
+import com.example.hms.HMS.exceptionHandlers.PasswordMismatchException;
 import com.example.hms.HMS.exceptionHandlers.ResourceNotFoundException;
 import com.example.hms.HMS.mappers.AuthenticationMapper;
+import com.example.hms.HMS.repositories.AuthenticationRepository;
 import com.example.hms.HMS.repositories.TokenRepository;
 import com.example.hms.HMS.repositories.UserRepository;
+import com.example.hms.HMS.utils.ValidationMessages;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -33,6 +37,13 @@ public class AuthenticationService {
 
     @Autowired
     private AuthenticationMapper authenticationMapper;
+
+    @Autowired
+    private AuthenticationRepository authenticationRepository;
+
+
+    private static final String PASSWORD_SPQCIAL =
+            "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-={}\\[\\]:;\"'<>,.?/]).+$";
 
     @Value("${jwt.expiration}")
     private Long jwtExpiration;
@@ -72,4 +83,28 @@ public class AuthenticationService {
         return response;
     }
 
+    public void newPasswordCheck(NewPasswordRequestDto newPasswordRequestDto) {
+
+        if(!newPasswordRequestDto.getNewPassword().equals(newPasswordRequestDto.getConfirmPassword())){
+            throw new PasswordMismatchException(ValidationMessages.PASSWORD_MISMATCH);
+        }
+
+        User user = authenticationRepository.findByEmail(newPasswordRequestDto.getEmail())
+                .orElseThrow(()-> new ResourceNotFoundException(ValidationMessages.NOT_FOUND));
+
+
+        String oldPassword = user.getPassword();
+        String newPassword = newPasswordRequestDto.getNewPassword();
+
+        if(passwordEncoder.matches(newPassword , oldPassword)){
+            throw  new IllegalArgumentException(ValidationMessages.NEW_PASSWORD_SAME_AS_OLD);
+        }
+
+        if (!newPassword.matches(PASSWORD_SPQCIAL)) {
+            throw new IllegalArgumentException(ValidationMessages.PASSWORD_COMPLEXITY);
+        }
+
+        user.setPassword(passwordEncoder.encode(newPasswordRequestDto.getNewPassword()));
+        authenticationRepository.save(user);
+    }
 }

@@ -12,6 +12,4 @@ public class ResponseWrapper<T> {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private T data;
-
-
 }
