@@ -23,7 +23,6 @@ import org.springframework.stereotype.Service;
 public class RoleServiceImpl implements RoleService {
     private final RoleRepository roleRepository;
     private final RoleMapper roleMapper;
-    private final EntityManager entityManager;
     private final HotelRepository hotelRepository;
 
     @Override
