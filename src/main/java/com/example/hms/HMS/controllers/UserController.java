@@ -1,5 +1,7 @@
 package com.example.hms.HMS.controllers;
 
+import com.example.hms.HMS.dtos.requests.UserRequestDto;
+import com.example.hms.HMS.dtos.responses.UserResponseDto;
 import com.example.hms.HMS.enums.RestApiResponseStatusCodes;
 import com.example.hms.HMS.services.UserService;
 import com.example.hms.HMS.utils.EndpointBundle;
@@ -9,20 +11,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
-import org.springframework.web.bind.MissingPathVariableException;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(EndpointBundle.SETTINGS)
 public class UserController {
-
     @Autowired
-    UserService userService;
+    private UserService userService;
 
-    @DeleteMapping(EndpointBundle.DELETE_USER)
+    @GetMapping(EndpointBundle.USERS_BY_ID)
+    public ResponseEntity<ResponseWrapper<UserResponseDto>> getUser(@PathVariable Long id){
+        UserResponseDto user = userService.getUserById(id);
+        return ResponseEntity.status(HttpStatus.OK).body(new ResponseWrapper<>(RestApiResponseStatusCodes.OK.getCode(), ValidationMessages.RETRIEVED_SUCCESSFULLY,user));
+    }
+
+    @DeleteMapping(EndpointBundle.USERS_BY_ID)
     public ResponseEntity<ResponseWrapper<Boolean>> deleteUser(@PathVariable Long id){
 
         try {
