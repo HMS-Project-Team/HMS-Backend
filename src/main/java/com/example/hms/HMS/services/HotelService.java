@@ -13,5 +13,7 @@ public interface HotelService {
 
     boolean deleteHotel(Long id);
 
+    HotelResponseDto createHotel(HotelRequestDto hotelRequestDto) throws HttpRequestMethodNotSupportedException;;
+
     Page<HotelResponseDto> getHotels(Pageable pageable);
 }
