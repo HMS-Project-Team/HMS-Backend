@@ -56,14 +56,14 @@ public class GlobalExceptionHandler {
             message = ValidationMessages.FOREIGN_KEY_CONSTRAINT;
             errorDetails.add(new ErrorDetail(
                     new Date(),
-                    message,
+                    message+e.getMessage(),
                     errorCodes.getAlreadyExist()
             ));
         } else {
             message = ValidationMessages.DUPLICATE_ENTRY;
             errorDetails.add(new ErrorDetail(
                     new Date(),
-                    message,
+                    message+e.getMessage(),
                     errorCodes.getAlreadyExist()
             ));
         }

@@ -13,4 +13,8 @@ public final class  EndpointBundle {
     public static final String ROLES_BY_ID = ROLES + ID;
     public static final String ROLES_BY_HOTEL = "/{hotelId}" + ROLES;
 
+    public static final String HOTEL_ID = "/{hotelId}";
+    public static final String CREATE_ROLE = HOTEL_ID+ROLES+"/add";
+
+
 }

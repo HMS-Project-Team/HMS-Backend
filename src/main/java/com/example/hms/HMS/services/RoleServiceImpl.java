@@ -16,14 +16,22 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 
 @Service
-@RequiredArgsConstructor
-public class RoleServiceImpl implements RoleService {
-    private final RoleRepository roleRepository;
-    private final RoleMapper roleMapper;
-    private final HotelRepository hotelRepository;
+public class RoleServiceImpl implements RoleService{
+
+
+    @Autowired
+    RoleMapper roleMapper;
+    @Autowired
+    RoleRepository roleRepository;
+    @Autowired
+    HotelRepository hotelRepository;
+
 
     @Override
     public Page<RoleResponseDto> GetAllRoles(Long hotelId, Pageable pageable) {
@@ -100,5 +108,33 @@ public class RoleServiceImpl implements RoleService {
         }
 
         roleRepository.delete(role);
+    }
+
+    @Override
+    @Transactional
+    public RoleResponseDto createRole(Long hotelId, RoleRequestDto roleRequestDto) throws HttpRequestMethodNotSupportedException {
+        if(roleRequestDto.getName() == null || roleRequestDto.getName().trim().isEmpty()){
+            throw new IllegalArgumentException(ValidationMessages.REQUIRED_FIELD_MISSING);
+        }
+
+        boolean exists = roleRepository.existsByNameAndHotelId(roleRequestDto.getName(), hotelId);
+        if (exists) {
+            throw new DataIntegrityViolationException("Role name already exists in this hotel.");
+        }
+
+        roleRequestDto.setHotelId(hotelId);
+        try {
+            Role role = roleMapper.toEntity(roleRequestDto);
+            Hotel hotel = hotelRepository.findById(roleRequestDto.getHotelId()).orElseThrow(() -> new ResourceNotFoundException(ValidationMessages.NOT_FOUND));
+            role.setHotel(hotel);
+            Role saveRole = roleRepository.save(role);
+
+            RoleResponseDto result = roleMapper.toResDto(saveRole);
+            result.setHotelId(hotelId);
+            return result;
+        }
+        catch(Exception e){
+            throw new RuntimeException("Error occurred while saving the Role: " + e.getMessage(), e);
+        }
     }
 }
