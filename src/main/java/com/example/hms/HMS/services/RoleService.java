@@ -9,5 +9,5 @@ public interface RoleService {
     RoleResponseDto getRoleById(Long id);
     RoleRequestDto updateRole(Long id, RoleRequestDto roleRequestDto);
     void deleteRole(Long id);
- Page<RoleResponseDto> GetAllRoles(Long hotelId, Pageable pageable);
+    Page<RoleResponseDto> GetAllRoles(Long hotelId, Pageable pageable);
 }
