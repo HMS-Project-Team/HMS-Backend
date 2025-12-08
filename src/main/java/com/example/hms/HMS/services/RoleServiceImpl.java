@@ -7,6 +7,7 @@ import com.example.hms.HMS.entities.Role;
 import com.example.hms.HMS.exceptionHandlers.InvalidPageSizeException;
 import com.example.hms.HMS.exceptionHandlers.ResourceNotFoundException;
 import com.example.hms.HMS.mappers.RoleMapper;
+import com.example.hms.HMS.repositories.HotelRepository;
 import com.example.hms.HMS.repositories.RoleRepository;
 import jakarta.persistence.EntityManager;
 import com.example.hms.HMS.utils.ValidationMessages;
@@ -23,6 +24,7 @@ public class RoleServiceImpl implements RoleService {
     private final RoleRepository roleRepository;
     private final RoleMapper roleMapper;
     private final EntityManager entityManager;
+    private final HotelRepository hotelRepository;
 
     @Override
     public Page<RoleResponseDto> GetAllRoles(Long hotelId, Pageable pageable) {
@@ -37,10 +39,7 @@ public class RoleServiceImpl implements RoleService {
             );
         }
 
-        Hotel hotel = entityManager.find(Hotel.class, hotelId);
-        if (hotel == null) {
-            throw new ResourceNotFoundException("Hotel not found with id: " + hotelId);
-        }
+        Hotel hotel = hotelRepository.findById(hotelId).orElseThrow(()->new ResourceNotFoundException(ValidationMessages.NOT_FOUND));
 
         Page<Role> rolePage = roleRepository.findByHotelId(hotelId, pageable);
 
