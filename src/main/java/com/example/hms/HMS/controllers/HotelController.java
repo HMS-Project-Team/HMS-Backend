@@ -82,10 +82,10 @@ public class HotelController {
 
     }
 
-    @GetMapping("/{page}/{size}")
+    @GetMapping
     public ResponseEntity<ResponseWrapper<Page<HotelResponseDto>>> getHotels(
-            @PathVariable("page") int page,
-            @PathVariable("size") int size
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size
     ) {
 
         // Validate page and size
