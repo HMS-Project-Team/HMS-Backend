@@ -13,7 +13,7 @@ public interface HotelMapper {
 
     Hotel toEntity(HotelRequestDto hotelRequestDto);
     HotelResponseDto toDto(Hotel hotel);
-    HotelRequestDto toDto(Hotel hotel);
+
 
 
 }
