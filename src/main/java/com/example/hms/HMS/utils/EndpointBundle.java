@@ -11,5 +11,4 @@ public final class  EndpointBundle {
     //Users
     public static final String USERS = "/users";
     public static final String USERS_BY_ID = USERS + ID;
-    public static final String DELETE_USER = USERS + ID;
 }
