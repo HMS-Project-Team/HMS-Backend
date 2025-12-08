@@ -1,7 +1,6 @@
 package com.example.hms.HMS.services;
 
 import com.example.hms.HMS.dtos.requests.RoleRequestDto;
-import com.example.hms.HMS.dtos.responses.RoleResponseDto;
 import com.example.hms.HMS.entities.Hotel;
 import com.example.hms.HMS.entities.Role;
 import com.example.hms.HMS.exceptionHandlers.InvalidPageSizeException;
@@ -9,12 +8,9 @@ import com.example.hms.HMS.exceptionHandlers.ResourceNotFoundException;
 import com.example.hms.HMS.mappers.RoleMapper;
 import com.example.hms.HMS.repositories.HotelRepository;
 import com.example.hms.HMS.repositories.RoleRepository;
-import jakarta.persistence.EntityManager;
 import com.example.hms.HMS.utils.ValidationMessages;
 import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -31,7 +27,7 @@ public class RoleServiceImpl implements RoleService{
     HotelRepository hotelRepository;
 
     @Override
-    public Page<RoleResponseDto> GetAllRoles(Long hotelId, Pageable pageable) {
+    public Page<RoleRequestDto> GetAllRoles(Long hotelId, Pageable pageable) {
 
         int page = pageable.getPageNumber();
         int size = pageable.getPageSize();
@@ -53,15 +49,15 @@ public class RoleServiceImpl implements RoleService{
             );
         }
 
-        return rolePage.map(roleMapper::toResponseDto);
+        return rolePage.map(roleMapper::toRequestDto);
     }
 
     @Override
-    public RoleResponseDto getRoleById(Long id) {
+    public RoleRequestDto getRoleById(Long id) {
         Role getRolebyId = roleRepository.findById(id)
                 .orElseThrow(()->new ResourceNotFoundException(ValidationMessages.NOT_FOUND));
 
-        RoleResponseDto dto = roleMapper.toResponseDto(getRolebyId);
+        RoleRequestDto dto = roleMapper.toRequestDto(getRolebyId);
 
         if (getRolebyId.getHotel()!=null){
             dto.setHotelId(getRolebyId.getHotel().getId());
@@ -113,7 +109,7 @@ public class RoleServiceImpl implements RoleService{
 
     @Override
     @Transactional
-    public RoleResponseDto createRole(Long hotelId, RoleRequestDto roleRequestDto) throws HttpRequestMethodNotSupportedException {
+    public RoleRequestDto createRole(Long hotelId, RoleRequestDto roleRequestDto) throws HttpRequestMethodNotSupportedException {
         if(roleRequestDto.getName() == null || roleRequestDto.getName().trim().isEmpty()){
             throw new IllegalArgumentException(ValidationMessages.REQUIRED_FIELD_MISSING);
         }
@@ -130,7 +126,7 @@ public class RoleServiceImpl implements RoleService{
             role.setHotel(hotel);
             Role saveRole = roleRepository.save(role);
 
-            RoleResponseDto result = roleMapper.toResDto(saveRole);
+            RoleRequestDto result = roleMapper.toRequestDto(saveRole);
             result.setHotelId(hotelId);
             return result;
         }
