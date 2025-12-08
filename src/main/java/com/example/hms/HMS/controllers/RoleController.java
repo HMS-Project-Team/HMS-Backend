@@ -13,12 +13,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(EndpointBundle.ROLES)
+@RequestMapping(EndpointBundle.SETTINGS)
 public class RoleController {
     @Autowired
     private RoleService roleService;
-
-    @PutMapping(EndpointBundle.ID)
+git
+    @PutMapping(EndpointBundle.ROLES_BY_ID)
     public ResponseEntity<ResponseWrapper<RoleRequestDto>> roleUpdate(@PathVariable Long id, @Valid @RequestBody RoleRequestDto roleRequestDto) {
         RoleRequestDto updated = roleService.updateRole(id, roleRequestDto);
 
