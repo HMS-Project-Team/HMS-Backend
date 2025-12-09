@@ -2,6 +2,7 @@ package com.example.hms.HMS.entities;
 
 
 import com.example.hms.HMS.utils.DateAudit;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -26,5 +27,7 @@ public class Role extends DateAudit {
     private Hotel hotel;
 
     @ManyToMany(mappedBy = "roles", cascade = CascadeType.ALL)
+    @JsonIgnore
+    @JsonBackReference
     private List<User> users;
 }
