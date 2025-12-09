@@ -17,9 +17,9 @@ import java.util.List;
 @NoArgsConstructor
 public class UserRequestDto {
 
-    @NotEmpty(message="Firstname cannot be empty")
+    @NotEmpty(message=ValidationMessages.REQUIRED_FIELD_MISSING)
     private String firstname;
-    @NotEmpty(message="Lastname cannot be empty")
+    @NotEmpty(message=ValidationMessages.REQUIRED_FIELD_MISSING)
     private String lastname;
     @Email(message = ValidationMessages.INVALID_EMAIL)
     private String email;
@@ -27,10 +27,10 @@ public class UserRequestDto {
     private String phone;
     @NotEmpty
     private String address;
-    @NotEmpty(message = "NIC is required")
+
+    @NotEmpty(message = ValidationMessages.NIC_REQUIRED)
     @Pattern(
-            regexp = "^[0-9]{12}$",
-            message = "NIC must be 12 digits"
+            regexp = "^[0-9]{12}$"
     )
     private String NIC;
     private String country;
