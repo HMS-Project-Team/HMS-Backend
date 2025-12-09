@@ -6,9 +6,12 @@ import lombok.Data;
 
 @Data
 public class VerifyOtpRequestDto {
+    @NotBlank(message = ValidationMessages.EMAIL_REQUIRED)
+    @Email(message = ValidationMessages.INVALID_EMAIL)
     private String email;
 
-    @NotNull(message= ValidationMessages.OTP_NOTNULL)
-//    @Size(min = 6, max = 6, message = ValidationMessages.OTP_SIZE)
+    @NotNull(message = ValidationMessages.OTP_NOTNULL)
+    @Size(min = 6, max = 6, message = ValidationMessages.OTP_SIZE)
+    @Pattern(regexp = "\\d{6}", message = ValidationMessages.OTP_SIZE)
     private String otp;
 }

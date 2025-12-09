@@ -12,4 +12,5 @@ public interface TokenService {
 
     void revokeOtp(User user);
 
+    void setRevoked(String token);
 }

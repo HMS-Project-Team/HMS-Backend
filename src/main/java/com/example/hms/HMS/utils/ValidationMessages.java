@@ -28,6 +28,12 @@ public class ValidationMessages {
     // ==== Authentication ====
     public static final String UNAUTHORIZED = "You are not authorized to perform this action.";
     public static final String INVALID_CREDENTIALS = "Invalid email or password.";
+    public static final String ACCESS_REVOKED="Token is already invalidated or logged out";
+    public static final String TOKEN_EXPIRED="The token has expired";
+    public static final String TOKEN_NOTFOUND="The token not found";
+
+
+
 
     // ==== Email & Password ====
     public static final String EMAIL_REQUIRED = "Email is required.";

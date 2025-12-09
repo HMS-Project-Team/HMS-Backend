@@ -11,5 +11,5 @@ public final class  EndpointBundle {
     public static final String OTP = "/otp";
     public static final String VERIFY_OTP = OTP + "/verify";
     public static final String NEW_PASSWORD = "/new-Password";
-
+    public static final String LOGOUT="/logout";
 }

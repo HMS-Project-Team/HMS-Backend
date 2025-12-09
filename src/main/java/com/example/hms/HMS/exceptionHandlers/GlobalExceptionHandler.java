@@ -17,10 +17,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -192,30 +189,86 @@ public class GlobalExceptionHandler {
                                 errorCodes.getNotFound());
                 errorDetails.add(errorDetail);
 
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
-                new ResponseWrapper<>(
-                        RestApiResponseStatusCodes.BAD_REQUEST.getCode(),
-                        ValidationMessages.INVALID_INPUT,
-                        errorDetails
-                )
-        );
-    }
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                                new ResponseWrapper<>(
+                                                RestApiResponseStatusCodes.BAD_REQUEST.getCode(),
+                                                ValidationMessages.INVALID_INPUT,
+                                                errorDetails));
+        }
 
         @ExceptionHandler(PasswordMismatchException.class)
         public ResponseEntity<ResponseWrapper<?>> handlePasswordMismatchException(PasswordMismatchException e) {
 
                 List<ErrorDetail> errorDetails = new ArrayList<>();
                 errorDetails.add(new ErrorDetail(
-                        new Date(),
-                        e.getMessage(),
-                        errorCodes.getNotValid()
-                ));
+                                new Date(),
+                                e.getMessage(),
+                                errorCodes.getNotValid()));
 
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
-                        new ResponseWrapper<>(
-                                RestApiResponseStatusCodes.UNAUTHORIZED.getCode(),
-                                ValidationMessages.INVALID_CREDENTIALS,
-                                errorDetails));
+                                new ResponseWrapper<>(
+                                                RestApiResponseStatusCodes.UNAUTHORIZED.getCode(),
+                                                ValidationMessages.INVALID_CREDENTIALS,
+                                                errorDetails));
         }
 
+        @ExceptionHandler(OtpExpiredException.class)
+        public ResponseEntity<ResponseWrapper<?>> handleOtpExpiredException(OtpExpiredException e) {
+                List<ErrorDetail> errorDetails = new ArrayList<>();
+                errorDetails.add(new ErrorDetail(
+                                new Date(),
+                                e.getMessage(),
+                                errorCodes.getNotValid()));
+
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                                new ResponseWrapper<>(
+                                                RestApiResponseStatusCodes.BAD_REQUEST.getCode(),
+                                                ValidationMessages.OTP_EXPIRED,
+                                                errorDetails));
+        }
+
+        @ExceptionHandler(InvalidOtpException.class)
+        public ResponseEntity<ResponseWrapper<?>> handleInvalidOtpException(InvalidOtpException e) {
+                List<ErrorDetail> errorDetails = new ArrayList<>();
+                errorDetails.add(new ErrorDetail(
+                                new Date(),
+                                e.getMessage(),
+                                errorCodes.getNotValid()));
+
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                                new ResponseWrapper<>(
+                                                RestApiResponseStatusCodes.INVALID_PAYLOAD.getCode(),
+                                                ValidationMessages.INVALID_OTP,
+                                                errorDetails));
+        }
+
+    @ExceptionHandler(TokenRevokedException.class)
+    public ResponseEntity<ResponseWrapper<?>> handleTokenRevokedException(InvalidOtpException e) {
+        List<ErrorDetail> errorDetails = new ArrayList<>();
+        errorDetails.add(new ErrorDetail(
+                new Date(),
+                e.getMessage(),
+                errorCodes.getDuplicateEntry()));
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
+                new ResponseWrapper<>(
+                        RestApiResponseStatusCodes.ACCESS_REVOKED.getCode(),
+                        ValidationMessages.ACCESS_REVOKED,
+                        errorDetails));
+    }
+
+    @ExceptionHandler(TokenExpiredException.class)
+    public ResponseEntity<ResponseWrapper<?>> handleTokenExpiredException(InvalidOtpException e) {
+        List<ErrorDetail> errorDetails = new ArrayList<>();
+        errorDetails.add(new ErrorDetail(
+                new Date(),
+                e.getMessage(),
+                errorCodes.getTokenExpired()));
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                new ResponseWrapper<>(
+                        RestApiResponseStatusCodes.TOKEN_EXPIRED.getCode(),
+                        ValidationMessages.TOKEN_EXPIRED,
+                        errorDetails));
+    }
 }

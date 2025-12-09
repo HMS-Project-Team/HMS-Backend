@@ -3,8 +3,13 @@ package com.example.hms.HMS.services;
 import com.example.hms.HMS.dtos.requests.TokenRequestDto;
 import com.example.hms.HMS.entities.Token;
 import com.example.hms.HMS.entities.User;
+import com.example.hms.HMS.exceptionHandlers.BadCredentialsException;
+import com.example.hms.HMS.exceptionHandlers.ResourceNotFoundException;
+import com.example.hms.HMS.exceptionHandlers.TokenExpiredException;
+import com.example.hms.HMS.exceptionHandlers.TokenRevokedException;
 import com.example.hms.HMS.mappers.TokenMapper;
 import com.example.hms.HMS.repositories.TokenRepository;
+import com.example.hms.HMS.utils.ValidationMessages;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -44,18 +49,46 @@ public class TokenServiceImpl implements TokenService {
 
     @Override
     public TokenRequestDto getOtpForUser(User user) {
-        Token token = tokenRepository.findTopByUserIdAndTypeOrderByCreatedAtDesc(user.getId(), "OTP");
+        Token token = tokenRepository.findTopByUserIdAndTypeAndRevokedFalseOrderByCreatedAtDesc(user.getId(), "OTP");
         return token != null ? tokenMapper.toDto(token) : null;
     }
 
     @Override
     public void revokeOtp(User user) {
-        Token token = tokenRepository.findTopByUserIdAndTypeOrderByCreatedAtDesc(user.getId(), "OTP");
+        Token token = tokenRepository.findTopByUserIdAndTypeAndRevokedFalseOrderByCreatedAtDesc(user.getId(), "OTP");
 
         if (token != null) {
             token.setRevoked(true);
             tokenRepository.save(token);
         }
+    }
+
+    @Override
+    public void setRevoked(String token) {
+        Token logoutToken = tokenRepository.getTokenDetailsByToken(token)
+                .orElseThrow(() -> new ResourceNotFoundException(ValidationMessages.TOKEN_NOTFOUND));// {Invalid
+                                                                                                          // Credentials}
+        if (logoutToken.getExpiresAt().isBefore(LocalDateTime.now())) {
+            // {Token Expired}
+            throw new TokenExpiredException(ValidationMessages.TOKEN_EXPIRED);
+        }
+        if (logoutToken != null) {
+            if (logoutToken.isRevoked() == true) {
+                // {Access Revoked}
+                // check the token is already revoked
+                throw new TokenRevokedException(ValidationMessages.ACCESS_REVOKED);
+            } else {
+                // {Success}
+                logoutToken.setRevoked(true);
+                tokenRepository.save(logoutToken);
+
+            }
+        } else {
+            // {Invalid Credentials}
+            throw new BadCredentialsException(ValidationMessages.INVALID_CREDENTIALS);
+        }
+
+
     }
 
 }
