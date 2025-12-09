@@ -31,11 +31,11 @@ public class GlobalExceptionHandler {
     // -------------------- BAD CREDENTIALS --------------------
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<ResponseWrapper<?>> handleBadCredentials(BadCredentialsException e) {
-        ErrorDetail d = new ErrorDetail(new Date(), e.getMessage(), errorCodes.getBadRequest());
+        ErrorDetail errorDetail = new ErrorDetail(new Date(), e.getMessage(), errorCodes.getBadRequest());
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseWrapper<>(
                 RestApiResponseStatusCodes.INVALID_CREDENTIALS.getCode(),
                 ValidationMessages.INVALID_CREDENTIALS,
-                Collections.singletonList(d)
+                Collections.singletonList(errorDetail)
         ));
     }
 
@@ -220,6 +220,7 @@ public class GlobalExceptionHandler {
                 )
         );
     }
+
 
 
     @ExceptionHandler(MissingPathVariableException.class)

@@ -21,4 +21,5 @@ public class UserResponseDto {
     private String city;
     private Long hotelId;
     private List<Long> roles;
+
 }

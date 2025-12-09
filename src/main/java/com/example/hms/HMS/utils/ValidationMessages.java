@@ -35,6 +35,8 @@ public class ValidationMessages {
     public static final String PASSWORD_REQUIRED = "Password is required.";
     public static final String PASSWORD_MIN_LENGTH = "Password must be at least 8 characters.";
     public static final String NIC_REQUIRED = "NIC is required.";
+    public static final String NIC_VALIDATION = "NIC must be 9 digits + V/X or 12 digits.";
+
     // ==== OTP ====
     public static final String OTP_NOT_FOUND = "OTP not found.";
     public static final String INVALID_OTP = "Invalid OTP.";

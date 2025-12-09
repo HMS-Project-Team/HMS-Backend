@@ -5,6 +5,7 @@ import com.example.hms.HMS.dtos.responses.UserResponseDto;
 import com.example.hms.HMS.entities.Role;
 import com.example.hms.HMS.entities.Hotel;
 import com.example.hms.HMS.entities.User;
+import com.example.hms.HMS.exceptionHandlers.InvalidPageSizeException;
 import com.example.hms.HMS.exceptionHandlers.ResourceNotFoundException;
 import com.example.hms.HMS.mappers.UserMapper;
 import com.example.hms.HMS.repositories.HotelRepository;
@@ -12,6 +13,12 @@ import com.example.hms.HMS.repositories.RoleRepository;
 import com.example.hms.HMS.repositories.UserRepository;
 import com.example.hms.HMS.utils.ValidationMessages;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import java.util.stream.Collectors;
@@ -93,7 +100,70 @@ public class UserServiceImpl implements UserService{
 
         User create = userRepository.save(user);
 
-        return userMapper.toResponseDto(create);
+        UserResponseDto response = userMapper.toResponseDto(create);
+
+        response.setRoles(roles.stream().map(Role::getId).collect(Collectors.toList()));
+        response.setHotelId(roles.get(0).getHotel().getId());
+
+        return response;
+    }
+
+    @Override
+    public UserResponseDto updateUser(Long id, UserRequestDto dto) {
+
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(ValidationMessages.NOT_FOUND));
+
+        userMapper.updateEntity(dto, user);
+
+        if (dto.getRoles() != null && !dto.getRoles().isEmpty()) {
+            List<Role> roles = dto.getRoles().stream()
+                    .map(roleId -> roleRepository.findById(roleId)
+                            .orElseThrow(() -> new ResourceNotFoundException("Role not found with ID: " + roleId)))
+                    .collect(Collectors.toList());
+
+            user.setRoles(roles);
+        } else {
+            throw new IllegalArgumentException("User must have at least one role assigned");
+        }
+
+
+        userRepository.save(user);
+
+        UserResponseDto response = userMapper.toResponseDto(user);
+
+        response.setRoles(user.getRoles().stream().map(Role::getId).collect(Collectors.toList()));
+        response.setHotelId(user.getRoles().get(0).getHotel().getId());
+
+        return response;
+    }
+
+    @Override
+    public Page<UserResponseDto> getAllUsers(Long hotelId, int page, int size) {
+        try {
+            Pageable pageable = PageRequest.of(page, size);
+            Page<User> userPage;
+
+            if (hotelId == null) {
+                userPage = userRepository.findAll(pageable);
+            } else {
+                userPage = userRepository.findByHotelId(hotelId, pageable);
+            }
+
+            if (userPage.isEmpty()) {
+                throw new ResourceNotFoundException("No users found in the system");
+            }
+
+            return userPage.map(userMapper::toDto);
+
+        } catch (ResourceNotFoundException e) {
+            throw e;
+        } catch (IllegalArgumentException e) {
+            throw new InvalidPageSizeException(e.getMessage());
+        } catch (Exception e) {
+            System.err.println("Error retrieving users - page: " + page + ", size: " + size + ", error: " + e.getMessage());
+            throw new RuntimeException("Failed to retrieve users due to system error: " + e.getMessage());
+        }
     }
 
 }
