@@ -19,186 +19,201 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 
 import java.util.*;
 
-
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
+        @Autowired
+        ErrorCodes errorCodes;
 
-    @Autowired
-    ErrorCodes errorCodes;
+        @ExceptionHandler(ResourceNotFoundException.class)
+        public ResponseEntity<ResponseWrapper<?>> handleResourceNotFoundException(ResourceNotFoundException e) {
 
-    @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<ResponseWrapper<?>> handleResourceNotFoundException(ResourceNotFoundException e) {
+                List<ErrorDetail> errorDetails = new ArrayList<>();
+                ErrorDetail errorDetail = new ErrorDetail(new Date(), e.getMessage(), errorCodes.getNotFound());
+                errorDetails.add(errorDetail);
 
-        List<ErrorDetail> errorDetails = new ArrayList<>();
-        ErrorDetail errorDetail = new ErrorDetail(new Date(), e.getMessage(), errorCodes.getNotFound());
-        errorDetails.add(errorDetail);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseWrapper<>(
 
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseWrapper<>(
-
-                RestApiResponseStatusCodes.NOT_FOUND.getCode(),
-                ValidationMessages.NOT_FOUND,
-                errorDetails
-        ));
-    }
-
-    @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<ResponseWrapper<?>> handleDataIntegrityViolation(DataIntegrityViolationException e) {
-
-        List<ErrorDetail> errorDetails = new ArrayList<>();
-
-        String message;
-
-        // Identify duplicate entry or foreign key violation
-        if (e.getMessage() != null && e.getMessage().toLowerCase().contains("foreign key")) {
-            message = ValidationMessages.FOREIGN_KEY_CONSTRAINT;
-            errorDetails.add(new ErrorDetail(
-                    new Date(),
-                    message,
-                    errorCodes.getAlreadyExist()
-            ));
-        } else {
-            message = ValidationMessages.DUPLICATE_ENTRY;
-            errorDetails.add(new ErrorDetail(
-                    new Date(),
-                    message,
-                    errorCodes.getAlreadyExist()
-            ));
+                                RestApiResponseStatusCodes.NOT_FOUND.getCode(),
+                                ValidationMessages.NOT_FOUND,
+                                errorDetails));
         }
 
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(
-                new ResponseWrapper<>(
-                        RestApiResponseStatusCodes.CONFLICT.getCode(),
-                        message,
-                        errorDetails
-                )
-        );
-    }
+        @ExceptionHandler(DataIntegrityViolationException.class)
+        public ResponseEntity<ResponseWrapper<?>> handleDataIntegrityViolation(DataIntegrityViolationException e) {
 
+                List<ErrorDetail> errorDetails = new ArrayList<>();
 
+                String message;
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ResponseWrapper<?>> handleValidation(MethodArgumentNotValidException ex) {
+                // Identify duplicate entry or foreign key violation
+                if (e.getMessage() != null && e.getMessage().toLowerCase().contains("foreign key")) {
+                        message = ValidationMessages.FOREIGN_KEY_CONSTRAINT;
+                        errorDetails.add(new ErrorDetail(
+                                        new Date(),
+                                        message,
+                                        errorCodes.getAlreadyExist()));
+                } else {
+                        message = ValidationMessages.DUPLICATE_ENTRY;
+                        errorDetails.add(new ErrorDetail(
+                                        new Date(),
+                                        message,
+                                        errorCodes.getAlreadyExist()));
+                }
 
-        List<ErrorDetail> errorDetails = new ArrayList<>();
+                return ResponseEntity.status(HttpStatus.CONFLICT).body(
+                                new ResponseWrapper<>(
+                                                RestApiResponseStatusCodes.CONFLICT.getCode(),
+                                                message,
+                                                errorDetails));
+        }
 
-        ex.getBindingResult()
-                .getFieldErrors()
-                .forEach(error -> {
-                    String errorMessage = error.getField() + ": " + error.getDefaultMessage();
-                    ErrorDetail detail = new ErrorDetail(
-                            new Date(),
-                            errorMessage,
-                            errorCodes.getAlreadyExist()
-                    );
-                    errorDetails.add(detail);
+        @ExceptionHandler(MethodArgumentNotValidException.class)
+        public ResponseEntity<ResponseWrapper<?>> handleValidation(MethodArgumentNotValidException ex) {
+
+                List<ErrorDetail> errorDetails = new ArrayList<>();
+
+                ex.getBindingResult()
+                                .getFieldErrors()
+                                .forEach(error -> {
+                                        String errorMessage = error.getDefaultMessage();
+                                        ErrorDetail detail = new ErrorDetail(
+                                                        new Date(),
+                                                        errorMessage,
+                                                        errorCodes.getNotValid());
+                                        errorDetails.add(detail);
+                                });
+
+                return ResponseEntity
+                                .status(HttpStatus.BAD_REQUEST)
+                                .body(new ResponseWrapper<>(
+                                                RestApiResponseStatusCodes.VALIDATION_FAILED.getCode(),
+                                                ValidationMessages.VALIDATION_FAILED,
+                                                errorDetails));
+        }
+
+        @ExceptionHandler(NoSuchElementException.class)
+        public ResponseEntity<ResponseWrapper<?>> handleNoSuchElementException(NoSuchElementException e) {
+
+                ErrorDetail errorDetail = new ErrorDetail(new Date(), e.getMessage(), errorCodes.getNotFound());
+
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                                new ResponseWrapper<>(RestApiResponseStatusCodes.NOT_FOUND.getCode(),
+                                                ValidationMessages.INVALID_ID, errorDetail));
+        }
+
+        @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+        public ResponseEntity<ResponseWrapper<?>> handleHttpRequestMethodNotSupportedException(
+                        HttpRequestMethodNotSupportedException e) {
+
+                List<ErrorDetail> errorDetails = new ArrayList<>();
+                ErrorDetail errorDetail = new ErrorDetail(new Date(), e.getMessage(), errorCodes.getNotFound());
+                errorDetails.add(errorDetail);
+
+                return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(
+                                new ResponseWrapper<>(
+                                                RestApiResponseStatusCodes.BAD_REQUEST.getCode(),
+                                                ValidationMessages.WRONG_API_CALL,
+                                                errorDetails));
+        }
+
+        @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+        public ResponseEntity<ResponseWrapper<?>> handleMethodArgumentTypeMismatchException(
+                        MethodArgumentTypeMismatchException e) {
+
+                List<ErrorDetail> errorDetails = new ArrayList<>();
+                ErrorDetail errorDetail = new ErrorDetail(new Date(), e.getMessage(), errorCodes.getNotFound());
+                errorDetails.add(errorDetail);
+
+                return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(
+                                new ResponseWrapper<>(
+                                                RestApiResponseStatusCodes.BAD_REQUEST.getCode(),
+                                                ValidationMessages.BAD_REQUEST,
+                                                errorDetails));
+        }
+
+        @ExceptionHandler(ConstraintViolationException.class)
+        public ResponseEntity<ResponseWrapper<?>> handleConstraintViolation(ConstraintViolationException e) {
+
+                List<ErrorDetail> errorDetails = new ArrayList<>();
+
+                e.getConstraintViolations().forEach(v -> {
+                        String message = v.getPropertyPath() + ": " + v.getMessage();
+                        errorDetails.add(new ErrorDetail(
+                                        new Date(),
+                                        message,
+                                        errorCodes.getNotValid()));
                 });
 
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(new ResponseWrapper<>(
-                        RestApiResponseStatusCodes.VALIDATION_FAILED.getCode(),
-                        ValidationMessages.VALIDATION_FAILED,
-                        errorDetails
-                ));
-    }
+                return ResponseEntity
+                                .status(HttpStatus.BAD_REQUEST)
+                                .body(new ResponseWrapper<>(
+                                                RestApiResponseStatusCodes.VALIDATION_FAILED.getCode(),
+                                                ValidationMessages.VALIDATION_FAILED,
+                                                errorDetails));
+        }
 
-    @ExceptionHandler(NoSuchElementException.class)
-    public ResponseEntity<ResponseWrapper<?>> handleNoSuchElementException(NoSuchElementException e) {
+        @ExceptionHandler(IllegalArgumentException.class)
+        public ResponseEntity<ResponseWrapper<?>> handleIllegalArgumentException(IllegalArgumentException e) {
+                List<ErrorDetail> errorDetails = new ArrayList<>();
+                ErrorDetail errorDetail = new ErrorDetail(new Date(), e.getMessage(), errorCodes.getNotFound());
+                errorDetails.add(errorDetail);
+                ResponseWrapper<List<ErrorDetail>> response = new ResponseWrapper<>(
+                                RestApiResponseStatusCodes.BAD_REQUEST.getCode(),
+                                ValidationMessages.INVALID_INPUT,
+                                errorDetails);
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
 
-        ErrorDetail errorDetail = new ErrorDetail(new Date(), e.getMessage(), errorCodes.getNotFound());
+        @ExceptionHandler(Exception.class)
+        public ResponseEntity<ResponseWrapper<?>> handleException(
+                        Exception e) {
 
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                new ResponseWrapper<>(RestApiResponseStatusCodes.NOT_FOUND.getCode(), ValidationMessages.INVALID_ID, errorDetail));
-    }
+                List<ErrorDetail> errorDetails = new ArrayList<>();
+                ErrorDetail errorDetail = new ErrorDetail(new Date(), e.getMessage(), errorCodes.getNotFound());
+                errorDetails.add(errorDetail);
 
-    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-    public ResponseEntity<ResponseWrapper<?>> handleHttpRequestMethodNotSupportedException(
-            HttpRequestMethodNotSupportedException e) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                                new ResponseWrapper<>(
+                                                RestApiResponseStatusCodes.BAD_REQUEST.getCode(),
+                                                ValidationMessages.BAD_REQUEST,
+                                                errorDetails));
+        }
 
-        List<ErrorDetail> errorDetails = new ArrayList<>();
-        ErrorDetail errorDetail = new ErrorDetail(new Date(), e.getMessage(), errorCodes.getNotFound());
-        errorDetails.add(errorDetail);
-
-        return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(
-                new ResponseWrapper<>(
-                        RestApiResponseStatusCodes.BAD_REQUEST.getCode(),
-                        ValidationMessages.WRONG_API_CALL,
-                        errorDetails
-                )
-        );
-    }
-
-    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public ResponseEntity<ResponseWrapper<?>> handleMethodArgumentTypeMismatchException(
-            MethodArgumentTypeMismatchException e) {
-
-        List<ErrorDetail> errorDetails = new ArrayList<>();
-        ErrorDetail errorDetail = new ErrorDetail(new Date(), e.getMessage(), errorCodes.getNotFound());
-        errorDetails.add(errorDetail);
-
-        return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(
-                new ResponseWrapper<>(
-                        RestApiResponseStatusCodes.BAD_REQUEST.getCode(),
-                        ValidationMessages.BAD_REQUEST,
-                        errorDetails
-                )
-        );
-    }
-
-    @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<ResponseWrapper<?>> handleConstraintViolation(ConstraintViolationException e) {
-
-        List<ErrorDetail> errorDetails = new ArrayList<>();
-
-        e.getConstraintViolations().forEach(v -> {
-            String message = v.getPropertyPath() + ": " + v.getMessage();
-            errorDetails.add(new ErrorDetail(
-                    new Date(),
-                    message,
-                    errorCodes.getNotValid()
-            ));
-        });
-
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(new ResponseWrapper<>(
-                        RestApiResponseStatusCodes.VALIDATION_FAILED.getCode(),
-                        ValidationMessages.VALIDATION_FAILED,
-                        errorDetails
-                ));
-    }
-
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<ResponseWrapper<?>> handleIllegalArgumentException(IllegalArgumentException e) {
-        List<ErrorDetail> errorDetails = new ArrayList<>();
-        ErrorDetail errorDetail = new ErrorDetail(new Date(), e.getMessage(), errorCodes.getNotFound());
-        errorDetails.add(errorDetail);
-        ResponseWrapper<List<ErrorDetail>> response = new ResponseWrapper<>(
-                RestApiResponseStatusCodes.BAD_REQUEST.getCode(),
-                ValidationMessages.INVALID_INPUT,
-                errorDetails
-        );
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-    }
-
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ResponseWrapper<?>> handleException(
-            Exception e) {
-
-        List<ErrorDetail> errorDetails = new ArrayList<>();
-        ErrorDetail errorDetail = new ErrorDetail(new Date(), e.getMessage(), errorCodes.getNotFound());
-        errorDetails.add(errorDetail);
+        @ExceptionHandler(BadCredentialsException.class)
+        public ResponseEntity<ResponseWrapper<?>> handleBadCredentials(BadCredentialsException e) {
+                List<ErrorDetail> errorDetails = new ArrayList<>();
+                ErrorDetail errorDetail = new ErrorDetail(
+                                new Date(),
+                                ValidationMessages.INVALID_CREDENTIALS,
+                                errorCodes.getNotFound());
+                errorDetails.add(errorDetail);
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
                 new ResponseWrapper<>(
                         RestApiResponseStatusCodes.BAD_REQUEST.getCode(),
-                        ValidationMessages.BAD_REQUEST,
+                        ValidationMessages.INVALID_INPUT,
                         errorDetails
                 )
         );
     }
 
+        @ExceptionHandler(PasswordMismatchException.class)
+        public ResponseEntity<ResponseWrapper<?>> handlePasswordMismatchException(PasswordMismatchException e) {
+
+                List<ErrorDetail> errorDetails = new ArrayList<>();
+                errorDetails.add(new ErrorDetail(
+                        new Date(),
+                        e.getMessage(),
+                        errorCodes.getNotValid()
+                ));
+
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
+                        new ResponseWrapper<>(
+                                RestApiResponseStatusCodes.UNAUTHORIZED.getCode(),
+                                ValidationMessages.INVALID_CREDENTIALS,
+                                errorDetails));
+        }
     // -------------------- BAD CREDENTIALS --------------------
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<ResponseWrapper<?>> handleBadCredentials(BadCredentialsException e) {
