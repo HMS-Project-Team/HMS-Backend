@@ -1,4 +1,32 @@
 package com.example.hms.HMS.dtos.responses;
 
+import com.example.hms.HMS.entities.Role;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.List;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserResponseDto {
+    private Long id;
+    private String firstname;
+    private String lastname;
+    private String email;
+    private String phone;
+    private String address;
+    private String NIC;
+    private String country;
+    private String city;
+    private Long hotelId;
+    private String hotelName;
+    private List<Long> roles;
+
 }
