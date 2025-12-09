@@ -8,7 +8,6 @@ import com.example.hms.HMS.entities.User;
 import com.example.hms.HMS.exceptionHandlers.PasswordMismatchException;
 import com.example.hms.HMS.exceptionHandlers.ResourceNotFoundException;
 import com.example.hms.HMS.mappers.AuthenticationMapper;
-import com.example.hms.HMS.repositories.AuthenticationRepository;
 import com.example.hms.HMS.repositories.TokenRepository;
 import com.example.hms.HMS.repositories.UserRepository;
 import com.example.hms.HMS.utils.ValidationMessages;
@@ -37,9 +36,6 @@ public class AuthenticationService {
 
     @Autowired
     private AuthenticationMapper authenticationMapper;
-
-    @Autowired
-    private AuthenticationRepository authenticationRepository;
 
 
     private static final String PASSWORD_SPQCIAL =
@@ -89,7 +85,7 @@ public class AuthenticationService {
             throw new PasswordMismatchException(ValidationMessages.PASSWORD_MISMATCH);
         }
 
-        User user = authenticationRepository.findByEmail(newPasswordRequestDto.getEmail())
+        User user = userRepository.findByEmail(newPasswordRequestDto.getEmail())
                 .orElseThrow(()-> new ResourceNotFoundException(ValidationMessages.NOT_FOUND));
 
 
@@ -105,6 +101,6 @@ public class AuthenticationService {
         }
 
         user.setPassword(passwordEncoder.encode(newPasswordRequestDto.getNewPassword()));
-        authenticationRepository.save(user);
+        userRepository.save(user);
     }
 }
