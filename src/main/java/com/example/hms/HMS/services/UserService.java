@@ -11,11 +11,6 @@ import com.example.hms.HMS.dtos.requests.UserRequestDto;
 public interface UserService {
     UserResponseDto getUserById(Long id);
     Boolean deleteUser(Long id) throws HttpRequestMethodNotSupportedException;
-
     UserResponseDto createUser(Long hotelId , UserRequestDto userRequestDto);
-
-    //userService
     UserResponseDto updateUser(Long id, UserRequestDto dto);
-
-
 }
