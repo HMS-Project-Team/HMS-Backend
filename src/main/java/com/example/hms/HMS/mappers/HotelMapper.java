@@ -2,8 +2,6 @@ package com.example.hms.HMS.mappers;
 
 import com.example.hms.HMS.dtos.requests.HotelRequestDto;
 import com.example.hms.HMS.dtos.responses.HotelResponseDto;
-import com.example.hms.HMS.dtos.requests.HotelRequestDto;
-import com.example.hms.HMS.dtos.responses.HotelResponseDto;
 import com.example.hms.HMS.entities.Hotel;
 import org.mapstruct.Mapper;
 
@@ -15,10 +13,7 @@ public interface HotelMapper {
 HotelRequestDto toDto(Hotel hotel);
 Hotel toEntity(HotelRequestDto hotelRequestDto);
 
-HotelResponseDto toResponseDto(Hotel hotel);
-List<HotelResponseDto> toResponseDtoList(List<Hotel> hotels);
-
-
-
-
+    HotelResponseDto toResponseDto(Hotel hotel);
+//    List<HotelResponseDto> toResponseDtoList(List<Hotel> hotels);
+    HotelResponseDto toHotelDto (Hotel hotel);
 }

@@ -3,7 +3,6 @@ package com.example.hms.HMS.controllers;
 
 import com.example.hms.HMS.dtos.responses.HotelResponseDto;
 import com.example.hms.HMS.dtos.requests.HotelRequestDto;
-import com.example.hms.HMS.dtos.responses.HotelResponseDto;
 import com.example.hms.HMS.enums.RestApiResponseStatusCodes;
 import com.example.hms.HMS.exceptionHandlers.InvalidPageSizeException;
 import com.example.hms.HMS.exceptionHandlers.ResourceNotFoundException;
@@ -21,7 +20,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import static com.example.hms.HMS.exceptionHandlers.InvalidPageSizeException.INVALID_PAGE_SIZE_MSG;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
-import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -103,6 +101,17 @@ public class HotelController {
                 )
         );
 
+    }
+
+    @GetMapping(EndpointBundle.ID)
+    public ResponseEntity<ResponseWrapper<HotelResponseDto>> getHotelById(@PathVariable Long id){
+        HotelResponseDto response = hotelService.getHotelById(id);
+
+        return ResponseEntity.status(HttpStatus.OK).body(new ResponseWrapper<>(
+                HttpStatus.OK.value(),
+                ValidationMessages.SUCCESS ,
+                response
+        ));
     }
 
     @GetMapping

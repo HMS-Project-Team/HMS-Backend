@@ -18,3 +18,4 @@ public class HotelResponseDto {
     private byte[] logoImage;
     private String email;
 }
+

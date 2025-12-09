@@ -8,6 +8,8 @@ import com.example.hms.HMS.dtos.responses.HotelResponseDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import com.example.hms.HMS.dtos.responses.HotelResponseDto;
+
 public interface HotelService {
     HotelResponseDto updateHotel(Long id, HotelRequestDto hotelRequestDto) throws HttpRequestMethodNotSupportedException;
 
@@ -16,4 +18,6 @@ public interface HotelService {
     HotelResponseDto createHotel(HotelRequestDto hotelRequestDto) throws HttpRequestMethodNotSupportedException;;
 
     Page<HotelResponseDto> getHotels(Pageable pageable);
+
+    HotelResponseDto getHotelById(Long id);
 }
