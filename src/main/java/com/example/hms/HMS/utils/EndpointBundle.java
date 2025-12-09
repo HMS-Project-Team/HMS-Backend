@@ -4,6 +4,11 @@ public final class  EndpointBundle {
     public static final String BASE_URL = "/api/v1";
     public static final String ID ="/{id}";
     public static final String SEARCH = "/search";
+    public static final String AUTH = BASE_URL + "/auth";
+    // Login
+    public static final String LOGIN = "/login";
+
+    public static final String NEW_PASSWORD = "/new-Password";
 
     //Login
     public static final String AUTH = BASE_URL + "/auth";
