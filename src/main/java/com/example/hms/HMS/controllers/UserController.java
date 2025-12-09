@@ -63,4 +63,18 @@ public class UserController {
             throw new RuntimeException(e.getMessage());
         }
     }
+    @PutMapping(EndpointBundle.USERS_BY_ID)
+    public ResponseEntity<ResponseWrapper<UserResponseDto>> updateUser(
+            @PathVariable Long id,@Valid
+            @RequestBody UserRequestDto requestDto) {
+
+        UserResponseDto updatedUser = userService.updateUser(id, requestDto);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new ResponseWrapper<>(
+                        RestApiResponseStatusCodes.OK.getCode(),
+                        ValidationMessages.UPDATED_SUCCESSFULLY,
+                        updatedUser));
+    }
+
 }

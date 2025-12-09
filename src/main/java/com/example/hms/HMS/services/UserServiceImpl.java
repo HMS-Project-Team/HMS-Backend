@@ -93,7 +93,42 @@ public class UserServiceImpl implements UserService{
 
         User create = userRepository.save(user);
 
-        return userMapper.toResponseDto(create);
+        UserResponseDto response = userMapper.toResponseDto(create);
+
+        response.setRoles(roles.stream().map(Role::getId).collect(Collectors.toList()));
+        response.setHotelId(roles.get(0).getHotel().getId());
+
+        return response;
+    }
+
+    @Override
+    public UserResponseDto updateUser(Long id, UserRequestDto dto) {
+
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(ValidationMessages.NOT_FOUND));
+
+        userMapper.updateEntity(dto, user);
+
+        if (dto.getRoles() != null && !dto.getRoles().isEmpty()) {
+            List<Role> roles = dto.getRoles().stream()
+                    .map(roleId -> roleRepository.findById(roleId)
+                            .orElseThrow(() -> new ResourceNotFoundException("Role not found with ID: " + roleId)))
+                    .collect(Collectors.toList());
+
+            user.setRoles(roles);
+        } else {
+            throw new IllegalArgumentException("User must have at least one role assigned");
+        }
+
+
+        userRepository.save(user);
+
+        UserResponseDto response = userMapper.toResponseDto(user);
+
+        response.setRoles(user.getRoles().stream().map(Role::getId).collect(Collectors.toList()));
+        response.setHotelId(user.getRoles().get(0).getHotel().getId());
+
+        return response;
     }
 
 }

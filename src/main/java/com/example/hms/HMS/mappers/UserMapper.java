@@ -1,13 +1,12 @@
 package com.example.hms.HMS.mappers;
 
-import com.example.hms.HMS.dtos.responses.UserResponseDto;
-import com.example.hms.HMS.entities.User;
 import com.example.hms.HMS.dtos.requests.UserRequestDto;
+import com.example.hms.HMS.dtos.responses.UserResponseDto;
 import com.example.hms.HMS.entities.Role;
 import com.example.hms.HMS.entities.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -41,4 +40,8 @@ public interface UserMapper {
                 .collect(Collectors.toList());
     }
 
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "roles", ignore = true)
+    void updateEntity(UserRequestDto dto, @MappingTarget User user);
 }
