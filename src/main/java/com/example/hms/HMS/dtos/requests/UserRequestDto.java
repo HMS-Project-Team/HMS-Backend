@@ -3,6 +3,7 @@ package com.example.hms.HMS.dtos.requests;
 
 import com.example.hms.HMS.entities.Role;
 import com.example.hms.HMS.utils.ValidationMessages;
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
@@ -22,6 +23,7 @@ public class UserRequestDto {
     @NotEmpty(message=ValidationMessages.REQUIRED_FIELD_MISSING)
     private String lastname;
     @Email(message = ValidationMessages.INVALID_EMAIL)
+    @Column(unique = true)
     private String email;
     @NotEmpty
     private String phone;
@@ -29,9 +31,8 @@ public class UserRequestDto {
     private String address;
 
     @NotEmpty(message = ValidationMessages.NIC_REQUIRED)
-    @Pattern(
-            regexp = "([0-9]{9}[VvXx]|[0-9]{12})"
-    )
+    @Pattern(regexp = "([0-9]{9}[VvXx]|[0-9]{12})" , message = ValidationMessages.NIC_VALIDATION)
+    @Column(unique = true)
     private String NIC;
     private String country;
     private String city;
