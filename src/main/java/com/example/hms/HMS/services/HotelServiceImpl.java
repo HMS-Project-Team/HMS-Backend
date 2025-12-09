@@ -4,17 +4,13 @@ import com.example.hms.HMS.dtos.requests.HotelRequestDto;
 import com.example.hms.HMS.dtos.responses.HotelResponseDto;
 import com.example.hms.HMS.entities.Hotel;
 
-import com.example.hms.HMS.dtos.responses.HotelResponseDto;
-import com.example.hms.HMS.entities.Hotel;
 import com.example.hms.HMS.exceptionHandlers.InvalidPageSizeException;
-import com.example.hms.HMS.dtos.responses.HotelResponseDto;
-import com.example.hms.HMS.entities.Hotel;
 import com.example.hms.HMS.exceptionHandlers.ResourceNotFoundException;
 import com.example.hms.HMS.mappers.HotelMapper;
 import com.example.hms.HMS.repositories.HotelRepository;
 import com.example.hms.HMS.utils.ValidationMessages;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,10 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 
 @Service
-public class HotelServiceImpl implements HotelService{
-
-    @Autowired
-    private HotelRepository hotelRepository;
 @RequiredArgsConstructor
 public class HotelServiceImpl implements HotelService {
 
@@ -33,9 +25,6 @@ public class HotelServiceImpl implements HotelService {
 
 
     private final HotelMapper hotelMapper;
-
-    @Autowired
-    HotelMapper hotelMapper;
 
     @Override
     public boolean deleteHotel(Long id) {
