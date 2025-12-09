@@ -93,7 +93,12 @@ public class UserServiceImpl implements UserService{
 
         User create = userRepository.save(user);
 
-        return userMapper.toResponseDto(create);
+        UserResponseDto response = userMapper.toResponseDto(create);
+
+        response.setRoles(roles.stream().map(Role::getId).collect(Collectors.toList()));
+        response.setHotelId(roles.get(0).getHotel().getId());
+
+        return response;
     }
 
     @Override
@@ -102,10 +107,8 @@ public class UserServiceImpl implements UserService{
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(ValidationMessages.NOT_FOUND));
 
-        // Map only allowed fields onto existing user
         userMapper.updateEntity(dto, user);
 
-        // Handle roles manually
         if (dto.getRoles() != null && !dto.getRoles().isEmpty()) {
             List<Role> roles = dto.getRoles().stream()
                     .map(roleId -> roleRepository.findById(roleId)
@@ -122,7 +125,6 @@ public class UserServiceImpl implements UserService{
 
         UserResponseDto response = userMapper.toResponseDto(user);
 
-        // Manually add roles + hotelId
         response.setRoles(user.getRoles().stream().map(Role::getId).collect(Collectors.toList()));
         response.setHotelId(user.getRoles().get(0).getHotel().getId());
 
