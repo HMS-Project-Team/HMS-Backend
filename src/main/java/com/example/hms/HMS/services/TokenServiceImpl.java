@@ -44,13 +44,13 @@ public class TokenServiceImpl implements TokenService {
 
     @Override
     public TokenRequestDto getOtpForUser(User user) {
-        Token token = tokenRepository.findLatestByUserIdAndType(user.getId(), "OTP");
+        Token token = tokenRepository.findTopByUserIdAndTypeOrderByCreatedAtDesc(user.getId(), "OTP");
         return token != null ? tokenMapper.toDto(token) : null;
     }
 
     @Override
     public void revokeOtp(User user) {
-        Token token = tokenRepository.findLatestByUserIdAndType(user.getId(), "OTP");
+        Token token = tokenRepository.findTopByUserIdAndTypeOrderByCreatedAtDesc(user.getId(), "OTP");
 
         if (token != null) {
             token.setRevoked(true);
