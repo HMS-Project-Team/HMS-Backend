@@ -14,11 +14,8 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmail(String email);
-    @Query("SELECT u FROM User u LEFT JOIN FETCH u.roles WHERE u.email = :email")
-    Optional<User> findByEmail(@Param("email") String email);
 
     boolean existsByEmail(String email);
-
 
     User findByNIC(String nic);
 
