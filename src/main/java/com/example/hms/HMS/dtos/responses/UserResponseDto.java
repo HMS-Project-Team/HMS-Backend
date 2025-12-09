@@ -5,10 +5,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-
 public class UserResponseDto {
     private Long id;
     private String firstname;
@@ -23,4 +23,3 @@ public class UserResponseDto {
     private List<Long> roles;
 
 }
-

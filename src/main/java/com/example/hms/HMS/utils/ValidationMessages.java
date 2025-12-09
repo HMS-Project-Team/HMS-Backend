@@ -34,11 +34,12 @@ public class ValidationMessages {
     public static final String INVALID_EMAIL = "Invalid email format.";
     public static final String PASSWORD_REQUIRED = "Password is required.";
     public static final String PASSWORD_MIN_LENGTH = "Password must be at least 8 characters.";
-
+    public static final String NIC_REQUIRED = "NIC is required.";
     // ==== OTP ====
     public static final String OTP_NOT_FOUND = "OTP not found.";
     public static final String INVALID_OTP = "Invalid OTP.";
     public static final String MISSING_PARAMETER = "Missing parameter.";
+    public static final String MISSING_PATHVARIABLE = "Missing pathvariable.";
 
     // ==== Errors ====
     public static final String NOT_FOUND = "Resource not found.";
@@ -48,5 +49,10 @@ public class ValidationMessages {
     public static final String WRONG_API_CALL = "Incorrect API path or method.";
     public static final String INVALID_JSON = "Invalid JSON format.";
     public static final String INVALID_URL = "Invalid URL.";
+
+    //==== User ====
+    public static final String ROLES_NOT_BELONG_TO_HOTEL = "One or more roles do not belong to this hotel.";
+    public static final String USER_HAS_NO_ROLES = "User has no roles assigned.";
+    public static final String ROLE_NOT_LINKED_TO_HOTEL = "User's role is not linked to any hotel.";
 
 }
