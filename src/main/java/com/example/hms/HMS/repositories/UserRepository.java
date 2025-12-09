@@ -12,6 +12,9 @@ import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
+    boolean existsByEmail(String email);
+    boolean existsByPhone(String phone);
+    boolean existsByNIC(String NIC);
 
     @Query("SELECT DISTINCT u FROM User u " +
             "JOIN u.roles r " +
@@ -20,14 +23,4 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Page<User> findByHotelId(@Param("hotelId") Long hotelId, Pageable pageable);
 
     Page<User> findAll(Pageable pageable);
-
-
-//    @Query("SELECT DISTINCT u FROM User u " +
-//            "LEFT JOIN FETCH u.roles r " +
-//            "WHERE (:hotelId IS NULL OR r.hotel.id = :hotelId) " +
-//            "AND (:roleId IS NULL OR r.id = :roleId)")
-//    Page<User> findByHotelIdAndRoleIdFetchRoles(@Param("hotelId") Long hotelId,
-//                                                @Param("roleId") Long roleId,
-//                                                Pageable pageable);
-
 }
