@@ -1,6 +1,7 @@
 package com.example.hms.HMS.controllers;
 
 
+import com.example.hms.HMS.dtos.responses.HotelResponseDto;
 import com.example.hms.HMS.enums.RestApiResponseStatusCodes;
 import com.example.hms.HMS.exceptionHandlers.ResourceNotFoundException;
 import com.example.hms.HMS.services.HotelService;
@@ -11,10 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
@@ -46,5 +44,16 @@ public class HotelController {
                 )
         );
 
+    }
+
+    @GetMapping(EndpointBundle.ID)
+    public ResponseEntity<ResponseWrapper<HotelResponseDto>> getHotelById(@PathVariable Long id){
+        HotelResponseDto response = hotelService.getHotelById(id);
+
+        return ResponseEntity.status(HttpStatus.OK).body(new ResponseWrapper<>(
+                HttpStatus.OK.value(),
+                ValidationMessages.SUCCESS ,
+                response
+        ));
     }
 }
