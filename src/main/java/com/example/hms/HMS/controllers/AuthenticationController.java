@@ -5,7 +5,6 @@ import com.example.hms.HMS.dtos.responses.AuthenticationResponseDto;
 import com.example.hms.HMS.entities.User;
 import com.example.hms.HMS.exceptionHandlers.InvalidOtpException;
 import com.example.hms.HMS.exceptionHandlers.OtpExpiredException;
-import com.example.hms.HMS.exceptionHandlers.TokenRevokedException;
 import com.example.hms.HMS.services.AuthenticationService;
 import com.example.hms.HMS.enums.RestApiResponseStatusCodes;
 import com.example.hms.HMS.services.EmailService;
@@ -17,9 +16,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import com.example.hms.HMS.utils.ValidationMessages;
 
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,6 +32,8 @@ import java.security.SecureRandom;
 @RestController
 @RequestMapping(EndpointBundle.AUTH)
 public class AuthenticationController {
+
+        private static final Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
 
         @Autowired
         private AuthenticationService authenticationService;
@@ -43,12 +47,21 @@ public class AuthenticationController {
         @Autowired
         private EmailService emailService;
 
+        // Test endpoint to verify application is working
+        @GetMapping("/test")
+        public ResponseEntity<String> test() {
+                logger.info("Test endpoint hit!");
+                return ResponseEntity.ok("Application is running!");
+        }
+
         @PostMapping(EndpointBundle.LOGOUT)
         public ResponseEntity<ResponseWrapper<?>> logout(HttpServletRequest request) {
+                logger.debug("Logout request received");
 
                 String authHeader = request.getHeader("Authorization");
 
                 if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+                        logger.warn("Logout failed: Missing or invalid Authorization header");
                         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                                         .body(new ResponseWrapper<>(
                                                         RestApiResponseStatusCodes.UNAUTHORIZED.getCode(),
@@ -57,17 +70,18 @@ public class AuthenticationController {
                 }
 
                 String token = authHeader.substring(7);
+                logger.debug("Attempting to revoke token: {}...", token.substring(0, Math.min(20, token.length())));
 
-                try {
-                        tokenService.setRevoked(token);
-                        return ResponseEntity.ok(
-                                        new ResponseWrapper<>(
-                                                        RestApiResponseStatusCodes.OK.getCode(),
-                                                        RestApiResponseStatusCodes.OK.getMessage(),
-                                                        null));
-                } catch (TokenRevokedException e) {
-                        throw  new RuntimeException(ValidationMessages.ACCESS_REVOKED);
-                }
+                // Let exceptions propagate to GlobalExceptionHandler
+                // This fixes the 400 Bad Request issue - no more RuntimeException wrapping
+                tokenService.setRevoked(token);
+
+                logger.info("Token successfully revoked");
+                return ResponseEntity.ok(
+                                new ResponseWrapper<>(
+                                                RestApiResponseStatusCodes.OK.getCode(),
+                                                RestApiResponseStatusCodes.OK.getMessage(),
+                                                null));
         }
 
         // New Password
@@ -88,8 +102,11 @@ public class AuthenticationController {
         @PostMapping(EndpointBundle.LOGIN)
         public ResponseEntity<ResponseWrapper<AuthenticationResponseDto>> login(
                         @Valid @RequestBody LoginDto request) {
+                logger.debug("Login request received for email: {}", request.getEmail());
 
                 AuthenticationResponseDto response = authenticationService.login(request);
+                logger.info("Login successful for email: {}", request.getEmail());
+
                 ResponseWrapper<AuthenticationResponseDto> wrapper = new ResponseWrapper<>(
                                 RestApiResponseStatusCodes.OK.getCode(),
                                 RestApiResponseStatusCodes.OK.getMessage(),

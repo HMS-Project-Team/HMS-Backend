@@ -13,9 +13,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingPathVariableException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.NoHandlerFoundException;
 
 import java.util.*;
 
@@ -24,6 +26,16 @@ public class GlobalExceptionHandler {
 
         @Autowired
         ErrorCodes errorCodes;
+
+        @ExceptionHandler({ InvalidPageSizeException.class })
+        public ResponseEntity<ResponseWrapper<?>> handleInvalidPageSize(InvalidPageSizeException ex) {
+                ErrorDetail errorDetail = new ErrorDetail(new Date(), ex.getMessage(),
+                                errorCodes.getPaginationInvalid());
+                return ResponseEntity.badRequest().body(new ResponseWrapper<>(
+                                RestApiResponseStatusCodes.BAD_REQUEST.getCode(),
+                                InvalidPageSizeException.INVALID_PAGE_SIZE_MSG,
+                                errorDetail));
+        }
 
         @ExceptionHandler(ResourceNotFoundException.class)
         public ResponseEntity<ResponseWrapper<?>> handleResourceNotFoundException(ResourceNotFoundException e) {
@@ -51,13 +63,13 @@ public class GlobalExceptionHandler {
                         message = ValidationMessages.FOREIGN_KEY_CONSTRAINT;
                         errorDetails.add(new ErrorDetail(
                                         new Date(),
-                                        message,
+                                        message + e.getMessage(),
                                         errorCodes.getAlreadyExist()));
                 } else {
                         message = ValidationMessages.DUPLICATE_ENTRY;
                         errorDetails.add(new ErrorDetail(
                                         new Date(),
-                                        message,
+                                        message + e.getMessage(),
                                         errorCodes.getAlreadyExist()));
                 }
 
@@ -76,11 +88,11 @@ public class GlobalExceptionHandler {
                 ex.getBindingResult()
                                 .getFieldErrors()
                                 .forEach(error -> {
-                                        String errorMessage = error.getDefaultMessage();
+                                        String errorMessage = error.getField() + ": " + error.getDefaultMessage();
                                         ErrorDetail detail = new ErrorDetail(
                                                         new Date(),
                                                         errorMessage,
-                                                        errorCodes.getNotValid());
+                                                        errorCodes.getAlreadyExist());
                                         errorDetails.add(detail);
                                 });
 
@@ -107,7 +119,7 @@ public class GlobalExceptionHandler {
                         HttpRequestMethodNotSupportedException e) {
 
                 List<ErrorDetail> errorDetails = new ArrayList<>();
-                ErrorDetail errorDetail = new ErrorDetail(new Date(), e.getMessage(), errorCodes.getNotFound());
+                ErrorDetail errorDetail = new ErrorDetail(new Date(), e.getMessage(), errorCodes.getMethodNotAllowed());
                 errorDetails.add(errorDetail);
 
                 return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(
@@ -170,7 +182,7 @@ public class GlobalExceptionHandler {
                         Exception e) {
 
                 List<ErrorDetail> errorDetails = new ArrayList<>();
-                ErrorDetail errorDetail = new ErrorDetail(new Date(), e.getMessage(), errorCodes.getNotFound());
+                ErrorDetail errorDetail = new ErrorDetail(new Date(), e.getMessage(), errorCodes.getBadRequest());
                 errorDetails.add(errorDetail);
 
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
@@ -186,13 +198,13 @@ public class GlobalExceptionHandler {
                 ErrorDetail errorDetail = new ErrorDetail(
                                 new Date(),
                                 ValidationMessages.INVALID_CREDENTIALS,
-                                errorCodes.getNotFound());
+                                errorCodes.getUnauthorized());
                 errorDetails.add(errorDetail);
 
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
                                 new ResponseWrapper<>(
-                                                RestApiResponseStatusCodes.BAD_REQUEST.getCode(),
-                                                ValidationMessages.INVALID_INPUT,
+                                                RestApiResponseStatusCodes.INVALID_CREDENTIALS.getCode(),
+                                                ValidationMessages.INVALID_CREDENTIALS,
                                                 errorDetails));
         }
 
@@ -227,6 +239,35 @@ public class GlobalExceptionHandler {
                                                 errorDetails));
         }
 
+        @ExceptionHandler(MissingPathVariableException.class)
+        public ResponseEntity<ResponseWrapper<?>> handleMissingPathVariableException(MissingPathVariableException e) {
+                List<ErrorDetail> errorDetails = new ArrayList<>();
+                ErrorDetail errorDetail = new ErrorDetail(new Date(),
+                                ValidationMessages.MISSING_PATHVARIABLE + e.getVariableName(),
+                                errorCodes.getInvalidId());
+                errorDetails.add(errorDetail);
+
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                                new ResponseWrapper<>(
+                                                RestApiResponseStatusCodes.BAD_REQUEST.getCode(),
+                                                ValidationMessages.MISSING_PATHVARIABLE,
+                                                errorDetails));
+        }
+
+        @ExceptionHandler(NoHandlerFoundException.class)
+        public ResponseEntity<ResponseWrapper<?>> handleNoHandlerFoundException(NoHandlerFoundException e) {
+                List<ErrorDetail> errorDetails = new ArrayList<>();
+                ErrorDetail errorDetail = new ErrorDetail(new Date(), ValidationMessages.WRONG_API_CALL,
+                                errorCodes.getInvalidId());
+                errorDetails.add(errorDetail);
+
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                                new ResponseWrapper<>(
+                                                RestApiResponseStatusCodes.BAD_REQUEST.getCode(),
+                                                ValidationMessages.WRONG_API_CALL,
+                                                errorDetails));
+        }
+
         @ExceptionHandler(InvalidOtpException.class)
         public ResponseEntity<ResponseWrapper<?>> handleInvalidOtpException(InvalidOtpException e) {
                 List<ErrorDetail> errorDetails = new ArrayList<>();
@@ -242,33 +283,33 @@ public class GlobalExceptionHandler {
                                                 errorDetails));
         }
 
-    @ExceptionHandler(TokenRevokedException.class)
-    public ResponseEntity<ResponseWrapper<?>> handleTokenRevokedException(InvalidOtpException e) {
-        List<ErrorDetail> errorDetails = new ArrayList<>();
-        errorDetails.add(new ErrorDetail(
-                new Date(),
-                e.getMessage(),
-                errorCodes.getDuplicateEntry()));
+        @ExceptionHandler(TokenRevokedException.class)
+        public ResponseEntity<ResponseWrapper<?>> handleTokenRevokedException(InvalidOtpException e) {
+                List<ErrorDetail> errorDetails = new ArrayList<>();
+                errorDetails.add(new ErrorDetail(
+                                new Date(),
+                                e.getMessage(),
+                                errorCodes.getDuplicateEntry()));
 
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
-                new ResponseWrapper<>(
-                        RestApiResponseStatusCodes.ACCESS_REVOKED.getCode(),
-                        ValidationMessages.ACCESS_REVOKED,
-                        errorDetails));
-    }
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
+                                new ResponseWrapper<>(
+                                                RestApiResponseStatusCodes.ACCESS_REVOKED.getCode(),
+                                                ValidationMessages.ACCESS_REVOKED,
+                                                errorDetails));
+        }
 
-    @ExceptionHandler(TokenExpiredException.class)
-    public ResponseEntity<ResponseWrapper<?>> handleTokenExpiredException(InvalidOtpException e) {
-        List<ErrorDetail> errorDetails = new ArrayList<>();
-        errorDetails.add(new ErrorDetail(
-                new Date(),
-                e.getMessage(),
-                errorCodes.getTokenExpired()));
+        @ExceptionHandler(TokenExpiredException.class)
+        public ResponseEntity<ResponseWrapper<?>> handleTokenExpiredException(InvalidOtpException e) {
+                List<ErrorDetail> errorDetails = new ArrayList<>();
+                errorDetails.add(new ErrorDetail(
+                                new Date(),
+                                e.getMessage(),
+                                errorCodes.getTokenExpired()));
 
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
-                new ResponseWrapper<>(
-                        RestApiResponseStatusCodes.TOKEN_EXPIRED.getCode(),
-                        ValidationMessages.TOKEN_EXPIRED,
-                        errorDetails));
-    }
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                                new ResponseWrapper<>(
+                                                RestApiResponseStatusCodes.TOKEN_EXPIRED.getCode(),
+                                                ValidationMessages.TOKEN_EXPIRED,
+                                                errorDetails));
+        }
 }
