@@ -10,7 +10,6 @@ public final class  EndpointBundle {
 
 
     //Settings
-    public static final String SETTINGS = BASE_URL+"/settings";
 
     //Roles
     public static final String ROLES = "/roles";
@@ -21,13 +20,17 @@ public final class  EndpointBundle {
     public static final String CREATE_ROLE = HOTEL_ID+ROLES+"/add";
 
 
-    //Settings
-    public static final String SETTINGS = BASE_URL+"/settings";
 
     //Users
     public static final String USERS = "/users";
     public static final String USERS_BY_ID = USERS + ID;
-    public static final String HOTEL_ID = "/{hotelId}";
     public static final String GET_ALL_USERS =HOTEL_ID+USERS;
-    public static final String CREATE_ROLE = HOTEL_ID + USERS + "/add";
+    public static final String CREATE_USER = HOTEL_ID + USERS + "/add";
+    //Login
+    public static final String LOGIN = "/login";
+    public static final String AUTH = BASE_URL + "/auth";
+    public static final String OTP = "/otp";
+    public static final String VERIFY_OTP = OTP + "/verify";
+    public static final String NEW_PASSWORD = "/new-Password";
+    public static final String LOGOUT="/logout";
 }

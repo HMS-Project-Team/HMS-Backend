@@ -28,12 +28,22 @@ public class ValidationMessages {
     // ==== Authentication ====
     public static final String UNAUTHORIZED = "You are not authorized to perform this action.";
     public static final String INVALID_CREDENTIALS = "Invalid email or password.";
+    public static final String ACCESS_REVOKED="Token is already invalidated or logged out";
+    public static final String TOKEN_EXPIRED="The token has expired";
+    public static final String TOKEN_NOTFOUND="The token not found";
+
+
+
 
     // ==== Email & Password ====
     public static final String EMAIL_REQUIRED = "Email is required.";
-    public static final String INVALID_EMAIL = "Invalid email format.";
-    public static final String PASSWORD_REQUIRED = "Password is required.";
+    public static final String INVALID_EMAIL = "An email should be in the form of: your-email@example.com.";
+    public static final String PASSWORD_REQUIRED = "Password is required and must be at least 8 characters.";
     public static final String PASSWORD_MIN_LENGTH = "Password must be at least 8 characters.";
+    public static final String PASSWORD_COMPLEXITY = "Password must contain uppercase, lowercase, number, and special character";
+    public static final String PASSWORD_MISMATCH = "New password and confirm password do not match";
+    public static final String NEW_PASSWORD_SAME_AS_OLD = "New password cannot be the same as the old password";
+
     public static final String NIC_REQUIRED = "NIC is required.";
     public static final String NIC_VALIDATION = "NIC must be 9 digits + V/X or 12 digits.";
 
@@ -50,7 +60,16 @@ public class ValidationMessages {
     public static final String FOREIGN_KEY_CONSTRAINT = "Cannot delete: This record is linked to another record.";
     public static final String WRONG_API_CALL = "Incorrect API path or method.";
     public static final String INVALID_JSON = "Invalid JSON format.";
-    public static final String INVALID_URL = "Invalid URL.";
+
+
+    // ==== Otp ====
+    public static final String OTP_SEND_SUCCESSFUL = "OTP Sent Successfully";
+    public static final String OTP_NOTNULL= "OTP or email missing/invalid";
+    public static final String OTP_SIZE= "Maximum Number of OTP is 6 Digits";
+    public static final String OTP_REVOKED= "OTP Already Revoked";
+    public static final String OTP_EXPIRED= "OTP validity period has expired";
+    public static final String OTP_MISSMATCHED= "Incorrect OTP";
+    public static final String OTP_VERIFIED= "OTP Verified Successfully";
 
     //==== User ====
     public static final String ROLES_NOT_BELONG_TO_HOTEL = "One or more roles do not belong to this hotel.";

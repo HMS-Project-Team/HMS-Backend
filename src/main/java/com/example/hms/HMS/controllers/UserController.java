@@ -23,7 +23,7 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @PostMapping(EndpointBundle.CREATE_ROLE)
+    @PostMapping(EndpointBundle.CREATE_USER)
     public ResponseEntity<ResponseWrapper<UserResponseDto>> createUser(
             @PathVariable("hotelId") Long hotelId,
             @Valid @RequestBody UserRequestDto userRequestDto){

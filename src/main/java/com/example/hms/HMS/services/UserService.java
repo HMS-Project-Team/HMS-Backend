@@ -19,4 +19,5 @@ public interface UserService {
     UserResponseDto createUser(Long hotelId , UserRequestDto userRequestDto);
     UserResponseDto updateUser(Long id, UserRequestDto dto);
     Page<UserResponseDto> getAllUsers(Long hotelId, int page, int size);
+    User getUserByEmail(String email);
 }

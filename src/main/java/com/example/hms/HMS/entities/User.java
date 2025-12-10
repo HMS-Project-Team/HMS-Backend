@@ -28,7 +28,7 @@ public class User extends DateAudit {
     private String country;
     private String city;
     @JsonIgnore
-    private String Password;
+    private String password;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
