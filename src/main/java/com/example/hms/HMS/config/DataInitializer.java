@@ -1,6 +1,8 @@
 package com.example.hms.HMS.config;
 
+import com.example.hms.HMS.entities.Email;
 import com.example.hms.HMS.entities.User;
+import com.example.hms.HMS.repositories.EmailRepository;
 import com.example.hms.HMS.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,8 +13,9 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 
 /**
- * Data initializer to create test users on application startup.
- * This runs only if the users don't already exist in the database.
+ * Data initializer to create test users and email configuration on application
+ * startup.
+ * This runs only if the data doesn't already exist in the database.
  */
 @Slf4j
 @Component
@@ -20,16 +23,23 @@ import java.time.LocalDateTime;
 public class DataInitializer implements CommandLineRunner {
 
     private final UserRepository userRepository;
+    private final EmailRepository emailRepository;
     private final BCryptPasswordEncoder passwordEncoder;
 
     @Override
     public void run(String... args) throws Exception {
+        log.info("🔄 Starting data initialization...");
+
+        // Initialize Email Configuration
+        initializeEmailConfig();
+
+        // Initialize Test Users
         log.info("🔄 Checking if test users need to be created...");
 
-        // Test User 1: test@example.com
+        // Test User 1: aaryanhp1@gmail.com
         createUserIfNotExists(
-                "test@example.com",
-                "Test@1234",
+                "aaryanhp1@gmail.com",
+                "sgic@1234",
                 "Test",
                 "User",
                 "0771234567",
@@ -38,10 +48,10 @@ public class DataInitializer implements CommandLineRunner {
                 "Sri Lanka",
                 "Colombo");
 
-        // Test User 2: admin@hms.com
+        // Test User 2: sujeevan8300@gmail.com
         createUserIfNotExists(
-                "admin@hms.com",
-                "Admin@123",
+                "sujeevan8300@gmail.com",
+                "sgic@1234",
                 "Admin",
                 "User",
                 "0777654321",
@@ -50,10 +60,10 @@ public class DataInitializer implements CommandLineRunner {
                 "Sri Lanka",
                 "Colombo");
 
-        // Test User 3: john@example.com
+        // Test User 3: delojan1808@gmail.com
         createUserIfNotExists(
-                "john@example.com",
-                "John@2024",
+                "delojan1808@gmail.com",
+                "sgic@1234",
                 "John",
                 "Doe",
                 "0763456789",
@@ -64,14 +74,40 @@ public class DataInitializer implements CommandLineRunner {
 
         log.info("✅ Data initialization completed!");
         log.info("📋 Test users available:");
-        log.info("   1. email: test@example.com  | password: Test@1234");
-        log.info("   2. email: admin@hms.com     | password: Admin@123");
-        log.info("   3. email: john@example.com  | password: John@2024");
+        log.info("   1. email: aaryanhp1@gmail.com      | password: sgic@1234");
+        log.info("   2. email: sujeevan8300@gmail.com   | password: sgic@1234");
+        log.info("   3. email: delojan1808@gmail.com    | password: sgic@1234");
     }
 
+    /**
+     * Initialize default email configuration for SMTP
+     */
+    private void initializeEmailConfig() {
+        // Check if email configuration already exists
+        Email existingEmail = emailRepository.findFirstByOrderByIdAsc();
+
+        if (existingEmail == null) {
+            Email emailConfig = new Email();
+            emailConfig.setDisplayName("HMS System");
+            emailConfig.setSentEmail("sgichms15@gmail.com");
+            emailConfig.setHostName("smtp.gmail.com");
+            emailConfig.setPort(587);
+            emailConfig.setProtocol("smtp");
+            emailConfig.setPassword("ecyd ybhh iuao cqoj");
+
+            emailRepository.save(emailConfig);
+            log.info("✨ Created email configuration: {}", emailConfig.getSentEmail());
+        } else {
+            log.info("⏭️  Email configuration already exists: {}", existingEmail.getSentEmail());
+        }
+    }
+
+    /**
+     * Create a user if they don't already exist
+     */
     private void createUserIfNotExists(String email, String password, String firstname,
-            String lastname, String phone, String address,
-            String nic, String country, String city) {
+                                       String lastname, String phone, String address,
+                                       String nic, String country, String city) {
 
         if (userRepository.findByEmail(email).isEmpty()) {
             User user = new User();
