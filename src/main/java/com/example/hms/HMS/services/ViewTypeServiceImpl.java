@@ -69,9 +69,9 @@ public class ViewTypeServiceImpl implements ViewTypeService{
             viewTypeMapper.updateEntity(viewTypeExist, viewTypeRequestDto);
 
             ViewType update = viewTypeRepository.save(viewTypeExist);
-            return viewTypeMapper.toDto(update);
+            return viewTypeMapper.toResponseDto(update);
         }catch(Exception ex){
-            throw new RuntimeException("Error saving view type"+ex.getMessage());
+            throw new RuntimeException("Error while updating view type"+ex.getMessage());
         }
     }
 
