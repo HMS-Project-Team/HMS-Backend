@@ -9,9 +9,15 @@ import com.example.hms.HMS.utils.ResponseWrapper;
 import com.example.hms.HMS.utils.ValidationMessages;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @RestController
 @RequestMapping(EndpointBundle.ROOMAREA)
@@ -19,6 +25,32 @@ import org.springframework.web.bind.annotation.*;
 public class RoomAreaController {
     private final RoomAreaService roomAreaService;
 
+    @PostMapping(EndpointBundle.CREATE_ROOMAREA)
+    public ResponseEntity<ResponseWrapper<RoomAreaResponseDto>> createRoomArea(
+            @RequestBody RoomAreaRequestDto roomAreaRequestDto
+    ) {
+        RoomAreaResponseDto createdRoomArea =
+                roomAreaService.createRoomArea(roomAreaRequestDto);
+
+        if (createdRoomArea != null) {
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseWrapper<>(
+                            RestApiResponseStatusCodes.OK.getCode(),
+                            ValidationMessages.SAVED_SUCCESSFULLY,
+                            createdRoomArea
+                    )
+            );
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                    new ResponseWrapper<>(
+                            RestApiResponseStatusCodes.BAD_REQUEST.getCode(),
+                            ValidationMessages.SAVE_FAILED,
+                            null
+                    )
+            );
+        }
+
+    }
     @PutMapping(EndpointBundle.ID)
     public ResponseEntity<ResponseWrapper<RoomAreaResponseDto>> updateRoomarea(@PathVariable Long id, @Valid  @RequestBody RoomAreaRequestDto roomAreaRequestDto){         RoomAreaResponseDto responseDto = roomAreaService.updateRoomArea(id, roomAreaRequestDto);
             return  ResponseEntity.ok(
