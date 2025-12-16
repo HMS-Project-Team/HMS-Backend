@@ -9,6 +9,7 @@ import com.example.hms.HMS.mappers.MealPlanMapper;
 import com.example.hms.HMS.repositories.MealPlanRepository;
 import com.example.hms.HMS.utils.ValidationMessages;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,34 @@ public class MealPlanServiceImpl implements MealPlanService{
         }
         mealPlanRepository.deleteById(id);
         return true;
+    }
+
+    public MealPlanResponseDto createMealPlan(MealPlanRequestDto mealPlanRequestDto) {
+
+        if (mealPlanRequestDto.getName() == null || mealPlanRequestDto.getName().trim().isEmpty() ||
+                mealPlanRequestDto.getCode() == null || mealPlanRequestDto.getCode().trim().isEmpty() ||
+                mealPlanRequestDto.getDescription() == null || mealPlanRequestDto.getDescription().trim().isEmpty()) {
+
+            throw new IllegalArgumentException("Missing required fields");
+        }
+
+        if (mealPlanRepository.existsByName(mealPlanRequestDto.getName())) {
+            throw new DataIntegrityViolationException("Meal plan name already exists");
+        }
+
+        if (mealPlanRepository.existsByCode(mealPlanRequestDto.getCode())) {
+            throw new DataIntegrityViolationException("Meal plan code already exists");
+        }
+
+        try {
+            MealPlan mealPlan = mealPlanMapper.toEntity(mealPlanRequestDto);
+            MealPlan saved = mealPlanRepository.save(mealPlan);
+            return mealPlanMapper.toResponseDto(saved);
+
+        } catch (Exception e) {
+            throw new RuntimeException("Error creating meal plan: " + e.getMessage());
+        }
+
     }
     @Override
     public MealPlanResponseDto GetByIdMealplan(Long id) {
