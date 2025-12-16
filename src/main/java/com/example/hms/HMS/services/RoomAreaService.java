@@ -7,4 +7,5 @@ public interface RoomAreaService {
 
     RoomAreaResponseDto createRoomArea(RoomAreaRequestDto roomAreaRequestDto);
     RoomAreaResponseDto updateRoomArea(Long id, RoomAreaRequestDto roomAreaRequestDto);
+    void deleteRoomArea (Long id);
 }
