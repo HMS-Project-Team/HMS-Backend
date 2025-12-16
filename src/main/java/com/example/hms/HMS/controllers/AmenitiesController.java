@@ -89,12 +89,9 @@ public class AmenitiesController {
                 amenitiesResponseDto));
     }
     @PutMapping(EndpointBundle.ID)
-    public ResponseEntity<ResponseWrapper<AmenitiesResponseDto>> updateAmenities(
-            @PathVariable Long id,
-            @Valid @RequestBody AmenitiesRequestDto amenitiesRequestDto) {
+    public ResponseEntity<ResponseWrapper<AmenitiesResponseDto>> updateAmenities(@PathVariable Long id, @Valid @RequestBody AmenitiesRequestDto amenitiesRequestDto) {
 
-        AmenitiesResponseDto responseDto =
-                amenitiesService.updateAmenities(id, amenitiesRequestDto);
+        AmenitiesResponseDto responseDto = amenitiesService.updateAmenities(id, amenitiesRequestDto);
 
         return ResponseEntity.status(HttpStatus.OK).body(
                 new ResponseWrapper<>(
