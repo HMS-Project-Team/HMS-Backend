@@ -19,6 +19,7 @@ public class ViewTypeServiceImpl implements ViewTypeService {
 
     @Autowired
     ViewTypeMapper viewTypeMapper;
+    private final ViewTypeRepository viewTypeRepository;
 
     @Override
     public ViewTypeResponseDto createViewType(ViewTypeRequestDto viewTypeRequestDto) {
@@ -45,5 +46,14 @@ public class ViewTypeServiceImpl implements ViewTypeService {
         ViewType viewType = viewTypeRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(ValidationMessages.NOT_FOUND));
         return viewTypeMapper.toResponseDto(viewType);
+    }
+
+    @Override
+    public boolean deleteViewType(Long id) {
+        ViewType deleteViewtype = viewTypeRepository.findById(id)
+                .orElseThrow(()-> new ResourceNotFoundException("Not found"));
+
+        viewTypeRepository.deleteById(id);
+        return true;
     }
 }

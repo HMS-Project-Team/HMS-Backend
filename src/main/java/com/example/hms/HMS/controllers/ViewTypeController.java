@@ -12,6 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(EndpointBundle.VIEW_TYPE)
@@ -39,5 +43,16 @@ public class ViewTypeController {
                 RestApiResponseStatusCodes.OK.getCode(),
                 ValidationMessages.RETRIEVED_SUCCESSFULLY,
                 response));
+    }
+
+    @DeleteMapping(EndpointBundle.ID)
+    public ResponseEntity<ResponseWrapper<Boolean>> deleteViewType(@PathVariable Long id){
+        Boolean deleteviewType = viewTypeService.deleteViewType(id);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new ResponseWrapper<>(
+                        RestApiResponseStatusCodes.OK.getCode(),
+                        ValidationMessages.DELETED_SUCCESSFULLY,
+                        deleteviewType
+                ));
     }
 }
