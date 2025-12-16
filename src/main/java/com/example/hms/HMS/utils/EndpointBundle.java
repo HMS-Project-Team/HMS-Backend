@@ -19,6 +19,11 @@ public final class  EndpointBundle {
     public static final String HOTEL_ID = "/{hotelId}";
     public static final String CREATE_ROLE = HOTEL_ID+ROLES+"/add";
 
+    //RoomArea
+    public static final String ROOM = BASE_URL + "/room";
+    public static final String ROOMAREA = ROOM + "/roomarea";
+
+
 
 
     //Users
