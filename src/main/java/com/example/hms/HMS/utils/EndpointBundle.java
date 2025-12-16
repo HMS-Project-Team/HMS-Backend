@@ -7,6 +7,7 @@ public final class  EndpointBundle {
     public static final String SETTINGS = BASE_URL +"/settings";
     public static final String HOTEL = SETTINGS+"/hotel";
     public static final String CREATE_HOTEL = "/add";
+    public  static  final String ADD="/add";
 
 
     //Settings
@@ -33,4 +34,8 @@ public final class  EndpointBundle {
     public static final String VERIFY_OTP = OTP + "/verify";
     public static final String NEW_PASSWORD = "/new-Password";
     public static final String LOGOUT="/logout";
+
+    //Amenities
+    public static final String AMENITIES=BASE_URL+"/amenities";
+
 }
