@@ -3,11 +3,14 @@ package com.example.hms.HMS.services;
 import com.example.hms.HMS.dtos.requests.RoomAreaRequestDto;
 import com.example.hms.HMS.dtos.responses.RoomAreaResponseDto;
 import com.example.hms.HMS.entities.RoomArea;
+import com.example.hms.HMS.exceptionHandlers.InvalidPageSizeException;
 import com.example.hms.HMS.exceptionHandlers.ResourceNotFoundException;
 import com.example.hms.HMS.mappers.RoomAreaMapper;
 import com.example.hms.HMS.repositories.RoomAreaRepository;
 import com.example.hms.HMS.utils.ValidationMessages;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -50,5 +53,20 @@ public class RoomAreaServiceImpl implements RoomAreaService {
                 .orElseThrow(() -> new ResourceNotFoundException(ValidationMessages.NOT_FOUND));
 
         roomAreaRepository.delete(roomArea);
+    }
+
+    @Override
+    public Page<RoomAreaResponseDto> getAllRoomArea(Pageable pageable) {
+        if(pageable.getPageNumber()<0 || pageable.getPageSize()<=0){
+            throw new InvalidPageSizeException("Invalid Page or Size value");
+        }
+
+        Page<RoomArea> roomAreaPage = roomAreaRepository.findAll(pageable);
+
+        if(roomAreaPage.isEmpty()){
+            throw new ResourceNotFoundException("No Room Areas found");
+        }
+        return roomAreaPage.map(roomAreaMapper::toResponseDto);
+
     }
 }
