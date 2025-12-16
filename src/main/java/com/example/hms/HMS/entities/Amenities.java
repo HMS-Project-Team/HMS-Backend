@@ -17,6 +17,6 @@ public class Amenities extends DateAudit {
 
     @Column(nullable = false, unique = true)
     private String name;
-
+    @Column(unique = true)
     private String icon;
 }
