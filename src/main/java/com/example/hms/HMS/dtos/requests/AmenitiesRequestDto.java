@@ -15,5 +15,7 @@ public class AmenitiesRequestDto {
     @Pattern(regexp = "^[A-Za-z ]+$",
             message = ValidationMessages.INVALID_INPUT)
     private String name;
+    @NotBlank(message = ValidationMessages.REQUIRED_FIELD_MISSING)
+    @Pattern(regexp = "^[A-Za-z_]+$",message = ValidationMessages.INVALID_FORMAT)
     private String icon;
 }
