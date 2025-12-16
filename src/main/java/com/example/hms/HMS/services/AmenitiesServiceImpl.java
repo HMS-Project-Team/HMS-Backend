@@ -24,7 +24,7 @@ public class AmenitiesServiceImpl implements AmenitiesService{
             throw  new ResourceNotFoundException("No Amenities Found");
         }
 
-        return amenitiesPage.map(amenitiesMapper::toDto);
+        return amenitiesPage.map(amenitiesMapper::EntityToResponseDto);
     }
 
     public Boolean deleteAmenities(Long id) {
