@@ -22,7 +22,7 @@ public class MealPlanServiceImpl implements MealPlanService{
     private final MealPlanRepository mealPlanRepository;
 
     @Override
-    public boolean deleteMealplan(Long id) throws HttpRequestMethodNotSupportedException {
+    public boolean deleteMealplan(Long id){
         if (!mealPlanRepository.existsById(id)){
             throw new ResourceNotFoundException("Meal Plan ID " + id + " Not Found");
         }
