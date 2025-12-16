@@ -10,8 +10,6 @@ public final class  EndpointBundle {
     public static final String CREATE_HOTEL = "/add";
 
 
-    //Settings
-
     //Roles
     public static final String ROLES = "/roles";
     public static final String ROLES_BY_ID = ROLES + ID;
@@ -27,6 +25,13 @@ public final class  EndpointBundle {
     public static final String USERS_BY_ID = USERS + ID;
     public static final String GET_ALL_USERS =HOTEL_ID+USERS;
     public static final String CREATE_USER = HOTEL_ID + USERS + "/add";
+
+    // ViewType
+
+    public static final String VIEW_TYPE = ROOM + "/viewtype";
+    public static final String CREATE_VIEW_TYPE = VIEW_TYPE + "/add";
+
+
     //Login
     public static final String LOGIN = "/login";
     public static final String AUTH = BASE_URL + "/auth";
