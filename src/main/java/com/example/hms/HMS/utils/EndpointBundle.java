@@ -18,7 +18,6 @@ public final class  EndpointBundle {
     public static final String CREATE_ROLE = HOTEL_ID+ROLES+"/add";
 
     //RoomArea
-    public static final String ROOM = BASE_URL + "/room";
     public static final String ROOMAREA = ROOM + "/roomarea";
 
 
@@ -38,7 +37,6 @@ public final class  EndpointBundle {
     public static final String LOGOUT="/logout";
 
     //RoomArea
-    public static final String ROOMAREA = ROOM + "/roomarea";
     public static final String CREATE_ROOMAREA ="/add";
 
 }
