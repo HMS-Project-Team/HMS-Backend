@@ -29,9 +29,12 @@ public final class  EndpointBundle {
     public static final String GET_ALL_USERS =HOTEL_ID+USERS;
     public static final String CREATE_USER = HOTEL_ID + USERS + "/add";
 
-    public static final String VIEW_TYPE = ROOM + "/viewtype";
+    // ViewType
 
-    //Login
+    public static final String VIEW_TYPE = ROOM + "/viewtype";
+    public static final String CREATE_VIEW_TYPE ="/add";
+
+    // Login
     public static final String LOGIN = "/login";
     public static final String AUTH = BASE_URL + "/auth";
     public static final String OTP = "/otp";

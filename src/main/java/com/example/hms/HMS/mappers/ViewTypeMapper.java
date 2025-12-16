@@ -8,8 +8,8 @@ import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring")
 public interface ViewTypeMapper {
+    ViewTypeResponseDto toResponseDto(ViewType viewType);
 
-    ViewTypeResponseDto toDto (ViewType viewType);
 
     ViewType toEntity (ViewTypeRequestDto viewTypeRequestDto);
 
