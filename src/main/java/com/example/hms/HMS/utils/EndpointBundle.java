@@ -5,6 +5,7 @@ public final class  EndpointBundle {
     public static final String ID ="/{id}";
     public static final String SEARCH = "/search";
     public static final String SETTINGS = BASE_URL +"/settings";
+    public static final String ROOM = BASE_URL +"/room";
     public static final String HOTEL = SETTINGS+"/hotel";
     public static final String CREATE_HOTEL = "/add";
 
@@ -26,10 +27,10 @@ public final class  EndpointBundle {
     public static final String CREATE_USER = HOTEL_ID + USERS + "/add";
 
     // ViewType
-    public static final String ROOM = BASE_URL + "/room";
+
     public static final String VIEW_TYPE = ROOM + "/viewtype";
     public static final String CREATE_VIEW_TYPE = VIEW_TYPE + "/add";
-    public static final String MEAL_PLAN = ROOM + "/mealplan";
+
 
     //Login
     public static final String LOGIN = "/login";
@@ -38,4 +39,7 @@ public final class  EndpointBundle {
     public static final String VERIFY_OTP = OTP + "/verify";
     public static final String NEW_PASSWORD = "/new-Password";
     public static final String LOGOUT="/logout";
+
+    //Meal plan
+    public static final String MEAL_PLAN= ROOM + "/mealplan";
 }
