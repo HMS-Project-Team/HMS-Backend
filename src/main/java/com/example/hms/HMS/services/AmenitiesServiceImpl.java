@@ -5,6 +5,7 @@ import com.example.hms.HMS.entities.Amenities;
 import com.example.hms.HMS.exceptionHandlers.ResourceNotFoundException;
 import com.example.hms.HMS.mappers.AmenitiesMapper;
 import com.example.hms.HMS.repositories.AmenitiesRepository;
+import com.example.hms.HMS.utils.ValidationMessages;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -34,5 +35,13 @@ public class AmenitiesServiceImpl implements AmenitiesService{
 
         amenitiesRepository.deleteById(id);
         return true;
+    }
+
+    @Override
+    public AmenitiesResponseDto getAmenitiesById(Long id) {
+        Amenities amenities = amenitiesRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(ValidationMessages.NOT_FOUND));
+
+        return amenitiesMapper.EntityToResponseDto(amenities);
     }
 }
