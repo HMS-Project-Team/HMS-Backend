@@ -10,11 +10,22 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class RoomAreaServiceImpl implements RoomAreaService{
-
-    private final RoomAreaMapper roomAreaMapper;
+public class RoomAreaServiceImpl implements RoomAreaService {
     private final RoomAreaRepository roomAreaRepository;
+    private final RoomAreaMapper roomAreaMapper;
 
+    @Override
+    public RoomAreaResponseDto createRoomArea(RoomAreaRequestDto roomAreaRequestDto){
+
+        if(roomAreaRepository.existsByName(roomAreaRequestDto.getName())){
+            throw new RuntimeException("Roome Area name Already Exists");
+        }
+
+        RoomArea roomArea =roomAreaMapper.toEntity(roomAreaRequestDto);
+        RoomArea saved =roomAreaRepository.save(roomArea);
+
+        return roomAreaMapper.toResponseDto(saved);
+    }
     @Override
     public RoomAreaResponseDto updateRoomArea(Long id, RoomAreaRequestDto roomAreaRequestDto) {
         try{
@@ -26,4 +37,5 @@ public class RoomAreaServiceImpl implements RoomAreaService{
             throw new IllegalArgumentException("Missing Field");
         }
     }
+
 }
