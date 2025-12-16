@@ -11,4 +11,5 @@ public interface MealPlanService {
     boolean deleteMealplan(Long id);
     Page<MealPlanResponseDto> getMealPlans(Pageable pageable);
     MealPlanResponseDto updateMealPlan(Long id , MealPlanRequestDto requestDto);
+    MealPlanResponseDto createMealPlan(MealPlanRequestDto mealPlanRequestDto);
 }

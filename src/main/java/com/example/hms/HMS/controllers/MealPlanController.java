@@ -95,4 +95,14 @@ public class MealPlanController {
                 )
         );
     }
+    @PostMapping(EndpointBundle.ADD)
+    public ResponseEntity<ResponseWrapper<MealPlanResponseDto>> createMealPlan(@RequestBody MealPlanRequestDto mealPlanRequestDto) {
+        MealPlanResponseDto createdMealPlan = mealPlanService.createMealPlan(mealPlanRequestDto);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new ResponseWrapper<>(
+                        RestApiResponseStatusCodes.CREATED.getCode(),
+                        ValidationMessages.SUCCESS,
+                        createdMealPlan
+                ));
+    }
 }
