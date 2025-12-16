@@ -8,3 +8,4 @@ import org.springframework.stereotype.Repository;
 public interface RoomAreaRepository extends JpaRepository<RoomArea,Long> {
     boolean existsByName(String name);
     }
+
