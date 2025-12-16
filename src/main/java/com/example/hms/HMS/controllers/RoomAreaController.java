@@ -27,7 +27,7 @@ public class RoomAreaController {
 
     @PostMapping(EndpointBundle.CREATE_ROOMAREA)
     public ResponseEntity<ResponseWrapper<RoomAreaResponseDto>> createRoomArea(
-            @RequestBody RoomAreaRequestDto roomAreaRequestDto
+           @Valid @RequestBody RoomAreaRequestDto roomAreaRequestDto
     ) {
         RoomAreaResponseDto createdRoomArea =
                 roomAreaService.createRoomArea(roomAreaRequestDto);
