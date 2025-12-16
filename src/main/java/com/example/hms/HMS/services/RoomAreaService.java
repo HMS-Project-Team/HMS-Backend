@@ -4,8 +4,8 @@ import com.example.hms.HMS.dtos.requests.RoomAreaRequestDto;
 import com.example.hms.HMS.dtos.responses.RoomAreaResponseDto;
 
 public interface RoomAreaService {
-
     RoomAreaResponseDto createRoomArea(RoomAreaRequestDto roomAreaRequestDto);
     RoomAreaResponseDto updateRoomArea(Long id, RoomAreaRequestDto roomAreaRequestDto);
+    RoomAreaResponseDto getRoomArea(Long id);
     void deleteRoomArea (Long id);
 }

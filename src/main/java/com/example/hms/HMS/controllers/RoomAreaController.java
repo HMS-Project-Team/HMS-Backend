@@ -9,16 +9,13 @@ import com.example.hms.HMS.utils.ResponseWrapper;
 import com.example.hms.HMS.utils.ValidationMessages;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.stereotype.Controller;
-
-import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -53,7 +50,14 @@ public class RoomAreaController {
         }
 
     }
+    @GetMapping(EndpointBundle.ID)
+    public ResponseEntity<ResponseWrapper<RoomAreaResponseDto>> getRoomArea(@PathVariable Long id){
+        RoomAreaResponseDto roomArea = roomAreaService.getRoomArea(id);
 
+        return ResponseEntity.status(HttpStatus.OK).body(new ResponseWrapper<>(
+                RestApiResponseStatusCodes.OK.getCode(), ValidationMessages.RETRIEVED_SUCCESSFULLY,roomArea
+        ));
+    }
     @PutMapping(EndpointBundle.ID)
     public ResponseEntity<ResponseWrapper<RoomAreaResponseDto>> updateRoomArea(
             @PathVariable Long id,
