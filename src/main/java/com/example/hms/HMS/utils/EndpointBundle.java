@@ -33,4 +33,10 @@ public final class  EndpointBundle {
     public static final String VERIFY_OTP = OTP + "/verify";
     public static final String NEW_PASSWORD = "/new-Password";
     public static final String LOGOUT="/logout";
+
+    // ViewType
+    public static final String ROOM = BASE_URL + "/room";
+    public static final String VIEW_TYPE = ROOM + "/viewtype";
+    public static final String CREATE_VIEW_TYPE = VIEW_TYPE + "/add";
+    public static final String MEAL_PLAN = ROOM + "/mealplan";
 }
