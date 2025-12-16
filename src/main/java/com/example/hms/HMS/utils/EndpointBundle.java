@@ -37,6 +37,12 @@ public final class  EndpointBundle {
     public static final String LOGOUT="/logout";
 
     //RoomArea
+<<<<<<< Updated upstream
     public static final String CREATE_ROOMAREA ="/add";
 
 }
+=======
+    public static final String ROOM = BASE_URL + "/room";
+    public static final String ROOMAREA = ROOM + "/roomarea";
+}
+>>>>>>> Stashed changes
