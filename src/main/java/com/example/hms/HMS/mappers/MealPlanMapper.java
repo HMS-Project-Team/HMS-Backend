@@ -4,8 +4,8 @@ import com.example.hms.HMS.dtos.responses.MealPlanResponseDto;
 import com.example.hms.HMS.entities.MealPlan;
 import org.mapstruct.Mapper;
 
-@Mapper(componentModel="spring")
+@Mapper(componentModel = "spring")
 public interface MealPlanMapper {
-    MealPlanResponseDto toResponseDto(MealPlan mealPlan);
+    MealPlanResponseDto toDto(MealPlan mealPlan);
     MealPlan toEntity(MealPlanResponseDto mealPlanResponseDto);
 }
