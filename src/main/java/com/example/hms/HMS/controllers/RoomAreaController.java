@@ -14,13 +14,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 
 import org.springframework.web.HttpRequestMethodNotSupportedException;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
-@Controller
-@RequiredArgsConstructor
+@RestController
 @RequestMapping(EndpointBundle.ROOMAREA)
+@RequiredArgsConstructor
 public class RoomAreaController {
     private final RoomAreaService roomAreaService;
 
@@ -51,4 +49,20 @@ public class RoomAreaController {
 
     }
 
+    @PutMapping(EndpointBundle.ID)
+    public ResponseEntity<ResponseWrapper<RoomAreaResponseDto>> updateRoomArea(
+            @PathVariable Long id,
+            @Valid @RequestBody RoomAreaRequestDto roomAreaRequestDto) {
+
+        RoomAreaResponseDto responseDto =
+                roomAreaService.updateRoomArea(id, roomAreaRequestDto);
+
+        return ResponseEntity.ok(
+                new ResponseWrapper<>(
+                        RestApiResponseStatusCodes.OK.getCode(),
+                        ValidationMessages.UPDATED_SUCCESSFULLY,
+                        responseDto
+                )
+        );
+    }
 }

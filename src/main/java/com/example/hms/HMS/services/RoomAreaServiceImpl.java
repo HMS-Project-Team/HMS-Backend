@@ -26,5 +26,16 @@ public class RoomAreaServiceImpl implements RoomAreaService {
 
         return roomAreaMapper.toResponseDto(saved);
     }
+    @Override
+    public RoomAreaResponseDto updateRoomArea(Long id, RoomAreaRequestDto roomAreaRequestDto) {
+        try{
+            RoomArea roomArea = roomAreaMapper.toEntity(roomAreaRequestDto);
+            roomArea.setId(id);
+            RoomArea updated = roomAreaRepository.save(roomArea);
+            return roomAreaMapper.toResponseDto(updated);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Missing Field");
+        }
+    }
 
 }
