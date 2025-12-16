@@ -7,6 +7,8 @@ public final class  EndpointBundle {
     public static final String SETTINGS = BASE_URL +"/settings";
     public static final String HOTEL = SETTINGS+"/hotel";
     public static final String CREATE_HOTEL = "/add";
+    public static final String ROOM = BASE_URL + "/room";
+
 
 
     //Settings
@@ -26,6 +28,9 @@ public final class  EndpointBundle {
     public static final String USERS_BY_ID = USERS + ID;
     public static final String GET_ALL_USERS =HOTEL_ID+USERS;
     public static final String CREATE_USER = HOTEL_ID + USERS + "/add";
+
+    public static final String VIEW_TYPE = ROOM + "/viewtype";
+
     //Login
     public static final String LOGIN = "/login";
     public static final String AUTH = BASE_URL + "/auth";
