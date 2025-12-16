@@ -51,4 +51,20 @@ public class RoomAreaController {
 
     }
 
+    @PutMapping(EndpointBundle.ID)
+    public ResponseEntity<ResponseWrapper<RoomAreaResponseDto>> updateRoomArea(
+            @PathVariable Long id,
+            @Valid @RequestBody RoomAreaRequestDto roomAreaRequestDto) {
+
+        RoomAreaResponseDto responseDto =
+                roomAreaService.updateRoomArea(id, roomAreaRequestDto);
+
+        return ResponseEntity.ok(
+                new ResponseWrapper<>(
+                        RestApiResponseStatusCodes.OK.getCode(),
+                        ValidationMessages.UPDATED_SUCCESSFULLY,
+                        responseDto
+                )
+        );
+    }
 }
