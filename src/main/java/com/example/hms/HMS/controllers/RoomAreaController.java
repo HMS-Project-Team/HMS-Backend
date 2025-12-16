@@ -9,6 +9,8 @@ import com.example.hms.HMS.utils.ResponseWrapper;
 import com.example.hms.HMS.utils.ValidationMessages;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -58,6 +60,19 @@ public class RoomAreaController {
                 RestApiResponseStatusCodes.OK.getCode(), ValidationMessages.RETRIEVED_SUCCESSFULLY,roomArea
         ));
     }
+
+
+    @GetMapping
+    public  ResponseEntity<ResponseWrapper<Page<RoomAreaResponseDto>>> getAllRoomArea(Pageable pageable){
+        Page<RoomAreaResponseDto> roomAreas = roomAreaService.getAllRoomArea(pageable);
+        return  ResponseEntity.status(HttpStatus.OK)
+                .body(new ResponseWrapper<>(
+                        RestApiResponseStatusCodes.OK.getCode(),
+                        ValidationMessages.RETRIEVED_SUCCESSFULLY,
+                        roomAreas
+                ));
+    }
+
     @PutMapping(EndpointBundle.ID)
     public ResponseEntity<ResponseWrapper<RoomAreaResponseDto>> updateRoomArea(
             @PathVariable Long id,
