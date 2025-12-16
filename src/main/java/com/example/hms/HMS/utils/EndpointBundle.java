@@ -42,4 +42,5 @@ public final class  EndpointBundle {
 
     //Meal plan
     public static final String MEAL_PLAN= ROOM + "/mealplan";
+
 }

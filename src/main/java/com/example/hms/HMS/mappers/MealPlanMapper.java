@@ -7,4 +7,5 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring")
 public interface MealPlanMapper {
     MealPlanResponseDto toDto(MealPlan mealPlan);
+    MealPlan toEntity(MealPlanResponseDto mealPlanResponseDto);
 }

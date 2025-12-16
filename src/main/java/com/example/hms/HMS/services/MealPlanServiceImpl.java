@@ -1,5 +1,6 @@
 package com.example.hms.HMS.services;
 
+import com.example.hms.HMS.dtos.requests.MealPlanRequestDto;
 import com.example.hms.HMS.dtos.responses.MealPlanResponseDto;
 import com.example.hms.HMS.entities.MealPlan;
 import com.example.hms.HMS.exceptionHandlers.InvalidPageSizeException;
@@ -19,8 +20,9 @@ public class MealPlanServiceImpl implements MealPlanService{
 
     private  final MealPlanMapper mealPlanMapper;
     private final MealPlanRepository mealPlanRepository;
+
     @Override
-    public boolean deleteMealplan(Long id) throws HttpRequestMethodNotSupportedException {
+    public boolean deleteMealplan(Long id){
         if (!mealPlanRepository.existsById(id)){
             throw new ResourceNotFoundException("Meal Plan ID " + id + " Not Found");
         }
@@ -48,5 +50,23 @@ public class MealPlanServiceImpl implements MealPlanService{
         }
 
         return mealPlanPage.map(mealPlanMapper::toDto);
+    }
+
+
+    @Override
+    public MealPlanResponseDto updateMealPlan(Long id , MealPlanRequestDto requestDto){
+
+        MealPlan mealPlan = mealPlanRepository.findById(id).orElseThrow(()->new ResourceNotFoundException(ValidationMessages.NOT_FOUND));
+
+        if (mealPlanRepository.existsByName(requestDto.getName()) && !mealPlan.getName().equals(requestDto.getName())) {
+            throw new RuntimeException("MealPlan name already exists");
+        }
+
+        mealPlan.setName(requestDto.getName());
+        mealPlan.setCode(requestDto.getCode());
+        mealPlan.setDescription(requestDto.getDescription());
+
+        MealPlan updated = mealPlanRepository.save(mealPlan);
+        return mealPlanMapper.toDto(updated);
     }
 }
