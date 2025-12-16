@@ -16,29 +16,26 @@ public class RoomAreaServiceImpl implements RoomAreaService {
     private final RoomAreaRepository roomAreaRepository;
     private final RoomAreaMapper roomAreaMapper;
 
-
     @Override
-    public void deleteRoomArea(Long id) {
-        RoomArea roomArea = roomAreaRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(ValidationMessages.NOT_FOUND));
+    public RoomAreaResponseDto createRoomArea(RoomAreaRequestDto roomAreaRequestDto) {
 
-        roomAreaRepository.delete(roomArea);
-    }
-    @Override
-    public RoomAreaResponseDto createRoomArea(RoomAreaRequestDto roomAreaRequestDto){
-
-        if(roomAreaRepository.existsByName(roomAreaRequestDto.getName())){
+        if (roomAreaRepository.existsByName(roomAreaRequestDto.getName())) {
             throw new RuntimeException("Roome Area name Already Exists");
         }
 
-        RoomArea roomArea =roomAreaMapper.toEntity(roomAreaRequestDto);
-        RoomArea saved =roomAreaRepository.save(roomArea);
+        RoomArea roomArea = roomAreaMapper.toEntity(roomAreaRequestDto);
+        RoomArea saved = roomAreaRepository.save(roomArea);
 
         return roomAreaMapper.toResponseDto(saved);
     }
     @Override
+    public RoomAreaResponseDto getRoomArea(Long id) {
+        RoomArea roomArea = roomAreaRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(ValidationMessages.NOT_FOUND));
+        return roomAreaMapper.toResponseDto(roomArea);
+    }
+    @Override
     public RoomAreaResponseDto updateRoomArea(Long id, RoomAreaRequestDto roomAreaRequestDto) {
-        try{
+        try {
             RoomArea roomArea = roomAreaMapper.toEntity(roomAreaRequestDto);
             roomArea.setId(id);
             RoomArea updated = roomAreaRepository.save(roomArea);
@@ -48,9 +45,10 @@ public class RoomAreaServiceImpl implements RoomAreaService {
         }
     }
     @Override
-    public RoomAreaResponseDto getRoomArea(Long id) {
-        RoomArea roomArea = roomAreaRepository.findById(id).orElseThrow(()->new ResourceNotFoundException(ValidationMessages.NOT_FOUND));
-        return roomAreaMapper.toResponseDto(roomArea);
-    }
+    public void deleteRoomArea(Long id) {
+        RoomArea roomArea = roomAreaRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(ValidationMessages.NOT_FOUND));
 
+        roomAreaRepository.delete(roomArea);
+    }
 }
