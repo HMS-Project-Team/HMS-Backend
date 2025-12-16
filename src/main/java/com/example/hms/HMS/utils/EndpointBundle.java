@@ -9,6 +9,8 @@ public final class  EndpointBundle {
     public static final String CREATE_HOTEL = "/add";
     public static final String ROOM = BASE_URL + "/room";
 
+
+
     //Settings
 
     //Roles

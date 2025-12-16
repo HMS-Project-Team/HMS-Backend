@@ -7,19 +7,18 @@ import com.example.hms.HMS.exceptionHandlers.ResourceNotFoundException;
 import com.example.hms.HMS.mappers.ViewTypeMapper;
 import com.example.hms.HMS.repositories.ViewTypeRepository;
 import com.example.hms.HMS.utils.ValidationMessages;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 
 @Service
-public class ViewTypeServiceImpl implements ViewTypeService {
+@RequiredArgsConstructor
+public class ViewTypeServiceImpl implements ViewTypeService{
 
-    @Autowired
-    ViewTypeRepository viewTypeRepository;
-
-    @Autowired
-    ViewTypeMapper viewTypeMapper;
     private final ViewTypeRepository viewTypeRepository;
+    private final ViewTypeMapper viewTypeMapper;
+
 
     @Override
     public ViewTypeResponseDto createViewType(ViewTypeRequestDto viewTypeRequestDto) {
@@ -56,4 +55,24 @@ public class ViewTypeServiceImpl implements ViewTypeService {
         viewTypeRepository.deleteById(id);
         return true;
     }
+
+    @Override
+    public ViewTypeResponseDto updateViewType(Long id, ViewTypeRequestDto viewTypeRequestDto) {
+
+        try {
+            ViewType viewTypeExist = viewTypeRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("View type not found"));
+
+            if (viewTypeRepository.existsByNameAndIdNot(viewTypeRequestDto.getName(), id)) {
+                throw new DataIntegrityViolationException("View type name already exists");
+            }
+
+            viewTypeMapper.updateEntity(viewTypeExist, viewTypeRequestDto);
+
+            ViewType update = viewTypeRepository.save(viewTypeExist);
+            return viewTypeMapper.toResponseDto(update);
+        }catch(Exception ex){
+            throw new RuntimeException("Error while updating view type"+ex.getMessage());
+        }
+    }
+
 }

@@ -7,4 +7,6 @@ public interface ViewTypeService {
     ViewTypeResponseDto createViewType(ViewTypeRequestDto viewTypeRequestDto);
     ViewTypeResponseDto getViewTypeById(Long id);
     boolean deleteViewType(Long id);
+    ViewTypeResponseDto updateViewType(Long id, ViewTypeRequestDto viewTypeRequestDto) ;
+
 }
