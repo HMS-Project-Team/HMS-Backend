@@ -55,4 +55,26 @@ public class AmenitiesServiceImpl implements AmenitiesService{
         Amenities amenities=amenitiesRepository.save(amenitiesMapper.RequestDtoToEntity(amenitiesRequestDto));
         return amenitiesMapper.EntityToResponseDto(amenities);
     }
+    @Override
+    public AmenitiesResponseDto updateAmenities(Long id, AmenitiesRequestDto amenitiesRequestDto) {
+
+        Amenities amenities = amenitiesRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Amenities not found with id: " + id));
+
+        // check duplicate name or icon (optional but recommended)
+        if (amenitiesRepository.existsByNameOrIcon(
+                amenitiesRequestDto.getName(),
+                amenitiesRequestDto.getIcon())) {
+            throw new DataIntegrityViolationException("Amenities already exists");
+        }
+
+        amenities.setName(amenitiesRequestDto.getName());
+        amenities.setIcon(amenitiesRequestDto.getIcon());
+
+        Amenities updatedAmenities = amenitiesRepository.save(amenities);
+
+        return amenitiesMapper.EntityToResponseDto(updatedAmenities);
+    }
+
 }

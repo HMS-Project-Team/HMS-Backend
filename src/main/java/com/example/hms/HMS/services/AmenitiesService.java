@@ -10,5 +10,6 @@ public interface AmenitiesService{
     Boolean deleteAmenities(Long id);
     AmenitiesResponseDto getAmenitiesById(Long id);
     AmenitiesResponseDto addAmenities(AmenitiesRequestDto amenitiesRequestDto);
+    AmenitiesResponseDto updateAmenities(Long id, AmenitiesRequestDto amenitiesRequestDto);
 
 }
