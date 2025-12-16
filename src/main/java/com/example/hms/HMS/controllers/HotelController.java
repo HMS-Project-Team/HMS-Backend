@@ -10,6 +10,7 @@ import com.example.hms.HMS.services.HotelService;
 import com.example.hms.HMS.utils.EndpointBundle;
 import com.example.hms.HMS.utils.ResponseWrapper;
 import com.example.hms.HMS.utils.ValidationMessages;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -56,7 +57,7 @@ public class HotelController {
     }
 
     @PostMapping(EndpointBundle.CREATE_HOTEL)
-    public ResponseEntity<ResponseWrapper<HotelResponseDto>> createHotel(@RequestBody HotelRequestDto hotelRequestDto){
+    public ResponseEntity<ResponseWrapper<HotelResponseDto>> createHotel(@RequestBody @Valid  HotelRequestDto hotelRequestDto){
         try{
             HotelResponseDto createHotel = hotelService.createHotel(hotelRequestDto);
             if (createHotel != null){

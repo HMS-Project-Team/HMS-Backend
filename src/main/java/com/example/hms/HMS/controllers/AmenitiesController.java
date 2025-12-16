@@ -4,7 +4,6 @@ import com.example.hms.HMS.dtos.requests.AmenitiesRequestDto;
 import com.example.hms.HMS.dtos.responses.AmenitiesResponseDto;
 import com.example.hms.HMS.enums.RestApiResponseStatusCodes;
 import com.example.hms.HMS.exceptionHandlers.InvalidPageSizeException;
-import com.example.hms.HMS.exceptionHandlers.ResourceNotFoundException;
 import com.example.hms.HMS.services.AmenitiesService;
 import com.example.hms.HMS.utils.EndpointBundle;
 import com.example.hms.HMS.utils.ResponseWrapper;
@@ -16,6 +15,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.*;
 
 import static com.example.hms.HMS.exceptionHandlers.InvalidPageSizeException.INVALID_PAGE_SIZE_MSG;
@@ -27,6 +30,15 @@ public class AmenitiesController {
 
     private final AmenitiesService amenitiesService;
 
+    @PostMapping(EndpointBundle.ADD)
+    public ResponseEntity<ResponseWrapper<AmenitiesResponseDto>> addAmenities(@Valid @RequestBody AmenitiesRequestDto amenitiesRequestDto){
+            AmenitiesResponseDto amenitiesResponseDto=amenitiesService.addAmenities(amenitiesRequestDto);
+            return ResponseEntity.ok(new ResponseWrapper<>(
+                    RestApiResponseStatusCodes.CREATED.getCode(),
+                    ValidationMessages.SAVED_SUCCESSFULLY,
+                    amenitiesResponseDto
+                    ));
+    }
     @GetMapping
     public ResponseEntity<ResponseWrapper<Page<AmenitiesResponseDto>>> getAllAmenities(
             @RequestParam( required = false ,  defaultValue = "1")  int pageNo ,
@@ -67,6 +79,7 @@ public class AmenitiesController {
             ));
         }
     }
+
     @GetMapping(EndpointBundle.ID)
     public ResponseEntity<ResponseWrapper<AmenitiesResponseDto>> addAmenities(@PathVariable Long id) {
         AmenitiesResponseDto amenitiesResponseDto = amenitiesService.getAmenitiesById(id);
@@ -74,6 +87,5 @@ public class AmenitiesController {
                 RestApiResponseStatusCodes.OK.getCode(),
                 ValidationMessages.RETRIEVED_SUCCESSFULLY,
                 amenitiesResponseDto));
-
     }
 }
