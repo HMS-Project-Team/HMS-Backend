@@ -35,7 +35,10 @@ public final class  EndpointBundle {
     public static final String LOGOUT="/logout";
 
 
+    //Room
+    public static  final String ROOM = BASE_URL+"/room";
+
     //View type
-    public static  final String VIEW_TYPE = BASE_URL+"/viewtype";
+    public static  final String VIEW_TYPE = ROOM+"/viewtype";
 
 }
