@@ -12,7 +12,27 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class AmenitiesService {
+public class AmenitiesServiceImpl implements AmenitiesService{
+    private final AmenitiesRepository amenitiesRepository;
+    private final AmenitiesMapper amenitiesMapper;
 
-   
+    public Page<AmenitiesResponseDto>fetchAllAmenities(Pageable pageable) {
+
+        Page<Amenities> amenitiesPage = amenitiesRepository.findAll(pageable);
+
+        if(amenitiesPage.isEmpty()){
+            throw  new ResourceNotFoundException("No Amenities Found");
+        }
+
+        return amenitiesPage.map(amenitiesMapper::toDto);
+    }
+
+    public Boolean deleteAmenities(Long id) {
+        if (!amenitiesRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Amenities not found with id: " + id);
+        }
+
+        amenitiesRepository.deleteById(id);
+        return true;
+    }
 }
