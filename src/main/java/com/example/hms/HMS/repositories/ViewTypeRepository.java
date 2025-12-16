@@ -1,4 +1,7 @@
 package com.example.hms.HMS.repositories;
 
-public interface ViewTypeRepository {
+import com.example.hms.HMS.entities.ViewType;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface ViewTypeRepository extends JpaRepository<ViewType,Long> {
 }
