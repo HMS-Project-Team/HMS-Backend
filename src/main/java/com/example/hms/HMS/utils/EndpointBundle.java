@@ -49,5 +49,5 @@ public final class  EndpointBundle {
 
 
     //Amenities
-    public static final String AMENITIES = BASE_URL + "/amenities";
+    public static final String AMENITIES = BASE_URL + ROOM + "/amenities";
 }
