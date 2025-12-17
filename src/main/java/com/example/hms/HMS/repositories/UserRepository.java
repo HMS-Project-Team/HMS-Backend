@@ -42,10 +42,13 @@ public interface UserRepository extends JpaRepository<User, Long> {
         Page<User> findByHotelIdAndRoleId(@Param("hotelId") Long hotelId, @Param("roleId") Long roleId,
                         Pageable pageable);
 
-        @Query("SELECT u FROM User u " +
-                        "JOIN u.roles r " + // Join with roles
-                        "WHERE r.hotel.id = :hotelId")
-        Page<User> findByHotelId(@Param("hotelId") Long hotelId, Pageable pageable);
+        @Query("""
+                SELECT DISTINCT u
+                FROM User u
+                LEFT JOIN u.roles r
+                WHERE r.hotel.id = :hotelId OR r IS NULL
+                """)
+    Page<User> findByHotelId(@Param("hotelId") Long hotelId, Pageable pageable);
 
         @Query("SELECT u FROM User u " +
                         "JOIN u.roles r " + // Join with roles

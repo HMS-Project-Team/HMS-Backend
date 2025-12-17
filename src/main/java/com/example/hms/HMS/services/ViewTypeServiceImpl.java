@@ -9,6 +9,8 @@ import com.example.hms.HMS.repositories.ViewTypeRepository;
 import com.example.hms.HMS.utils.ValidationMessages;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 
@@ -73,6 +75,13 @@ public class ViewTypeServiceImpl implements ViewTypeService{
         }catch(Exception ex){
             throw new RuntimeException("Error while updating view type"+ex.getMessage());
         }
+    }
+
+    @Override
+    public Page<ViewTypeResponseDto> getAllViewType(Pageable pageable) {
+        Page<ViewType> viewTypeResponseDtos= viewTypeRepository.findAll(pageable);
+
+        return  viewTypeResponseDtos.map(viewTypeMapper::toResponseDto);
     }
 
 }

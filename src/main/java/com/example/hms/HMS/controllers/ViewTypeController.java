@@ -3,15 +3,17 @@ package com.example.hms.HMS.controllers;
 import com.example.hms.HMS.dtos.requests.ViewTypeRequestDto;
 import com.example.hms.HMS.dtos.responses.ViewTypeResponseDto;
 import com.example.hms.HMS.enums.RestApiResponseStatusCodes;
+import com.example.hms.HMS.exceptionHandlers.InvalidPageSizeException;
 import com.example.hms.HMS.services.ViewTypeService;
 import com.example.hms.HMS.utils.EndpointBundle;
 import com.example.hms.HMS.utils.ResponseWrapper;
 import com.example.hms.HMS.utils.ValidationMessages;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -79,4 +81,25 @@ public class ViewTypeController {
             throw new RuntimeException(ex.getMessage());
         }
     }
+
+    @GetMapping
+    public ResponseEntity<ResponseWrapper<Page<ViewTypeResponseDto>>> getAllViewType(
+            Pageable pageable) {
+        int size = pageable.getPageSize();
+        int page = pageable.getPageNumber();
+        if (page < 0 || size <= 0) {
+            throw new InvalidPageSizeException(ValidationMessages.INVALID_PAGE_SIZE_MSG);
+        }
+        Page<ViewTypeResponseDto> viewTypesPage =
+                (Page<ViewTypeResponseDto>) viewTypeService.getAllViewType(pageable);
+
+        return ResponseEntity.ok(
+                new ResponseWrapper<>(
+                        RestApiResponseStatusCodes.OK.getCode(),
+                        ValidationMessages.SUCCESS,
+                        viewTypesPage
+                )
+        );
+    }
+
 }
