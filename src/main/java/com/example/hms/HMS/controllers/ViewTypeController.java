@@ -11,6 +11,7 @@ import com.example.hms.HMS.utils.ValidationMessages;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -61,38 +62,33 @@ public class ViewTypeController {
 
     @PutMapping(EndpointBundle.ID)
     public ResponseEntity<ResponseWrapper<ViewTypeResponseDto>> updateViewType(@PathVariable Long id, @Valid @RequestBody ViewTypeRequestDto viewTypeRequestDto){
-        try{
-            ViewTypeResponseDto isUpdated = viewTypeService.updateViewType(id, viewTypeRequestDto);
-            if (isUpdated != null){
-                return ResponseEntity.status(HttpStatus.OK).body(new ResponseWrapper<>(
-                        RestApiResponseStatusCodes.CREATED.getCode(),
-                        ValidationMessages.UPDATED_SUCCESSFULLY,
-                        isUpdated
-                ));
-            }
-            else{
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseWrapper<>(
-                        RestApiResponseStatusCodes.BAD_REQUEST.getCode(),
-                        ValidationMessages.UPDATE_FAILED,
-                        null
-                ));
-            }}
-        catch(Exception ex){
-            throw new RuntimeException(ex.getMessage());
+        ViewTypeResponseDto isUpdated = viewTypeService.updateViewType(id, viewTypeRequestDto);
+        if (isUpdated != null){
+            return ResponseEntity.status(HttpStatus.OK).body(new ResponseWrapper<>(
+                    RestApiResponseStatusCodes.CREATED.getCode(),
+                    ValidationMessages.UPDATED_SUCCESSFULLY,
+                    isUpdated
+            ));
+        }
+        else{
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseWrapper<>(
+                    RestApiResponseStatusCodes.BAD_REQUEST.getCode(),
+                    ValidationMessages.UPDATE_FAILED,
+                    null
+            ));
         }
     }
 
     @GetMapping
     public ResponseEntity<ResponseWrapper<Page<ViewTypeResponseDto>>> getAllViewType(
-            Pageable pageable) {
-        int size = pageable.getPageSize();
-        int page = pageable.getPageNumber();
-        if (page <= 0 || size < 0) {
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
+        if (page < 0 || size <= 0) {
             throw new InvalidPageSizeException(ValidationMessages.INVALID_PAGE_SIZE_MSG);
         }
-        Page<ViewTypeResponseDto> viewTypesPage =
-                (Page<ViewTypeResponseDto>) viewTypeService.getAllViewType(pageable);
-
+        Page<ViewTypeResponseDto> viewTypesPage = viewTypeService.getAllViewType(pageable);
         return ResponseEntity.ok(
                 new ResponseWrapper<>(
                         RestApiResponseStatusCodes.OK.getCode(),
@@ -101,5 +97,4 @@ public class ViewTypeController {
                 )
         );
     }
-
 }
