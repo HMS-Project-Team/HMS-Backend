@@ -96,7 +96,7 @@ public class MealPlanController {
         );
     }
     @PostMapping(EndpointBundle.ADD)
-    public ResponseEntity<ResponseWrapper<MealPlanResponseDto>> createMealPlan(@RequestBody MealPlanRequestDto mealPlanRequestDto) {
+    public ResponseEntity<ResponseWrapper<MealPlanResponseDto>> createMealPlan(@Valid @RequestBody MealPlanRequestDto mealPlanRequestDto) {
         MealPlanResponseDto createdMealPlan = mealPlanService.createMealPlan(mealPlanRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new ResponseWrapper<>(
