@@ -56,7 +56,7 @@ public class HotelController {
     }
 
     @PostMapping(EndpointBundle.CREATE_HOTEL)
-    public ResponseEntity<ResponseWrapper<HotelResponseDto>> createHotel(@RequestBody HotelRequestDto hotelRequestDto){
+    public ResponseEntity<ResponseWrapper<HotelResponseDto>> createHotel(@RequestBody @Valid  HotelRequestDto hotelRequestDto){
         try{
             HotelResponseDto createHotel = hotelService.createHotel(hotelRequestDto);
             if (createHotel != null){
