@@ -10,6 +10,8 @@ public final class  EndpointBundle {
     public static final String CREATE_HOTEL = "/add";
 
 
+    public  static  final String ADD="/add";
+
     //Roles
     public static final String ROLES = "/roles";
     public static final String ROLES_BY_ID = ROLES + ID;
@@ -43,6 +45,8 @@ public final class  EndpointBundle {
 
     //Meal plan
     public static final String MEAL_PLAN= ROOM + "/mealplan";
-    public static final String ADD="add";
 
+
+    //Amenities
+    public static final String AMENITIES = BASE_URL + "/amenities";
 }

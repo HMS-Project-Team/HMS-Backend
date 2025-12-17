@@ -76,4 +76,6 @@ public class ValidationMessages {
     public static final String USER_HAS_NO_ROLES = "User has no roles assigned.";
     public static final String ROLE_NOT_LINKED_TO_HOTEL = "User's role is not linked to any hotel.";
 
+
+    public static final String SIZE_EXCEED ="Size should be less than 2MB" ;
 }
