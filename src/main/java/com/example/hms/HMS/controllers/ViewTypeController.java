@@ -84,6 +84,11 @@ public class ViewTypeController {
     @GetMapping
     public ResponseEntity<ResponseWrapper<Page<ViewTypeResponseDto>>> getAllViewType(
             Pageable pageable) {
+        int size = pageable.getPageSize();
+        int page = pageable.getPageNumber();
+        if (page < 0 || size <= 0) {
+            throw new InvalidPageSizeException(INVALID_PAGE_SIZE_MSG);
+        }
         Page<ViewTypeResponseDto> viewTypesPage =
                 (Page<ViewTypeResponseDto>) viewTypeService.getAllViewType(pageable);
 
