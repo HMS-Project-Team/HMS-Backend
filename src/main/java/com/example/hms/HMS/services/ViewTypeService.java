@@ -8,5 +8,5 @@ public interface ViewTypeService {
     ViewTypeResponseDto getViewTypeById(Long id);
     boolean deleteViewType(Long id);
     ViewTypeResponseDto updateViewType(Long id, ViewTypeRequestDto viewTypeRequestDto) ;
-
+    Page<ViewTypeResponseDto> getAllViewType(Pageable pageable);
 }
