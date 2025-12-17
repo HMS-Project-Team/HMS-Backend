@@ -2,7 +2,7 @@ package com.example.hms.HMS.utils;
 
 public final class  EndpointBundle {
     public static final String BASE_URL = "/api/v1";
-    public static final String ID ="/{id}";
+    public static final String ID = "/{id}";
     public static final String SEARCH = "/search";
     public static final String SETTINGS = BASE_URL +"/settings";
     public static final String ROOM = BASE_URL +"/room";
@@ -16,18 +16,15 @@ public final class  EndpointBundle {
     public static final String ROLES_BY_HOTEL = "/{hotelId}" + ROLES;
 
     public static final String HOTEL_ID = "/{hotelId}";
-    public static final String CREATE_ROLE = HOTEL_ID+ROLES+"/add";
-
-
+    public static final String CREATE_ROLE = HOTEL_ID + ROLES + "/add";
 
     //Users
     public static final String USERS = "/users";
     public static final String USERS_BY_ID = USERS + ID;
-    public static final String GET_ALL_USERS =HOTEL_ID+USERS;
+    public static final String GET_ALL_USERS = HOTEL_ID + USERS;
     public static final String CREATE_USER = HOTEL_ID + USERS + "/add";
 
     // ViewType
-
     public static final String VIEW_TYPE = ROOM + "/viewtype";
     public static final String CREATE_VIEW_TYPE = VIEW_TYPE + "/add";
 
@@ -39,6 +36,10 @@ public final class  EndpointBundle {
     public static final String VERIFY_OTP = OTP + "/verify";
     public static final String NEW_PASSWORD = "/new-Password";
     public static final String LOGOUT="/logout";
+
+    //RoomArea
+    public static final String ROOMAREA = ROOM + "/roomarea";
+    public static final String CREATE_ROOMAREA = "/add";
 
     //Meal plan
     public static final String MEAL_PLAN= ROOM + "/mealplan";
