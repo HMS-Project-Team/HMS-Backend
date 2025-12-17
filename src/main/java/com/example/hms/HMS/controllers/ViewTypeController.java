@@ -87,7 +87,7 @@ public class ViewTypeController {
             Pageable pageable) {
         int size = pageable.getPageSize();
         int page = pageable.getPageNumber();
-        if (page < 0 || size <= 0) {
+        if (page <= 0 || size < 0) {
             throw new InvalidPageSizeException(ValidationMessages.INVALID_PAGE_SIZE_MSG);
         }
         Page<ViewTypeResponseDto> viewTypesPage =
