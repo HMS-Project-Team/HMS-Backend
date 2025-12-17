@@ -3,6 +3,7 @@ package com.example.hms.HMS.controllers;
 import com.example.hms.HMS.dtos.requests.ViewTypeRequestDto;
 import com.example.hms.HMS.dtos.responses.ViewTypeResponseDto;
 import com.example.hms.HMS.enums.RestApiResponseStatusCodes;
+import com.example.hms.HMS.exceptionHandlers.InvalidPageSizeException;
 import com.example.hms.HMS.services.ViewTypeService;
 import com.example.hms.HMS.utils.EndpointBundle;
 import com.example.hms.HMS.utils.ResponseWrapper;
@@ -87,7 +88,7 @@ public class ViewTypeController {
         int size = pageable.getPageSize();
         int page = pageable.getPageNumber();
         if (page < 0 || size <= 0) {
-            throw new InvalidPageSizeException(INVALID_PAGE_SIZE_MSG);
+            throw new InvalidPageSizeException(ValidationMessages.INVALID_PAGE_SIZE_MSG);
         }
         Page<ViewTypeResponseDto> viewTypesPage =
                 (Page<ViewTypeResponseDto>) viewTypeService.getAllViewType(pageable);
