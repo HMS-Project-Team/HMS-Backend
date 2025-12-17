@@ -79,4 +79,20 @@ public class ViewTypeController {
             throw new RuntimeException(ex.getMessage());
         }
     }
+
+    @GetMapping
+    public ResponseEntity<ResponseWrapper<Page<ViewTypeResponseDto>>> getAllViewType(
+            Pageable pageable) {
+        Page<ViewTypeResponseDto> viewTypesPage =
+                (Page<ViewTypeResponseDto>) viewTypeService.getAllViewType(pageable);
+
+        return ResponseEntity.ok(
+                new ResponseWrapper<>(
+                        RestApiResponseStatusCodes.OK.getCode(),
+                        ValidationMessages.SUCCESS,
+                        viewTypesPage
+                )
+        );
+    }
+
 }
