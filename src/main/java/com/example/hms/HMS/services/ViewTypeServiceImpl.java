@@ -60,7 +60,6 @@ public class ViewTypeServiceImpl implements ViewTypeService{
     @Override
     public ViewTypeResponseDto updateViewType(Long id, ViewTypeRequestDto viewTypeRequestDto) {
 
-        try {
             ViewType viewTypeExist = viewTypeRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("View type not found"));
 
             if (viewTypeRepository.existsByNameAndIdNot(viewTypeRequestDto.getName(), id)) {
@@ -71,9 +70,6 @@ public class ViewTypeServiceImpl implements ViewTypeService{
 
             ViewType update = viewTypeRepository.save(viewTypeExist);
             return viewTypeMapper.toResponseDto(update);
-        }catch(Exception ex){
-            throw new RuntimeException("Error while updating view type"+ex.getMessage());
-        }
     }
 
     @Override
