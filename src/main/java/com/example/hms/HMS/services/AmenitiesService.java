@@ -2,8 +2,11 @@ package com.example.hms.HMS.services;
 
 import com.example.hms.HMS.dtos.requests.AmenitiesRequestDto;
 import com.example.hms.HMS.dtos.responses.AmenitiesResponseDto;
+import com.example.hms.HMS.entities.Amenities;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
+import java.util.Optional;
 
 public interface AmenitiesService{
     Page<AmenitiesResponseDto> fetchAllAmenities(Pageable pageable);

@@ -14,6 +14,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class AmenitiesServiceImpl implements AmenitiesService{
@@ -62,10 +64,13 @@ public class AmenitiesServiceImpl implements AmenitiesService{
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Amenities not found with id: " + id));
 
-        // check duplicate name or icon (optional but recommended)
-        if (amenitiesRepository.existsByNameOrIcon(
-                amenitiesRequestDto.getName(),
-                amenitiesRequestDto.getIcon())) {
+        Optional<Amenities> existingAmenity =
+                amenitiesRepository.findByNameOrIcon(
+                        amenitiesRequestDto.getName(),
+                        amenitiesRequestDto.getIcon()
+                );
+
+        if (existingAmenity.isPresent() && !existingAmenity.get().getId().equals(id)) {
             throw new DataIntegrityViolationException("Amenities already exists");
         }
 
