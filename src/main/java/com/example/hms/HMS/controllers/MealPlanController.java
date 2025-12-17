@@ -18,7 +18,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.HttpRequestMethodNotSupportedException;
 
 @RequestMapping(EndpointBundle.MEAL_PLAN)
 @RestController
@@ -62,7 +61,7 @@ public class MealPlanController {
             @RequestParam(defaultValue = "10") int size
     ) {
         if (page<0 || size <= 0) {
-            throw  new InvalidPageSizeException(InvalidPageSizeException.INVALID_PAGE_SIZE_MSG);
+            throw  new InvalidPageSizeException(ValidationMessages.INVALID_PAGE_SIZE_MSG);
         }
 
         Pageable pageable = PageRequest.of(page, size);

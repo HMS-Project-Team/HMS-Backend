@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.*;
 
-import static com.example.hms.HMS.exceptionHandlers.InvalidPageSizeException.INVALID_PAGE_SIZE_MSG;
 
 @RestController
 @RequestMapping(EndpointBundle.AMENITIES)
@@ -46,7 +45,7 @@ public class AmenitiesController {
     ){
 
         if(pageNo < 0 || pageSize < 0){
-            throw new InvalidPageSizeException(INVALID_PAGE_SIZE_MSG);
+            throw new InvalidPageSizeException(ValidationMessages.INVALID_PAGE_SIZE_MSG);
         }
 
         Pageable pageable =  PageRequest.of(pageNo-1 , pageSize);

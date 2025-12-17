@@ -33,7 +33,7 @@ public class GlobalExceptionHandler {
                                 errorCodes.getPaginationInvalid());
                 return ResponseEntity.badRequest().body(new ResponseWrapper<>(
                                 RestApiResponseStatusCodes.BAD_REQUEST.getCode(),
-                                InvalidPageSizeException.INVALID_PAGE_SIZE_MSG,
+                                ValidationMessages.INVALID_PAGE_SIZE_MSG,
                                 errorDetail));
         }
 

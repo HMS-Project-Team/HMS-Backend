@@ -19,7 +19,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import static com.example.hms.HMS.exceptionHandlers.InvalidPageSizeException.INVALID_PAGE_SIZE_MSG;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,7 +33,7 @@ public class HotelController {
     private HotelService hotelService;
 
     @PutMapping(EndpointBundle.ID)
-    public ResponseEntity<ResponseWrapper<HotelResponseDto>> updateHotel(@PathVariable Long id, @RequestBody HotelRequestDto hotelRequestDto){
+    public ResponseEntity<ResponseWrapper<HotelResponseDto>> updateHotel(@PathVariable Long id, @Valid @RequestBody HotelRequestDto hotelRequestDto){
         try{
             HotelResponseDto updatedHotel = hotelService.updateHotel(id, hotelRequestDto);
             if (updatedHotel != null){
@@ -123,7 +122,7 @@ public class HotelController {
 
         // Validate page and size
         if (page < 0 || size <= 0) {
-            throw new InvalidPageSizeException(INVALID_PAGE_SIZE_MSG);
+            throw new InvalidPageSizeException(ValidationMessages.INVALID_PAGE_SIZE_MSG);
         }
 
         Pageable pageable = PageRequest.of(page, size);

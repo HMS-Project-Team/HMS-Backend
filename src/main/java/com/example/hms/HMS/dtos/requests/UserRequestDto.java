@@ -19,7 +19,17 @@ import java.util.List;
 public class UserRequestDto {
 
     @NotEmpty(message=ValidationMessages.REQUIRED_FIELD_MISSING)
+    @Pattern(
+            //only accept alphabet
+            regexp = "^[A-Za-z ]+$",
+            message = ValidationMessages.INVALID_INPUT
+    )
     private String firstname;
+    @Pattern(
+            //only accept alphabet
+            regexp = "^[A-Za-z ]+$",
+            message = ValidationMessages.INVALID_INPUT
+    )
     @NotEmpty(message=ValidationMessages.REQUIRED_FIELD_MISSING)
     private String lastname;
     @Email(message = ValidationMessages.INVALID_EMAIL)
@@ -34,7 +44,17 @@ public class UserRequestDto {
     @Pattern(regexp = "([0-9]{9}[VvXx]|[0-9]{12})" , message = ValidationMessages.NIC_VALIDATION)
     @Column(unique = true)
     private String NIC;
+    @Pattern(
+            //only accept alphabet
+            regexp = "^[A-Za-z ]+$",
+            message = ValidationMessages.INVALID_INPUT
+    )
     private String country;
+    @Pattern(
+            //only accept alphabet
+            regexp = "^[A-Za-z ]+$",
+            message = ValidationMessages.INVALID_INPUT
+    )
     private String city;
 
     private String password;
