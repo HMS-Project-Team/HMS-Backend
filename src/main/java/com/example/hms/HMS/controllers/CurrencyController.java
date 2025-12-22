@@ -6,14 +6,12 @@ import com.example.hms.HMS.enums.RestApiResponseStatusCodes;
 import com.example.hms.HMS.services.CurrencyService;
 import com.example.hms.HMS.utils.EndpointBundle;
 import com.example.hms.HMS.utils.ResponseWrapper;
+import com.example.hms.HMS.utils.ValidationMessages;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(EndpointBundle.CURRENCY)
@@ -33,5 +31,18 @@ public class CurrencyController {
                 RestApiResponseStatusCodes.CREATED.getMessage(),
                 responseDto
         ));
+    }
+
+    @DeleteMapping(EndpointBundle.ID)
+    public ResponseEntity<ResponseWrapper<Boolean>> deleteUser(@PathVariable Long id){
+
+        Boolean deleteUser = currencyService.deleteCurrency(id);
+        return ResponseEntity.status(HttpStatus.OK).body(new ResponseWrapper<>(
+                RestApiResponseStatusCodes.OK.getCode(),
+                ValidationMessages.DELETED_SUCCESSFULLY,
+                deleteUser
+        ));
+
+
     }
 }

@@ -3,8 +3,11 @@ package com.example.hms.HMS.services;
 import com.example.hms.HMS.dtos.requests.CurrencyRequestDto;
 import com.example.hms.HMS.dtos.responses.CurrencyResponseDto;
 import com.example.hms.HMS.entities.Currency;
+import com.example.hms.HMS.entities.ReservationType;
+import com.example.hms.HMS.exceptionHandlers.ResourceNotFoundException;
 import com.example.hms.HMS.mappers.CurrencyMapper;
 import com.example.hms.HMS.repositories.CurrencyRepository;
+import com.example.hms.HMS.utils.ValidationMessages;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -38,5 +41,12 @@ public class CurrencyServiceImpl implements CurrencyService{
         Currency savedData = currencyRepository.save(currency);
 
         return currencyMapper.toResponseDto(savedData);
+    }
+
+    @Override
+    public Boolean deleteCurrency(Long id){
+        Currency currency = currencyRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException ("Reservation type"+ ValidationMessages.NOT_FOUND));
+        currencyRepository.deleteById(id);
+        return true;
     }
 }

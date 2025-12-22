@@ -6,4 +6,5 @@ import jakarta.validation.Valid;
 
 public interface CurrencyService {
     CurrencyResponseDto createNewCurrency(@Valid CurrencyRequestDto requestDto);
+    Boolean deleteCurrency(Long id);
 }
