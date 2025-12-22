@@ -9,4 +9,6 @@ import org.mapstruct.Mapper;
 public interface ReservationTypeMapper {
     ReservationType toEntity(ReservationTypeRequestDto reservationTypeRequestDto);
     ReservationTypeResponseDto toDto(ReservationType reservationType);
+
+    ReservationTypeResponseDto toResponseDto (ReservationType reservationType);
 }

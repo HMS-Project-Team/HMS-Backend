@@ -2,12 +2,13 @@ package com.example.hms.HMS.services;
 
 import com.example.hms.HMS.dtos.responses.ReservationTypeResponseDto;
 import com.example.hms.HMS.entities.ReservationType;
-import com.example.hms.HMS.entities.User;
 import com.example.hms.HMS.exceptionHandlers.ResourceNotFoundException;
 import com.example.hms.HMS.mappers.ReservationTypeMapper;
 import com.example.hms.HMS.repositories.ReservationTypeRepository;
 import com.example.hms.HMS.utils.ValidationMessages;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -31,5 +32,16 @@ public class ReservationTypeServiceImpl implements ReservationTypeService{
         ReservationType reservationType = reservationTypeRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException ("Reservation type"+ ValidationMessages.NOT_FOUND));
         reservationTypeRepository.deleteById(id);
         return true;
+    }
+
+    @Override
+    public Page<ReservationTypeResponseDto> fetchAllReservationType(Pageable pageable) {
+
+        Page<ReservationType> reservationTypes = reservationTypeRepository.findAll(pageable);
+
+        if(reservationTypes.isEmpty()){
+            throw new ResourceNotFoundException("No Reservation Type");
+        }
+        return reservationTypes.map(reservationTypeMapper::toResponseDto);
     }
 }
