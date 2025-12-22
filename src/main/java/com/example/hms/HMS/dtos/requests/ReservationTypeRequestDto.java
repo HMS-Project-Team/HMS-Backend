@@ -13,6 +13,6 @@ import lombok.NoArgsConstructor;
 public class ReservationTypeRequestDto {
 
     @NotBlank(message = ValidationMessages.REQUIRED_FIELD_MISSING)
-    @Size(max = 50, message = "Reservation type name must be less than 50 characters")
+    @Size(max = 50, message = ValidationMessages.RESERVATIONTYPE_LIMIT)
     private String name;
 }

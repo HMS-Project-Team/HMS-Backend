@@ -80,4 +80,7 @@ public class ValidationMessages {
     public static final String INVALID_PAGE_SIZE_MSG = "Invalid Page Size.";
 
     public static final String SIZE_EXCEED ="Size should be less than 2MB" ;
+
+    //===== ReservationType ====
+    public static final String RESERVATIONTYPE_LIMIT = "Reservation type name must be less than 50 characters";
 }
