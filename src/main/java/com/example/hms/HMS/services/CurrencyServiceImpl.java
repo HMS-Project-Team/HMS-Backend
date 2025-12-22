@@ -33,11 +33,7 @@ public class CurrencyServiceImpl implements CurrencyService{
             throw new IllegalArgumentException("currency code name already exists");
         }
 
-        Currency currency = new Currency();
-        currency.setCurrencyName(requestDto.getCurrencyName());
-        currency.setCode(requestDto.getCode());
-        currency.setUnitPrice(requestDto.getUnitPrice());
-        currency.setStatus(requestDto.getStatus());
+        Currency currency = currencyMapper.toCurrencyEntity(requestDto);
 
         Currency savedData = currencyRepository.save(currency);
 
