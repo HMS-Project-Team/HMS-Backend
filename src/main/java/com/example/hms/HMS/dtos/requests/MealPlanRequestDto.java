@@ -23,4 +23,10 @@ public class MealPlanRequestDto {
     )
     private String code;
     private String description;
+
+    public void trim() {
+        if (name != null) name = name.trim();
+        if (code != null) code = code.trim();
+        if (description != null) description = description.trim();
+    }
 }

@@ -1,7 +1,8 @@
 package com.example.hms.HMS.dtos.requests;
 
-import com.example.hms.HMS.enums.Status;
 import com.example.hms.HMS.utils.ValidationMessages;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -25,5 +26,6 @@ public class CurrencyRequestDto {
     private Double unitPrice;
 
     @NotBlank(message = ValidationMessages.REQUIRED_FIELD_MISSING)
-    private Status status;
+    @Enumerated(EnumType.STRING)
+    private String status;
 }
