@@ -8,5 +8,5 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring")
 public interface CurrencyMapper {
     CurrencyResponseDto toResponseDto (Currency currency);
-    Currency toCurrencyEntity (CurrencyRequestDto currencyRequestDto);
+    Currency toEntity (CurrencyRequestDto currencyRequestDto);
 }

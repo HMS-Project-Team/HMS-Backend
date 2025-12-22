@@ -4,11 +4,14 @@ import com.example.hms.HMS.dtos.requests.CurrencyRequestDto;
 import com.example.hms.HMS.dtos.responses.CurrencyResponseDto;
 import com.example.hms.HMS.entities.Currency;
 import com.example.hms.HMS.entities.ReservationType;
+import com.example.hms.HMS.exceptionHandlers.InvalidPageSizeException;
 import com.example.hms.HMS.exceptionHandlers.ResourceNotFoundException;
 import com.example.hms.HMS.mappers.CurrencyMapper;
 import com.example.hms.HMS.repositories.CurrencyRepository;
 import com.example.hms.HMS.utils.ValidationMessages;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -36,7 +39,7 @@ public class CurrencyServiceImpl implements CurrencyService{
             throw new IllegalArgumentException("currency code name already exists");
         }
 
-        Currency currency = currencyMapper.toCurrencyEntity(requestDto);
+        Currency currency = currencyMapper.toEntity(requestDto);
 
         Currency savedData = currencyRepository.save(currency);
 
@@ -48,5 +51,39 @@ public class CurrencyServiceImpl implements CurrencyService{
         Currency currency = currencyRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException ("Reservation type"+ ValidationMessages.NOT_FOUND));
         currencyRepository.deleteById(id);
         return true;
+    }
+
+    @Override
+    public Page<CurrencyResponseDto> getAllCurrency(Pageable pageable) {
+
+        if (pageable.getPageNumber() < 0 || pageable.getPageSize() <= 0) {
+            throw new InvalidPageSizeException("Invalid page or size value");
+        }
+
+        Page<Currency> currencyPage = currencyRepository.findAll(pageable);
+
+
+        return currencyPage.map(currencyMapper::toResponseDto);
+    }
+
+    @Override
+    public CurrencyResponseDto getCurrencyById(Long id) {
+        Currency  getCurrency = currencyRepository.findById(id)
+                .orElseThrow(()->new ResourceNotFoundException(ValidationMessages.NOT_FOUND));
+        return currencyMapper.toResponseDto(getCurrency);
+    }
+
+    @Override
+    public CurrencyResponseDto updateCurrency(Long id, CurrencyRequestDto currencyRequestDto) {
+        Currency updateCurrency = currencyRepository.findById(id)
+                .orElseThrow(()-> new ResourceNotFoundException(ValidationMessages.NOT_FOUND));
+
+        updateCurrency.setCurrencyName(currencyRequestDto.getCurrencyName());
+        updateCurrency.setCode(currencyRequestDto.getCode());
+        updateCurrency.setUnitPrice(currencyRequestDto.getUnitPrice());
+        updateCurrency.setStatus(currencyRequestDto.getStatus());
+
+        Currency updatedCurrency = currencyRepository.save(updateCurrency);
+        return currencyMapper.toResponseDto(updatedCurrency);
     }
 }
