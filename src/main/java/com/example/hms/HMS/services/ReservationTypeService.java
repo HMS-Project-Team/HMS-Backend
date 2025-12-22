@@ -4,5 +4,6 @@ import com.example.hms.HMS.dtos.responses.ReservationTypeResponseDto;
 
 public interface ReservationTypeService {
     ReservationTypeResponseDto getReservationTypeById(Long id);
+    Boolean deleteReservationType(Long id);
 
 }
