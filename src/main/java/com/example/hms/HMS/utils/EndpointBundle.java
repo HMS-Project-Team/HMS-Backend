@@ -8,7 +8,7 @@ public final class  EndpointBundle {
     public static final String HOTEL = SETTINGS+"/hotel";
     public static final String CREATE_HOTEL = "/add";
     public static final String ROOM = BASE_URL + "/room";
-
+    public static final String CHANNEL = "/channel";
 
 
     public  static  final String ADD="/add";
@@ -50,4 +50,16 @@ public final class  EndpointBundle {
 
     //Amenities
     public static final String AMENITIES = ROOM + "/amenities";
+
+    //Currency
+    public static final String CURRENCY = BASE_URL + "/currency";
+
+    //Guests
+    public static  final String GUESTS = BASE_URL + "/guests";
+
+    //RoomType
+    public static final String ROOMTYPE = BASE_URL + ROOM + "/roomtype";
+
+    //Reservation Type
+    public static final String RESERVATIONTYPE = BASE_URL + CHANNEL + "/reservationtype";
 }
