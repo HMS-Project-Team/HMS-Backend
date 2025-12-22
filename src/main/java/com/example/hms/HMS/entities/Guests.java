@@ -31,5 +31,5 @@ public class Guests extends DateAudit {
     private String addressLine1;
     private String addressLine2;
     @Lob
-    private byte[] identityImage;
+    private String identityImage;
 }
