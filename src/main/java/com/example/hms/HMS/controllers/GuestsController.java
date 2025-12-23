@@ -12,12 +12,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(EndpointBundle.GUESTS)
 @RequiredArgsConstructor
 public class GuestsController {
 
-    private final GuestsService guestsService;
+    private final GuestsService  guestsService;
 
     @GetMapping(EndpointBundle.ID)
     public ResponseEntity<GuestsResponseDto> getGuestsById(@PathVariable Long id){
@@ -35,5 +37,24 @@ public class GuestsController {
                 deleteManageGuests
         ));
     }
+
+    @GetMapping(EndpointBundle.SEARCH)
+    public ResponseEntity<ResponseWrapper<List<GuestsResponseDto>>> searchGuests(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String email,
+            @RequestParam(required = false) String phone
+    ) {
+        List<GuestsResponseDto> guests =
+                guestsService.searchGuests(name, email, phone);
+
+        return ResponseEntity.ok(
+                new ResponseWrapper<>(
+                        RestApiResponseStatusCodes.OK.getCode(),
+                        ValidationMessages.RETRIEVED_SUCCESSFULLY,
+                        guests
+                )
+        );
+    }
+
 
 }
