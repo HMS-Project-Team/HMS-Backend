@@ -30,6 +30,5 @@ public class Guests extends DateAudit {
     private String city;
     private String addressLine1;
     private String addressLine2;
-    @Lob
     private String identityImage;
 }
