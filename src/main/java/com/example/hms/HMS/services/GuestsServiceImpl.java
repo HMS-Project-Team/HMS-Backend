@@ -36,11 +36,12 @@ public class GuestsServiceImpl implements GuestsService {
 
     @Override
     public List<GuestsResponseDto> searchGuests(
+            String query,
             String name,
             String email,
             String phone) {
         List<Guests> guests = guestsRepository.findAll(
-                GuestsSpecification.search(name, email, phone));
+                GuestsSpecification.search(query, name, email, phone));
 
         if (guests.isEmpty()) {
             throw new ResourceNotFoundException("No guests found matching the search criteria.");
