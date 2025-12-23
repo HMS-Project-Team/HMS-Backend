@@ -7,6 +7,7 @@ import com.example.hms.HMS.exceptionHandlers.ResourceNotFoundException;
 import com.example.hms.HMS.mappers.ReservationTypeMapper;
 import com.example.hms.HMS.repositories.ReservationTypeRepository;
 import com.example.hms.HMS.utils.ValidationMessages;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -45,6 +46,19 @@ public class ReservationTypeServiceImpl implements ReservationTypeService{
         }
         return reservationTypes.map(reservationTypeMapper::toResponseDto);
     }
+
+    @Override
+    public ReservationTypeResponseDto updateReservationType(
+            Long id,
+            ReservationTypeRequestDto reservationTypeRequestDto) {
+        ReservationType reservationType = reservationTypeRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Reservation Type not found"));
+        reservationType.setName(reservationTypeRequestDto.getName());
+        ReservationType updatedReservationType =
+                reservationTypeRepository.save(reservationType);
+        return reservationTypeMapper.toResponseDto(updatedReservationType);
+    }
+
     @Override
     public ReservationTypeResponseDto createReservationType(ReservationTypeRequestDto requestDto) {
 
