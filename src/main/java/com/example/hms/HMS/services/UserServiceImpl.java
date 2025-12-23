@@ -19,19 +19,23 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final RoleRepository roleRepository;
     private final HotelRepository hotelRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final EmailService emailService;
 
     @Override
     public UserResponseDto getUserById(Long id) {
@@ -39,7 +43,8 @@ public class UserServiceImpl implements UserService{
             throw new IllegalArgumentException(ValidationMessages.INVALID_ID);
         }
 
-        User user = userRepository.findById(id).orElseThrow(()->new ResourceNotFoundException(ValidationMessages.NOT_FOUND));
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(ValidationMessages.NOT_FOUND));
         UserResponseDto userDetailsDto = userMapper.toResponseDto(user);
 
         if (user.getRoles() != null && !user.getRoles().isEmpty()) {
@@ -62,7 +67,8 @@ public class UserServiceImpl implements UserService{
     @Override
     public Boolean deleteUser(Long id) throws HttpRequestMethodNotSupportedException {
 
-        User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException ("User"+ValidationMessages.NOT_FOUND));
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User" + ValidationMessages.NOT_FOUND));
         userRepository.deleteById(id);
         return true;
     }
@@ -98,7 +104,14 @@ public class UserServiceImpl implements UserService{
 
         user.setRoles(roles);
 
+        // Generate a random unique password for each user
+        String plainPassword = UUID.randomUUID().toString().substring(0, 8);
+        user.setPassword(passwordEncoder.encode(plainPassword));
+
         User create = userRepository.save(user);
+
+        // Send email with original credentials (unique for this user)
+        emailService.sendUserCredentials(create.getEmail(), create.getEmail(), plainPassword);
 
         UserResponseDto response = userMapper.toResponseDto(create);
 
@@ -126,7 +139,6 @@ public class UserServiceImpl implements UserService{
         } else {
             throw new IllegalArgumentException("User must have at least one role assigned");
         }
-
 
         userRepository.save(user);
 
@@ -161,7 +173,8 @@ public class UserServiceImpl implements UserService{
         } catch (IllegalArgumentException e) {
             throw new InvalidPageSizeException(e.getMessage());
         } catch (Exception e) {
-            System.err.println("Error retrieving users - page: " + page + ", size: " + size + ", error: " + e.getMessage());
+            System.err.println(
+                    "Error retrieving users - page: " + page + ", size: " + size + ", error: " + e.getMessage());
             throw new RuntimeException("Failed to retrieve users due to system error: " + e.getMessage());
         }
     }
