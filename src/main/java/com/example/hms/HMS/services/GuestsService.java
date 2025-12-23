@@ -8,7 +8,9 @@ import java.util.List;
 public interface GuestsService {
 
     GuestsResponseDto getGuestsById(long id);
+
     boolean deleteManageGuests(@Valid Long id);
-    List<GuestsResponseDto> searchGuests(String name, String email, String phone);
+
+    List<GuestsResponseDto> searchGuests(String query, String name, String email, String phone);
 
 }
