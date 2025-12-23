@@ -27,6 +27,22 @@ import org.springframework.web.bind.annotation.RestController;
 public class ReservationTypeController {
     private final ReservationTypeService reservationTypeService;
 
+    @PutMapping(EndpointBundle.ID)
+    public ResponseEntity<ResponseWrapper<ReservationTypeResponseDto>> updateReservationType(
+            @Valid
+            @PathVariable Long id,
+            @RequestBody ReservationTypeRequestDto reservationTypeRequestDto){
+        ReservationTypeResponseDto reservationTypeResponseDto=reservationTypeService.updateReservationType(id,reservationTypeRequestDto);
+
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new ResponseWrapper<>(
+                        RestApiResponseStatusCodes.OK.getCode(),
+                        ValidationMessages.UPDATED_SUCCESSFULLY,
+                        reservationTypeResponseDto
+                )
+        );
+    }
+
     @PostMapping(EndpointBundle.ADD)
     public ResponseEntity<ResponseWrapper<ReservationTypeResponseDto>> createReservationType(
             @Valid @RequestBody ReservationTypeRequestDto requestDto) {
@@ -68,8 +84,6 @@ public class ReservationTypeController {
 
     }
 
-    private final ReservationTypeService service;
-
     @GetMapping
     public ResponseEntity<ResponseWrapper<Page<ReservationTypeResponseDto>>>
     getAllReservationType(@Valid
@@ -80,7 +94,7 @@ public class ReservationTypeController {
         }
         Pageable pageable =  PageRequest.of(pageNo - 1 , pageSize);
 
-        Page<ReservationTypeResponseDto> responseDto = service.fetchAllReservationType(pageable);
+        Page<ReservationTypeResponseDto> responseDto = reservationTypeService.fetchAllReservationType(pageable);
 
         return ResponseEntity.status(HttpStatus.OK).body(new ResponseWrapper<>(
                 RestApiResponseStatusCodes.OK.getCode(),
