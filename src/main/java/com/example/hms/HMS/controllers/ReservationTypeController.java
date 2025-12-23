@@ -1,5 +1,6 @@
 package com.example.hms.HMS.controllers;
 
+import com.example.hms.HMS.dtos.requests.ReservationTypeRequestDto;
 import com.example.hms.HMS.dtos.responses.ReservationTypeResponseDto;
 import com.example.hms.HMS.enums.RestApiResponseStatusCodes;
 import com.example.hms.HMS.services.ReservationTypeService;
@@ -25,6 +26,23 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class ReservationTypeController {
     private final ReservationTypeService reservationTypeService;
+
+    @PostMapping(EndpointBundle.ADD)
+    public ResponseEntity<ResponseWrapper<ReservationTypeResponseDto>> createReservationType(
+            @Valid @RequestBody ReservationTypeRequestDto requestDto) {
+
+        ReservationTypeResponseDto responseDto =
+                reservationTypeService.createReservationType(requestDto);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+                new ResponseWrapper<>(
+                        RestApiResponseStatusCodes.CREATED.getCode(),
+                        ValidationMessages.SUCCESS,
+                        responseDto
+                )
+        );
+    }
+
 
     @GetMapping(EndpointBundle.ID)
     public ResponseEntity<ResponseWrapper<ReservationTypeResponseDto>> getById(@PathVariable Long id){

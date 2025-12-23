@@ -1,5 +1,6 @@
 package com.example.hms.HMS.services;
 
+import com.example.hms.HMS.dtos.requests.ReservationTypeRequestDto;
 import com.example.hms.HMS.dtos.responses.ReservationTypeResponseDto;
 import com.example.hms.HMS.entities.ReservationType;
 import com.example.hms.HMS.exceptionHandlers.ResourceNotFoundException;
@@ -44,4 +45,16 @@ public class ReservationTypeServiceImpl implements ReservationTypeService{
         }
         return reservationTypes.map(reservationTypeMapper::toResponseDto);
     }
+    @Override
+    public ReservationTypeResponseDto createReservationType(ReservationTypeRequestDto requestDto) {
+
+        ReservationType reservationType =
+                reservationTypeMapper.toEntity(requestDto);
+
+        ReservationType savedReservationType =
+                reservationTypeRepository.save(reservationType);
+
+        return reservationTypeMapper.toResponseDto(savedReservationType);
+    }
+
 }
