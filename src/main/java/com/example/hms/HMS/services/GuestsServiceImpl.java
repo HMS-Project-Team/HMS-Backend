@@ -7,6 +7,8 @@ import com.example.hms.HMS.mappers.GuestsMapper;
 import com.example.hms.HMS.repositories.GuestsRepository;
 import com.example.hms.HMS.specifications.GuestsSpecification;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -48,6 +50,12 @@ public class GuestsServiceImpl implements GuestsService {
         }
 
         return guestsMapper.toDtoList(guests);
+    }
+
+    @Override
+    public Page<GuestsResponseDto> getAllGuests(int page, int size) {
+        Page<Guests> guestsPage = guestsRepository.findAll(PageRequest.of(page, size));
+        return guestsPage.map(guestsMapper::toEntity);
     }
 
 }
