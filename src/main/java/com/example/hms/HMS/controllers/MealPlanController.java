@@ -84,6 +84,7 @@ public class MealPlanController {
             @PathVariable Long id,
             @Valid @RequestBody MealPlanRequestDto requestDto
     ) {
+        requestDto.trim();
         MealPlanResponseDto updatedMealPlan = mealPlanService.updateMealPlan(id, requestDto);
 
         return ResponseEntity.ok(
@@ -95,7 +96,9 @@ public class MealPlanController {
         );
     }
     @PostMapping(EndpointBundle.ADD)
+
     public ResponseEntity<ResponseWrapper<MealPlanResponseDto>> createMealPlan(@Valid @RequestBody MealPlanRequestDto mealPlanRequestDto) {
+        mealPlanRequestDto.trim();
         MealPlanResponseDto createdMealPlan = mealPlanService.createMealPlan(mealPlanRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new ResponseWrapper<>(
