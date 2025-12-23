@@ -8,6 +8,7 @@ import com.example.hms.HMS.utils.ResponseWrapper;
 import com.example.hms.HMS.utils.ValidationMessages;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +26,18 @@ public class GuestsController {
         public ResponseEntity<GuestsResponseDto> getGuestsById(@PathVariable Long id) {
                 GuestsResponseDto response = guestsService.getGuestsById(id);
                 return ResponseEntity.ok(response);
+        }
+
+        @GetMapping
+        public ResponseEntity<ResponseWrapper<Page<GuestsResponseDto>>> getAllGuests(
+                        @RequestParam(defaultValue = "0") int page,
+                        @RequestParam(defaultValue = "10") int size) {
+                Page<GuestsResponseDto> guests = guestsService.getAllGuests(page, size);
+                return ResponseEntity.ok(
+                                new ResponseWrapper<>(
+                                                RestApiResponseStatusCodes.OK.getCode(),
+                                                ValidationMessages.RETRIEVED_SUCCESSFULLY,
+                                                guests));
         }
 
         @DeleteMapping(EndpointBundle.ID)
