@@ -128,7 +128,7 @@ public class GuestsServiceImpl implements GuestsService {
     private GuestsResponseDto mapToResponseDto(Guests guests) {
         GuestsResponseDto dto = guestsMapper.toGuestsResponseDto(guests);
         if (guests.getIdentityImage() != null && !guests.getIdentityImage().isEmpty()) {
-            dto.setIdentityImage(guests.getIdentityImage());
+            dto.setIdentityImage(fileStorageService.getFileUrl(guests.getIdentityImage()));
         }
         return dto;
     }

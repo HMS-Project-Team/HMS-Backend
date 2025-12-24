@@ -8,6 +8,12 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.UUID;
 
+import com.azure.storage.blob.sas.BlobSasPermission;
+import com.azure.storage.blob.sas.BlobServiceSasSignatureValues;
+import java.time.OffsetDateTime;
+import com.azure.storage.blob.models.BlobHttpHeaders;
+import com.azure.storage.blob.options.BlobParallelUploadOptions;
+
 @Service
 public class FileStorageServiceImpl implements FileStorageService {
 
@@ -23,10 +29,47 @@ public class FileStorageServiceImpl implements FileStorageService {
         BlobClient blobClient = containerClient.getBlobClient(fileName);
 
         try {
-            blobClient.upload(file.getInputStream(), file.getSize(), true);
-            return blobClient.getBlobUrl();
+            BlobHttpHeaders headers = new BlobHttpHeaders().setContentType(file.getContentType());
+            blobClient.uploadWithResponse(new BlobParallelUploadOptions(file.getInputStream()).setHeaders(headers),
+                    null, null);
+            return fileName;
         } catch (Exception e) {
             throw new IOException("Failed to upload file to Azure", e);
+        }
+    }
+
+    @Override
+    public String getFileUrl(String fileName) {
+        if (fileName == null || fileName.isEmpty()) {
+            return null;
+        }
+
+        // Backward compatibility: if it's already a full URL, return as is
+        if (fileName.startsWith("http")) {
+            return fileName;
+        }
+
+        try {
+            BlobClient blobClient = containerClient.getBlobClient(fileName);
+
+            // Define SAS permissions (Read only)
+            BlobSasPermission blobSasPermission = new BlobSasPermission().setReadPermission(true);
+
+            // Define SAS values (expiry time 1 hour)
+            BlobServiceSasSignatureValues sasValues = new BlobServiceSasSignatureValues(
+                    OffsetDateTime.now().plusHours(1),
+                    blobSasPermission);
+            sasValues.setContentDisposition("inline");
+
+            // Generate SAS token
+            String sasToken = blobClient.generateSas(sasValues);
+
+            // Return URL with SAS token
+            return blobClient.getBlobUrl() + "?" + sasToken;
+        } catch (Exception e) {
+            // Fallback: return the raw Blob URL if SAS generation fails (though it likely
+            // won't work for private blobs)
+            return containerClient.getBlobClient(fileName).getBlobUrl();
         }
     }
 
