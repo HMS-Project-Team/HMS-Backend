@@ -34,8 +34,16 @@ public class UserRequestDto {
     private String lastname;
     @Email(message = ValidationMessages.INVALID_EMAIL)
     @Column(unique = true)
+    @Pattern(
+            regexp = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$",
+            message = ValidationMessages.INVALID_EMAIL
+    )
     private String email;
     @NotEmpty
+    @Pattern(
+            regexp = "^(?:7|0|\\+94)[0-9]{9}$",
+            message = "Please enter a valid Sri Lankan phone number."
+    )
     private String phone;
     @NotEmpty
     private String address;
