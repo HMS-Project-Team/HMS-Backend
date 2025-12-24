@@ -74,9 +74,9 @@ public class CurrencyController {
 
     @PutMapping(EndpointBundle.ID)
     public ResponseEntity<ResponseWrapper<CurrencyResponseDto>> updateCurrency(
+            @Valid
             @PathVariable Long id,
             @RequestBody CurrencyRequestDto currencyRequestDto){
-
         CurrencyResponseDto update = currencyService.updateCurrency(id,currencyRequestDto);
 
         if(update != null) {
