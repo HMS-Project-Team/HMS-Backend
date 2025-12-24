@@ -24,7 +24,7 @@ public class Guests extends DateAudit {
     private LocalDate dateOfBirth;
     @Column(unique = true)
     private String email;
-    private  String phoneNumber;
+    private String phoneNumber;
     private String nationality;
     private String country;
     private String city;
