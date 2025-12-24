@@ -18,14 +18,18 @@ public class Hotel extends DateAudit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(unique = true)
     private String hotelName;
     private String address;
     private String city;
     private String country;
+    @Column(unique = true)
     private String phoneNumber;
+    @Column(unique = true)
     private String website;
     @Lob
     private byte[] logoImage;
+    @Column(unique = true)
     private String email;
 
 

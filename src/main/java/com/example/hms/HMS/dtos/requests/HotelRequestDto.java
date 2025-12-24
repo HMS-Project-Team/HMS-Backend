@@ -32,6 +32,10 @@ public class HotelRequestDto {
     @Size(max = 2097152, message = ValidationMessages.SIZE_EXCEED)
     private byte[] logoImage;
     @Email(message = ValidationMessages.INVALID_EMAIL)
+    @Pattern(
+            regexp = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$",
+            message = ValidationMessages.INVALID_EMAIL
+    )
     private String email;
     private Long hotelId;
 }

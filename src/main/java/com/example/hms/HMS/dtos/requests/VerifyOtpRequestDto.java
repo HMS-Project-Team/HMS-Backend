@@ -8,6 +8,10 @@ import lombok.Data;
 public class VerifyOtpRequestDto {
     @NotBlank(message = ValidationMessages.EMAIL_REQUIRED)
     @Email(message = ValidationMessages.INVALID_EMAIL)
+    @Pattern(
+            regexp = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$",
+            message = ValidationMessages.INVALID_EMAIL
+    )
     private String email;
 
     @NotNull(message = ValidationMessages.OTP_NOTNULL)

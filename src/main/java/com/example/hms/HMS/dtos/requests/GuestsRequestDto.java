@@ -41,6 +41,10 @@ public class GuestsRequestDto {
 
     @Email(message = ValidationMessages.INVALID_EMAIL)
     @NotNull(message = ValidationMessages.REQUIRED_FIELD_MISSING)
+    @Pattern(
+            regexp = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$",
+            message = ValidationMessages.INVALID_EMAIL
+    )
     private String email;
 
     @NotBlank(message = ValidationMessages.REQUIRED_FIELD_MISSING)
