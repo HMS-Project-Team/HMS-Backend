@@ -128,8 +128,7 @@ public class GuestsServiceImpl implements GuestsService {
     private GuestsResponseDto mapToResponseDto(Guests guests) {
         GuestsResponseDto dto = guestsMapper.toGuestsResponseDto(guests);
         if (guests.getIdentityImage() != null && !guests.getIdentityImage().isEmpty()) {
-            // Reusing identityImage field to return the full web URL
-            dto.setIdentityImage("/uploads/" + guests.getIdentityImage());
+            dto.setIdentityImage(fileStorageService.getFileUrl(guests.getIdentityImage()));
         }
         return dto;
     }

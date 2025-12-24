@@ -75,7 +75,7 @@ public class RoleController {
     }
 
     @PostMapping(EndpointBundle.CREATE_ROLE)
-    public ResponseEntity<ResponseWrapper<RoleRequestDto>> createRole(@PathVariable Long hotelId, @RequestBody RoleRequestDto roleRequestDto){
+    public ResponseEntity<ResponseWrapper<RoleRequestDto>> createRole(@Valid @PathVariable Long hotelId, @RequestBody RoleRequestDto roleRequestDto){
         try{
             RoleRequestDto createRole = roleService.createRole(hotelId,roleRequestDto);
             if(createRole != null){
