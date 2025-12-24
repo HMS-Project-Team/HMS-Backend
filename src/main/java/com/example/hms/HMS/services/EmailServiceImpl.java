@@ -1,12 +1,9 @@
 package com.example.hms.HMS.services;
 
-import com.example.hms.HMS.config.EmailConfig;
 import com.example.hms.HMS.entities.Email;
-import com.example.hms.HMS.entities.User;
 import com.example.hms.HMS.repositories.EmailRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Service;
 
@@ -38,6 +35,34 @@ public class EmailServiceImpl implements EmailService {
         message.setTo(recipientEmail);
         message.setSubject("Your OTP Code");
         message.setText("Your OTP for HMS verification is: " + otp);
+
+        sender.send(message);
+    }
+
+    @Override
+    public void sendUserCredentials(String recipientEmail, String username, String password) {
+        Email emailConfig = emailRepository.findById(1L)
+                .orElseThrow(() -> new RuntimeException("Email config not found"));
+
+        JavaMailSenderImpl sender = new JavaMailSenderImpl();
+        sender.setHost(emailConfig.getHostName());
+        sender.setPort(emailConfig.getPort());
+        sender.setUsername(emailConfig.getSentEmail());
+        sender.setPassword(emailConfig.getPassword());
+
+        Properties props = sender.getJavaMailProperties();
+        props.put("mail.transport.protocol", emailConfig.getProtocol());
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(recipientEmail);
+        message.setSubject("Your HMS Account Credentials");
+        message.setText("Welcome to HMS!\n\n" +
+                "Your account has been created successfully. Here are your login credentials:\n" +
+                "Username: " + username + "\n" +
+                "Password: " + password + "\n\n" +
+                "Please log in and change your password for security reasons.");
 
         sender.send(message);
     }
