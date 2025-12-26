@@ -58,8 +58,18 @@ public final class  EndpointBundle {
     public static  final String GUESTS = BASE_URL + "/guests";
 
     //RoomType
-    public static final String ROOMTYPE = BASE_URL + ROOM + "/roomtype";
+    public static final String ROOMTYPE = ROOM + "/roomtype";
 
     //Reservation Type
     public static final String RESERVATIONTYPE = BASE_URL + CHANNEL + "/reservationtype";
+
+    //Tax
+    public static final String TAX = BASE_URL +"/tax";
+
+    //Policies
+    public static final String POLICIES = BASE_URL +"/policy";
+    public static final String CHILD_POLICIES = POLICIES+ "/childpolicy";
+    public static final String CANCELLATION_POLICIES = POLICIES+ "/cancellationpolicy";
+
+
 }

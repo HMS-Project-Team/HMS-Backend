@@ -28,12 +28,9 @@ public class ValidationMessages {
     // ==== Authentication ====
     public static final String UNAUTHORIZED = "You are not authorized to perform this action.";
     public static final String INVALID_CREDENTIALS = "Invalid email or password.";
-    public static final String ACCESS_REVOKED="Token is already invalidated or logged out";
-    public static final String TOKEN_EXPIRED="The token has expired";
-    public static final String TOKEN_NOTFOUND="The token not found";
-
-
-
+    public static final String ACCESS_REVOKED = "Token is already invalidated or logged out";
+    public static final String TOKEN_EXPIRED = "The token has expired";
+    public static final String TOKEN_NOTFOUND = "The token not found";
 
     // ==== Email & Password ====
     public static final String EMAIL_REQUIRED = "Email is required.";
@@ -61,26 +58,47 @@ public class ValidationMessages {
     public static final String WRONG_API_CALL = "Incorrect API path or method.";
     public static final String INVALID_JSON = "Invalid JSON format.";
 
-
     // ==== Otp ====
     public static final String OTP_SEND_SUCCESSFUL = "OTP Sent Successfully";
-    public static final String OTP_NOTNULL= "OTP or email missing/invalid";
-    public static final String OTP_SIZE= "Maximum Number of OTP is 6 Digits";
-    public static final String OTP_REVOKED= "OTP Already Revoked";
-    public static final String OTP_EXPIRED= "OTP validity period has expired";
-    public static final String OTP_MISSMATCHED= "Incorrect OTP";
-    public static final String OTP_VERIFIED= "OTP Verified Successfully";
+    public static final String OTP_NOTNULL = "OTP or email missing/invalid";
+    public static final String OTP_SIZE = "Maximum Number of OTP is 6 Digits";
+    public static final String OTP_REVOKED = "OTP Already Revoked";
+    public static final String OTP_EXPIRED = "OTP validity period has expired";
+    public static final String OTP_MISSMATCHED = "Incorrect OTP";
+    public static final String OTP_VERIFIED = "OTP Verified Successfully";
 
-    //==== User ====
+    // ==== User ====
     public static final String ROLES_NOT_BELONG_TO_HOTEL = "One or more roles do not belong to this hotel.";
     public static final String USER_HAS_NO_ROLES = "User has no roles assigned.";
     public static final String ROLE_NOT_LINKED_TO_HOTEL = "User's role is not linked to any hotel.";
 
-
     public static final String INVALID_PAGE_SIZE_MSG = "Invalid Page Size.";
 
-    public static final String SIZE_EXCEED ="Size should be less than 2MB" ;
+    public static final String SIZE_EXCEED = "Size should be less than 2MB";
 
-    //===== ReservationType ====
+    // ===== ReservationType ====
     public static final String RESERVATIONTYPE_LIMIT = "Reservation type name must be less than 50 characters";
+
+    // ===== Policies ====
+    public static final String POLICY_TITLE_REQUIRED = "Policy title is required.";
+    public static final String POLICY_TITLE_SIZE = "Policy title must be less than 100 characters.";
+    public static final String POLICY_DESCRIPTION_REQUIRED = "Policy description is required.";
+    public static final String POLICY_DESCRIPTION_SIZE = "Policy description must be less than 1000 characters.";
+    public static final String POLICY_TYPE_REQUIRED = "Policy type is required.";
+    public static final String POLICY_STATUS_REQUIRED = "Policy status is required.";
+
+    // ===== Tax ====
+    public static final String TAX_NAME_REQUIRED = "Tax name is required.";
+    public static final String TAX_NAME_SIZE = "Tax name must be less than 50 characters.";
+    public static final String TAX_RATE_REQUIRED = "Tax rate is required.";
+    public static final String TAX_RATE_NEGATIVE = "Tax rate cannot be negative.";
+    public static final String TAX_TYPE_REQUIRED = "Tax type is required.";
+    public static final String TAX_STATUS_REQUIRED = "Tax status is required.";
+
+    // ===== RoomType ====
+    public static final String ROOMTYPE_NAME_REQUIRED = "Room type name is required.";
+    public static final String ROOMTYPE_NAME_SIZE = "Room type name must be less than 100 characters.";
+    public static final String ROOMTYPE_DESCRIPTION_REQUIRED = "Room type description is required.";
+    public static final String ROOMTYPE_DESCRIPTION_SIZE = "Room type description must be less than 500 characters.";
+    public static final String ROOMTYPE_CAPACITY_MIN = "Capacity must be at least 1.";
 }

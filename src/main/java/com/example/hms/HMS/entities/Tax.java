@@ -1,5 +1,6 @@
 package com.example.hms.HMS.entities;
 
+import com.example.hms.HMS.enums.Status;
 import com.example.hms.HMS.utils.DateAudit;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -7,22 +8,21 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
+import java.math.BigDecimal;
 
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class RoomType extends DateAudit {
+public class Tax extends DateAudit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     private String name;
-    private String description;
-    private int capacity;
+    private BigDecimal rate;
+    private String type;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "roomtype_amenities", joinColumns = @JoinColumn(name = "roomtype_id"), inverseJoinColumns = @JoinColumn(name = "amenities_id"))
-    private List<Amenities> amenities;
+    @Enumerated(EnumType.STRING)
+    private Status status;
 }
