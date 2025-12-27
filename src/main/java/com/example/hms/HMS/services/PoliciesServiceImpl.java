@@ -52,4 +52,13 @@ public class PoliciesServiceImpl implements PoliciesService {
         Policies savedPolicy = policiesRepository.save(policy);
         return policiesMapper.toDto(savedPolicy);
     }
+
+    @Override
+    public PoliciesResponseDto fetchPolicyById(Long id) {
+        Policies policy = policiesRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        ValidationMessages.NOT_FOUND + " with id: " + id));
+
+        return policiesMapper.toDto(policy);
+    }
 }
