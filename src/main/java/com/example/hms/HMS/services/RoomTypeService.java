@@ -8,4 +8,5 @@ public interface RoomTypeService {
     RoomTypeResponseDto createRoomType(RoomTypeRequestDto roomTypeRequestDto);
     RoomTypeResponseDto getRoomTypeById(Long id);
     boolean deleteRoomType(@Valid Long id);
+    RoomTypeResponseDto updateRoomType(Long id, RoomTypeRequestDto roomTypeRequestDto);
 }

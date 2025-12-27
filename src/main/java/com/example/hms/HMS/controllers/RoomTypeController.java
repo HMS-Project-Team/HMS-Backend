@@ -23,7 +23,7 @@ public class RoomTypeController {
     private final RoomTypeService roomTypeService;
 
     @PostMapping(EndpointBundle.CREATE_ROOMTYPE)
-    public ResponseEntity<ResponseWrapper<RoomTypeResponseDto>> createRoomType(@Valid @RequestBody RoomTypeRequestDto roomTypeRequestDto){
+    public ResponseEntity<ResponseWrapper<RoomTypeResponseDto>> createRoomType(@Valid @RequestBody RoomTypeRequestDto roomTypeRequestDto) {
         RoomTypeResponseDto newRoomType = roomTypeService.createRoomType(roomTypeRequestDto);
 
         if (newRoomType != null) {
@@ -51,20 +51,38 @@ public class RoomTypeController {
                 data));
     }
 
+    @PutMapping(EndpointBundle.ID)
+    public ResponseEntity<ResponseWrapper<RoomTypeResponseDto>> updateRoomType(
+            @PathVariable Long id,
+            @Valid @RequestBody RoomTypeRequestDto roomTypeRequestDto
+    ) {
+
+        RoomTypeResponseDto updatedRoomType =
+                roomTypeService.updateRoomType(id, roomTypeRequestDto);
+
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new ResponseWrapper<>(
+                        RestApiResponseStatusCodes.OK.getCode(),
+                        ValidationMessages.UPDATED_SUCCESSFULLY,
+                        updatedRoomType
+                )
+        );
+    }
+
     @DeleteMapping(EndpointBundle.ID)
-    public ResponseEntity<ResponseWrapper<String>> deleteRoomType(@Valid @PathVariable Long id){
+    public ResponseEntity<ResponseWrapper<String>> deleteRoomType(@Valid @PathVariable Long id) {
         boolean deleted = roomTypeService.deleteRoomType(id);
 
-        if(deleted){
+        if (deleted) {
             return ResponseEntity.status(HttpStatus.OK).body(new ResponseWrapper<>(
                     RestApiResponseStatusCodes.OK.getCode(),
-                    ValidationMessages.DELETED_SUCCESSFULLY ,
+                    ValidationMessages.DELETED_SUCCESSFULLY,
                     null
             ));
-        }else{
+        } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseWrapper<>(
                     RestApiResponseStatusCodes.NOT_FOUND.getCode(),
-                    ValidationMessages.DELETE_FAILED ,
+                    ValidationMessages.DELETE_FAILED,
                     null
             ));
         }

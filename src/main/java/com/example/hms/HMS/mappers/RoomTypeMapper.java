@@ -6,6 +6,7 @@ import com.example.hms.HMS.entities.Amenities;
 import com.example.hms.HMS.entities.RoomType;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
 import java.util.List;
 
@@ -26,4 +27,11 @@ public interface RoomTypeMapper {
     }
 
     List<RoomTypeResponseDto> toDtoList(List<RoomType> roomTypeList);
+
+    @Mapping(target = "amenities", ignore = true)
+    void updateEntityFromDto(
+            RoomTypeRequestDto roomTypeRequestDto,
+            @MappingTarget RoomType roomType
+    );
+
 }
