@@ -56,4 +56,13 @@ public class RoomTypeServiceImpl implements RoomTypeService {
         return roomTypeMapper.toDto(roomType);
     }
 
+    @Override
+    public boolean deleteRoomType(Long id) {
+        RoomType roomType = roomTypeRepository.findById(id)
+                .orElseThrow(()-> new ResourceNotFoundException("RoomType Not Found with id : "+ id));
+
+        roomTypeRepository.delete(roomType);
+        return true;
+    }
+
 }
