@@ -57,6 +57,46 @@ public class RoomTypeServiceImpl implements RoomTypeService {
     }
 
     @Override
+    public RoomTypeResponseDto updateRoomType(Long id, RoomTypeRequestDto roomTypeRequestDto) {
+        // 1. Fetch existing RoomType
+        RoomType existingRoomType = roomTypeRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                ValidationMessages.NOT_FOUND
+                        )
+                );
+
+        // 2. Update basic fields (except amenities)
+        roomTypeMapper.updateEntityFromDto(roomTypeRequestDto, existingRoomType);
+
+        // 3. Fetch amenities by IDs from request
+        List<Amenities> amenities =
+                amenitiesRepository.findAllById(roomTypeRequestDto.getAmenityIds());
+
+        // 4. Validate amenities list
+        if (amenities.isEmpty()) {
+            throw new ResourceNotFoundException(
+                    ValidationMessages.ROOMTYPE_AMENITIES_REQUIRED
+            );
+        }
+
+        if (amenities.size() != roomTypeRequestDto.getAmenityIds().size()) {
+            throw new ResourceNotFoundException(
+                    ValidationMessages.ROOMTYPE_AMENITIES_NOT_FOUND
+            );
+        }
+
+        // 5. Set updated amenities
+        existingRoomType.setAmenities(amenities);
+
+        // 6. Save updated entity
+        RoomType updatedRoomType = roomTypeRepository.save(existingRoomType);
+
+        // 7. Convert to response DTO and return
+        return roomTypeMapper.toDto(updatedRoomType);
+
+    }
+    @Override
     public boolean deleteRoomType(Long id) {
         RoomType roomType = roomTypeRepository.findById(id)
                 .orElseThrow(()-> new ResourceNotFoundException("RoomType Not Found with id : "+ id));
