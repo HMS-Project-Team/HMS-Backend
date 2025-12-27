@@ -52,4 +52,16 @@ public class PoliciesServiceImpl implements PoliciesService {
 
         return policiesPage.map(policiesMapper::toDto);
     }
+
+    @Override
+    public PoliciesResponseDto getChildPolicyById(Long id) {
+        Policies policy = policiesRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Policy not found with id : " + id));
+
+        if (!PolicyType.CHILD.equals(policy.getType())) {
+            throw new ResourceNotFoundException("Policy with ID " + id + " is not a Child Policy.");
+        }
+
+        return policiesMapper.toDto(policy);
+    }
 }
