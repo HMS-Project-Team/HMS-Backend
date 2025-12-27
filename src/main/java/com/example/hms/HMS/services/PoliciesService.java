@@ -12,4 +12,6 @@ public interface PoliciesService {
     PoliciesResponseDto updatePolicy(Long id, PoliciesRequestDto policiesRequestDto);
 
     PoliciesResponseDto createPolicy(PoliciesRequestDto requestDto);
+
+    PoliciesResponseDto fetchPolicyById(Long id);
 }
