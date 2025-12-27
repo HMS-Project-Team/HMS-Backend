@@ -14,13 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(EndpointBundle.ROOMTYPE)
@@ -55,5 +49,24 @@ public class RoomTypeController {
                 RestApiResponseStatusCodes.OK.getCode(),
                 ValidationMessages.RETRIEVED_SUCCESSFULLY,
                 data));
+    }
+
+    @DeleteMapping(EndpointBundle.ID)
+    public ResponseEntity<ResponseWrapper<String>> deleteRoomType(@Valid @PathVariable Long id){
+        boolean deleted = roomTypeService.deleteRoomType(id);
+
+        if(deleted){
+            return ResponseEntity.status(HttpStatus.OK).body(new ResponseWrapper<>(
+                    RestApiResponseStatusCodes.OK.getCode(),
+                    ValidationMessages.DELETED_SUCCESSFULLY ,
+                    null
+            ));
+        }else{
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseWrapper<>(
+                    RestApiResponseStatusCodes.NOT_FOUND.getCode(),
+                    ValidationMessages.DELETE_FAILED ,
+                    null
+            ));
+        }
     }
 }
