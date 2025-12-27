@@ -54,4 +54,20 @@ public class CancellationPoliciesController {
                         ValidationMessages.UPDATED_SUCCESSFULLY,
                         responseDto));
     }
+
+    @PostMapping(EndpointBundle.ADD)
+    public ResponseEntity<ResponseWrapper<?>> createPolicy(
+             @RequestBody PoliciesRequestDto requestDto) {
+
+        requestDto.setType(PolicyType.CANCELLATION);
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new ResponseWrapper<>(
+                        HttpStatus.CREATED.value(),
+                        ValidationMessages.SAVED_SUCCESSFULLY,
+                        policiesService.createPolicy(requestDto)
+                ));
+    }
+
+
 }

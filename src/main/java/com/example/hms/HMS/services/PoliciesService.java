@@ -10,4 +10,6 @@ public interface PoliciesService {
     Page<PoliciesResponseDto> fetchPoliciesByType(PolicyType type, Pageable pageable);
 
     PoliciesResponseDto updatePolicy(Long id, PoliciesRequestDto policiesRequestDto);
+
+    PoliciesResponseDto createPolicy(PoliciesRequestDto requestDto);
 }

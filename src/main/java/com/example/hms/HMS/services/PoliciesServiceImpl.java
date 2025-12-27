@@ -45,4 +45,11 @@ public class PoliciesServiceImpl implements PoliciesService {
 
         return policiesMapper.toDto(updatedPolicy);
     }
+
+    @Override
+    public PoliciesResponseDto createPolicy(PoliciesRequestDto requestDto) {
+        Policies policy = policiesMapper.toEntity(requestDto);
+        Policies savedPolicy = policiesRepository.save(policy);
+        return policiesMapper.toDto(savedPolicy);
+    }
 }
