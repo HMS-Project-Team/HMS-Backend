@@ -10,6 +10,11 @@ import com.example.hms.HMS.repositories.AmenitiesRepository;
 import com.example.hms.HMS.repositories.RoomTypeRepository;
 import com.example.hms.HMS.utils.ValidationMessages;
 import lombok.RequiredArgsConstructor;
+import com.example.hms.HMS.dtos.responses.RoomTypeResponseDto;
+import com.example.hms.HMS.entities.RoomType;
+import com.example.hms.HMS.mappers.RoomTypeMapper;
+import com.example.hms.HMS.repositories.RoomTypeRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -39,4 +44,16 @@ public class RoomTypeServiceImpl implements RoomTypeService {
         RoomType created = roomTypeRepository.save(roomType);
         return roomTypeMapper.toDto(created);
     }
+
+    @Override
+    public RoomTypeResponseDto getRoomTypeById(Long id) {
+
+        RoomType roomType = roomTypeRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException(
+                        "RoomType not found with id : " + id
+                ));
+
+        return roomTypeMapper.toDto(roomType);
+    }
+
 }
