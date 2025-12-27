@@ -9,6 +9,7 @@ import com.example.hms.HMS.utils.ResponseWrapper;
 import com.example.hms.HMS.utils.ValidationMessages;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,5 +31,16 @@ public class ChildPoliciesController {
                 ValidationMessages.UPDATED_SUCCESSFULLY,
                 updatedPolicy);
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping(EndpointBundle.ID)
+    public ResponseEntity<ResponseWrapper<PoliciesResponseDto>> getChildPolicyById(@Valid @PathVariable Long id){
+        PoliciesResponseDto policiesResponseDto = policiesService.getChildPolicyById(id);
+
+        return ResponseEntity.status(HttpStatus.OK).body(new ResponseWrapper<>(
+                RestApiResponseStatusCodes.OK.getCode(),
+                ValidationMessages.SUCCESS ,
+                policiesResponseDto
+        ));
     }
 }

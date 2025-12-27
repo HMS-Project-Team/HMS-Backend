@@ -29,4 +29,13 @@ public class PoliciesServiceImpl implements PoliciesService {
         policy.setType(PolicyType.CHILD); // Ensure it stays as CHILD type
         return policiesMapper.toDto(policiesRepository.save(policy));
     }
+
+    @Override
+    public PoliciesResponseDto getChildPolicyById(Long id) {
+        Policies policies = policiesRepository.findById(id)
+                .orElseThrow(()-> new ResourceNotFoundException("Child Policy Not Found with id : " + id));
+
+
+        return policiesMapper.toDto(policies);
+    }
 }
