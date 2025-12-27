@@ -101,4 +101,8 @@ public class ValidationMessages {
     public static final String ROOMTYPE_DESCRIPTION_REQUIRED = "Room type description is required.";
     public static final String ROOMTYPE_DESCRIPTION_SIZE = "Room type description must be less than 500 characters.";
     public static final String ROOMTYPE_CAPACITY_MIN = "Capacity must be at least 1.";
+
+    // ===== RoomType - Amenities =====
+    public static final String ROOMTYPE_AMENITIES_REQUIRED = "At least one amenity must be selected.";
+    public static final String ROOMTYPE_AMENITIES_NOT_FOUND = "One or more selected amenities do not exist.";
 }

@@ -10,5 +10,5 @@ public class RoomTypeResponseDto {
     private String name;
     private String description;
     private int capacity;
-    private List<AmenitiesResponseDto> amenities;
+    private List<Long> amenityIds;
 }
