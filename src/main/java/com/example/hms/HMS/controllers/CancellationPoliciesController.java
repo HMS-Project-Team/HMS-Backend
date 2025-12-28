@@ -79,4 +79,25 @@ public class CancellationPoliciesController {
                         policy));
         }
 
+        @DeleteMapping(EndpointBundle.ID)
+        public ResponseEntity<ResponseWrapper<Boolean>> deleteCancellationPolicy(@PathVariable Long id){
+            boolean isDeleted = policiesService.deletePolicy(id);
+            if(isDeleted){
+                return ResponseEntity.status(HttpStatus.OK)
+                        .body(new ResponseWrapper<>(
+                                RestApiResponseStatusCodes.OK.getCode(),
+                                ValidationMessages.DELETED_SUCCESSFULLY,
+                                true
+                        ));
+            }
+            else {
+                return ResponseEntity.status(HttpStatus.OK)
+                        .body(new ResponseWrapper<>(
+                                RestApiResponseStatusCodes.BAD_REQUEST.getCode(),
+                                ValidationMessages.DELETE_FAILED,
+                                false
+                        ));
+            }
+        }
+
 }
