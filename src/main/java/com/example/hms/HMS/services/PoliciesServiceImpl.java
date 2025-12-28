@@ -8,18 +8,7 @@ import com.example.hms.HMS.exceptionHandlers.ResourceNotFoundException;
 import com.example.hms.HMS.mappers.PoliciesMapper;
 import com.example.hms.HMS.repositories.PoliciesRepository;
 import com.example.hms.HMS.utils.ValidationMessages;
-import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import com.example.hms.HMS.dtos.requests.PoliciesRequestDto;
-import com.example.hms.HMS.dtos.responses.PoliciesResponseDto;
-import com.example.hms.HMS.entities.Policies;
-import com.example.hms.HMS.enums.PolicyType;
 import com.example.hms.HMS.exceptionHandlers.InvalidPageSizeException;
-import com.example.hms.HMS.exceptionHandlers.ResourceNotFoundException;
-import com.example.hms.HMS.mappers.PoliciesMapper;
-import com.example.hms.HMS.repositories.PoliciesRepository;
-import com.example.hms.HMS.utils.ValidationMessages;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -77,7 +66,7 @@ public class PoliciesServiceImpl implements PoliciesService {
     @Override
     public boolean deletePolicy(Long id) {
         Policies policy = policiesRepository.findById(id)
-                .orElseThrow(()->new ResourceNotFoundException(ValidationMessages.NOT_FOUND+"with id:"+id));
+                .orElseThrow(() -> new ResourceNotFoundException(ValidationMessages.NOT_FOUND + "with id:" + id));
 
         policiesRepository.deleteById(id);
 
@@ -94,7 +83,8 @@ public class PoliciesServiceImpl implements PoliciesService {
         }
 
         if (policiesRequestDto.getType() != null && !PolicyType.CHILD.equals(policiesRequestDto.getType())) {
-            throw new IllegalArgumentException("Cannot change Policy Type to " + policiesRequestDto.getType() + " via this policy.");
+            throw new IllegalArgumentException(
+                    "Cannot change Policy Type to " + policiesRequestDto.getType() + " via this policy.");
         }
 
         policiesMapper.updateEntityFromDto(policiesRequestDto, policy);
@@ -104,13 +94,13 @@ public class PoliciesServiceImpl implements PoliciesService {
 
     @Override
     public Page<PoliciesResponseDto> getPolicies(PolicyType type, Pageable pageable) {
-        if (pageable.getPageNumber() < 0 || pageable.getPageSize() <= 0){
+        if (pageable.getPageNumber() < 0 || pageable.getPageSize() <= 0) {
             throw new InvalidPageSizeException("Invalid page or size value");
         }
 
         Page<Policies> policiesPage = policiesRepository.findByType(type, pageable);
 
-        if (policiesPage.isEmpty()){
+        if (policiesPage.isEmpty()) {
             throw new RuntimeException(ValidationMessages.NOT_FOUND);
         }
 
@@ -144,7 +134,7 @@ public class PoliciesServiceImpl implements PoliciesService {
     @Override
     public boolean deleteChildPolicy(Long id) {
         Policies policy = policiesRepository.findById(id)
-                .orElseThrow(()->new ResourceNotFoundException(ValidationMessages.NOT_FOUND+"with id:"+id));
+                .orElseThrow(() -> new ResourceNotFoundException(ValidationMessages.NOT_FOUND + "with id:" + id));
         policiesRepository.deleteById(id);
         return true;
     }
