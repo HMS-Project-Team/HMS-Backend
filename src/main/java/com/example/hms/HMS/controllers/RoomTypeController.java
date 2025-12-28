@@ -3,6 +3,8 @@ package com.example.hms.HMS.controllers;
 import com.example.hms.HMS.dtos.requests.RoomTypeRequestDto;
 import com.example.hms.HMS.dtos.responses.RoomTypeResponseDto;
 import com.example.hms.HMS.enums.RestApiResponseStatusCodes;
+import com.example.hms.HMS.exceptionHandlers.InvalidPageSizeException;
+import com.example.hms.HMS.exceptionHandlers.ResourceNotFoundException;
 import com.example.hms.HMS.services.RoomTypeService;
 
 import com.example.hms.HMS.utils.EndpointBundle;
@@ -11,6 +13,9 @@ import com.example.hms.HMS.utils.ValidationMessages;
 import jakarta.validation.Valid;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -86,5 +91,29 @@ public class RoomTypeController {
                     null
             ));
         }
+    }
+
+    @GetMapping
+    public ResponseEntity<ResponseWrapper<Page<RoomTypeResponseDto>>> getAllroomType(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ){
+        if (page<0 || size <= 0) {
+            throw  new InvalidPageSizeException(ValidationMessages.INVALID_PAGE_SIZE_MSG);
+        }
+
+        Pageable pageable = PageRequest.of(page,size);
+        Page<RoomTypeResponseDto> roomtypes = roomTypeService.getAllRoomtypes(pageable);
+
+        if(roomtypes.isEmpty()){
+            throw new ResourceNotFoundException(ValidationMessages.NOT_FOUND);
+        }
+
+        return ResponseEntity.ok(
+                new ResponseWrapper<>(
+                        RestApiResponseStatusCodes.OK.getCode(),
+                        ValidationMessages.RETRIEVED_SUCCESSFULLY,
+                        roomtypes)
+        );
     }
 }
