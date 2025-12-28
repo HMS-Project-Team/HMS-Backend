@@ -72,5 +72,4 @@ public final class  EndpointBundle {
     public static final String CHILD_POLICIES = POLICIES+ "/childpolicy";
     public static final String CANCELLATION_POLICIES = POLICIES+ "/cancellationpolicy";
 
-
 }
