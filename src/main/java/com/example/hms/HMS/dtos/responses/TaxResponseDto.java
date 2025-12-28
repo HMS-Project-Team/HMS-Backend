@@ -1,6 +1,7 @@
 package com.example.hms.HMS.dtos.responses;
 
 import com.example.hms.HMS.enums.Status;
+import com.example.hms.HMS.enums.TaxType;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -11,6 +12,6 @@ public class TaxResponseDto {
     private Long id;
     private String name;
     private BigDecimal rate;
-    private String type;
+    private TaxType type;
     private Status status;
 }
