@@ -70,6 +70,7 @@ public final class  EndpointBundle {
     public static final String POLICIES = BASE_URL +"/policy";
     public static final String CHILD_POLICIES = POLICIES+ "/childpolicy";
     public static final String CANCELLATION_POLICIES = POLICIES+ "/cancellationpolicy";
+    public static final String CREATE_POLICY = "/add";
 
 
 }
