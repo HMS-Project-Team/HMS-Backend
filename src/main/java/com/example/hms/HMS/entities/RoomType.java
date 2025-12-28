@@ -17,6 +17,7 @@ public class RoomType extends DateAudit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+    @Column(nullable = false, unique = true)
     private String name;
     private String description;
     private int capacity;
