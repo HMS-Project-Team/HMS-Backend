@@ -4,6 +4,7 @@ import com.example.hms.HMS.dtos.requests.PoliciesRequestDto;
 import com.example.hms.HMS.dtos.responses.PoliciesResponseDto;
 import com.example.hms.HMS.enums.PolicyType;
 import com.example.hms.HMS.enums.RestApiResponseStatusCodes;
+import com.example.hms.HMS.exceptionHandlers.BadCredentialsException;
 import com.example.hms.HMS.exceptionHandlers.InvalidPageSizeException;
 import com.example.hms.HMS.exceptionHandlers.ResourceNotFoundException;
 import com.example.hms.HMS.services.PoliciesService;
@@ -85,6 +86,20 @@ public class ChildPoliciesController {
                         savedPolicy
                 )
         );
+    }
+    @DeleteMapping(EndpointBundle.ID)
+    public ResponseEntity<ResponseWrapper<PoliciesResponseDto>> deleteChildPolicy(@PathVariable Long id){
+        try{
+        boolean deleted=policiesService.deleteChildPolicy(id);
+            ResponseEntity.status(HttpStatus.OK).body(new ResponseWrapper<>(
+                    RestApiResponseStatusCodes.OK.getCode(),
+                    ValidationMessages.DELETED_SUCCESSFULLY,
+                    null
+            ));
+        } catch (Exception e) {
+            throw new BadCredentialsException(ValidationMessages.DELETE_FAILED);
+        }
+        return null;
     }
 
 }

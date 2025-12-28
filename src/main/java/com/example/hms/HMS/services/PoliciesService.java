@@ -12,4 +12,5 @@ public interface PoliciesService {
     Page<PoliciesResponseDto> getPolicies(PolicyType type, Pageable pageable);
     PoliciesResponseDto getChildPolicyById(@Valid Long id);
     PoliciesResponseDto addChildPolicy(@Valid PoliciesRequestDto policiesRequestDto);
+    boolean deleteChildPolicy(Long id);
 }
