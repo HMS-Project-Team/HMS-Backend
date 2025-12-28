@@ -59,7 +59,6 @@ public final class  EndpointBundle {
 
     //RoomType
     public static final String ROOMTYPE = ROOM + "/roomtype";
-    public static final String CREATE_ROOMTYPE = "/add";
 
     //Reservation Type
     public static final String RESERVATIONTYPE = BASE_URL + CHANNEL + "/reservationtype";
