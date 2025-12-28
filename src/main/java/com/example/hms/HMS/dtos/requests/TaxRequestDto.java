@@ -1,6 +1,7 @@
 package com.example.hms.HMS.dtos.requests;
 
 import com.example.hms.HMS.enums.Status;
+import com.example.hms.HMS.enums.TaxType;
 import com.example.hms.HMS.utils.ValidationMessages;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
@@ -20,8 +21,8 @@ public class TaxRequestDto {
     @DecimalMin(value = "0.0", inclusive = true, message = ValidationMessages.TAX_RATE_NEGATIVE)
     private BigDecimal rate;
 
-    @NotBlank(message = ValidationMessages.TAX_TYPE_REQUIRED)
-    private String type;
+    @NotNull(message = ValidationMessages.TAX_TYPE_REQUIRED)
+    private TaxType type;
 
     @NotNull(message = ValidationMessages.TAX_STATUS_REQUIRED)
     private Status status;
