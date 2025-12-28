@@ -9,6 +9,8 @@ import com.example.hms.HMS.repositories.TaxRepository;
 import com.example.hms.HMS.utils.ValidationMessages;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -39,5 +41,23 @@ public class TaxServiceImpl implements TaxService {
                 .orElseThrow(()->new ResourceNotFoundException("Data not found")
                 ));
         return taxResponseDto;
+    }
+
+    @Override
+    public Page<TaxResponseDto> getAllTax(Pageable pageable) {
+        Page<Tax> taxPage = taxRepository.findAll(pageable);
+        if (taxPage.isEmpty()) {
+            throw new ResourceNotFoundException("No Tax found");
+        }
+        return taxPage.map(taxMapper::toDto);
+    }
+
+    @Override
+    public TaxResponseDto updateTax(Long id, TaxRequestDto requestDto) {
+        Tax existingTax = taxRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Tax not found with id: " + id));
+        taxMapper.updateEntity(existingTax, requestDto);
+        Tax updatedTax = taxRepository.save(existingTax);
+        return taxMapper.toDto(updatedTax);
     }
 }
