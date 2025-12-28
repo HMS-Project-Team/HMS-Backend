@@ -1,11 +1,18 @@
 package com.example.hms.HMS.controllers;
 
+import com.example.hms.HMS.dtos.requests.TaxRequestDto;
+import com.example.hms.HMS.dtos.responses.TaxResponseDto;
 import com.example.hms.HMS.enums.RestApiResponseStatusCodes;
+import com.example.hms.HMS.exceptionHandlers.BadCredentialsException;
+import com.example.hms.HMS.services.TaxService;
 import com.example.hms.HMS.utils.EndpointBundle;
+import com.example.hms.HMS.utils.ResponseWrapper;
 import com.example.hms.HMS.utils.ValidationMessages;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(EndpointBundle.TAX)
@@ -30,5 +37,19 @@ public class TaxController {
                 ValidationMessages.DELETED_SUCCESSFULLY,
                 null
         );
+    }
+
+    @GetMapping(EndpointBundle.ID)
+    public ResponseEntity<ResponseWrapper<TaxResponseDto>>getByIdTax(@PathVariable Long id){
+        try {
+            TaxResponseDto taxResponseDto = taxService.getById(id);
+            return ResponseEntity.status(HttpStatus.OK).body(new ResponseWrapper<>(
+                    RestApiResponseStatusCodes.OK.getCode(),
+                    ValidationMessages.SUCCESS,
+                    taxResponseDto
+            ));
+        } catch (Exception e) {
+            throw new BadCredentialsException("Unable to get");
+        }
     }
 }
