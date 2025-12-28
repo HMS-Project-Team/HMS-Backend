@@ -33,7 +33,7 @@ public class CancellationPoliciesController {
                         throw new InvalidPageSizeException(ValidationMessages.INVALID_PAGE_SIZE_MSG);
                 }
 
-                Pageable pageable = PageRequest.of(page - 1, size);
+                Pageable pageable = PageRequest.of(page > 0 ? page - 1 : 0, size);
                 Page<PoliciesResponseDto> policies = policiesService.fetchPoliciesByType(PolicyType.CANCELLATION,
                                 pageable);
 
@@ -74,30 +74,27 @@ public class CancellationPoliciesController {
                 PoliciesResponseDto policy = policiesService.fetchPolicyById(id);
 
                 return ResponseEntity.status(HttpStatus.OK).body(new ResponseWrapper<>(
-                        RestApiResponseStatusCodes.OK.getCode(),
-                        ValidationMessages.RETRIEVED_SUCCESSFULLY,
-                        policy));
+                                RestApiResponseStatusCodes.OK.getCode(),
+                                ValidationMessages.RETRIEVED_SUCCESSFULLY,
+                                policy));
         }
 
         @DeleteMapping(EndpointBundle.ID)
-        public ResponseEntity<ResponseWrapper<Boolean>> deleteCancellationPolicy(@PathVariable Long id){
-            boolean isDeleted = policiesService.deletePolicy(id);
-            if(isDeleted){
-                return ResponseEntity.status(HttpStatus.OK)
-                        .body(new ResponseWrapper<>(
-                                RestApiResponseStatusCodes.OK.getCode(),
-                                ValidationMessages.DELETED_SUCCESSFULLY,
-                                true
-                        ));
-            }
-            else {
-                return ResponseEntity.status(HttpStatus.OK)
-                        .body(new ResponseWrapper<>(
-                                RestApiResponseStatusCodes.BAD_REQUEST.getCode(),
-                                ValidationMessages.DELETE_FAILED,
-                                false
-                        ));
-            }
+        public ResponseEntity<ResponseWrapper<Boolean>> deleteCancellationPolicy(@PathVariable Long id) {
+                boolean isDeleted = policiesService.deletePolicy(id);
+                if (isDeleted) {
+                        return ResponseEntity.status(HttpStatus.OK)
+                                        .body(new ResponseWrapper<>(
+                                                        RestApiResponseStatusCodes.OK.getCode(),
+                                                        ValidationMessages.DELETED_SUCCESSFULLY,
+                                                        true));
+                } else {
+                        return ResponseEntity.status(HttpStatus.OK)
+                                        .body(new ResponseWrapper<>(
+                                                        RestApiResponseStatusCodes.BAD_REQUEST.getCode(),
+                                                        ValidationMessages.DELETE_FAILED,
+                                                        false));
+                }
         }
 
 }
