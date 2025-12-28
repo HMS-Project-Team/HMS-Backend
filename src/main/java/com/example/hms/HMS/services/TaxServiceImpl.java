@@ -1,6 +1,13 @@
 package com.example.hms.HMS.services;
 
+import com.example.hms.HMS.dtos.requests.TaxRequestDto;
+import com.example.hms.HMS.dtos.responses.TaxResponseDto;
+import com.example.hms.HMS.entities.Tax;
+import com.example.hms.HMS.exceptionHandlers.ResourceNotFoundException;
+import com.example.hms.HMS.mappers.TaxMapper;
+import com.example.hms.HMS.repositories.TaxRepository;
 import com.example.hms.HMS.utils.ValidationMessages;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -8,7 +15,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class TaxServiceImpl implements TaxService {
     private TaxRepository taxRepository;
-    private  TaxMapper taxMapper;
+    private TaxMapper taxMapper;
 
 
     @Override
@@ -24,5 +31,13 @@ public class TaxServiceImpl implements TaxService {
             throw new EntityNotFoundException(ValidationMessages.NOT_FOUND);
         }
         taxRepository.deleteById(id);
+    }
+
+    @Override
+    public TaxResponseDto getById(Long id) {
+        TaxResponseDto taxResponseDto=taxMapper.toDto(taxRepository.findById(id)
+                .orElseThrow(()->new ResourceNotFoundException("Data not found")
+                ));
+        return taxResponseDto;
     }
 }
