@@ -22,6 +22,7 @@ public class AmenitiesServiceImpl implements AmenitiesService{
     private final AmenitiesRepository amenitiesRepository;
     private final AmenitiesMapper amenitiesMapper;
 
+    @Override
     public Page<AmenitiesResponseDto>fetchAllAmenities(Pageable pageable) {
 
         Page<Amenities> amenitiesPage = amenitiesRepository.findAll(pageable);
@@ -33,6 +34,7 @@ public class AmenitiesServiceImpl implements AmenitiesService{
         return amenitiesPage.map(amenitiesMapper::EntityToResponseDto);
     }
 
+    @Override
     public Boolean deleteAmenities(Long id) {
         if (!amenitiesRepository.existsById(id)) {
             throw new ResourceNotFoundException("Amenities not found with id: " + id);
