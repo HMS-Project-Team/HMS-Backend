@@ -57,12 +57,14 @@ public class UserRequestDto {
             regexp = "^[A-Za-z ]+$",
             message = ValidationMessages.INVALID_INPUT
     )
+    @NotEmpty
     private String country;
     @Pattern(
             //only accept alphabet
             regexp = "^[A-Za-z ]+$",
             message = ValidationMessages.INVALID_INPUT
     )
+    @NotEmpty
     private String city;
 
     private String password;

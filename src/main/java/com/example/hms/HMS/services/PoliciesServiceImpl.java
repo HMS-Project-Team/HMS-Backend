@@ -61,4 +61,14 @@ public class PoliciesServiceImpl implements PoliciesService {
 
         return policiesMapper.toDto(policy);
     }
+
+    @Override
+    public boolean deletePolicy(Long id) {
+        Policies policy = policiesRepository.findById(id)
+                .orElseThrow(()->new ResourceNotFoundException(ValidationMessages.NOT_FOUND+"with id:"+id));
+
+        policiesRepository.deleteById(id);
+
+        return true;
+    }
 }
