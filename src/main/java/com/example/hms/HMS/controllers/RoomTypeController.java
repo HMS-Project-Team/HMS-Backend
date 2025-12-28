@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.*;
 public class RoomTypeController {
     private final RoomTypeService roomTypeService;
 
-    @PostMapping(EndpointBundle.CREATE_ROOMTYPE)
+    @PostMapping(EndpointBundle.ADD)
     public ResponseEntity<ResponseWrapper<RoomTypeResponseDto>> createRoomType(@Valid @RequestBody RoomTypeRequestDto roomTypeRequestDto) {
         RoomTypeResponseDto newRoomType = roomTypeService.createRoomType(roomTypeRequestDto);
 
