@@ -64,4 +64,16 @@ public class PoliciesServiceImpl implements PoliciesService {
 
         return policiesMapper.toDto(policy);
     }
+
+    @Override
+    public PoliciesResponseDto addChildPolicy(PoliciesRequestDto policiesRequestDto) {
+        // 1. Validation: If they sent a type, it MUST be CHILD
+        if (policiesRequestDto.getType() != null && policiesRequestDto.getType() != PolicyType.CHILD) {
+            throw new IllegalArgumentException("Invalid policy type: " + policiesRequestDto.getType() +
+                    ". Expected: " + PolicyType.CHILD);
+        }
+        Policies policy = policiesMapper.toEntity(policiesRequestDto);
+        policy.setType(PolicyType.CHILD);
+        return policiesMapper.toDto(policiesRepository.save(policy));
+    }
 }
