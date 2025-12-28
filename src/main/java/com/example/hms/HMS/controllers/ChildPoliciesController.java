@@ -88,18 +88,17 @@ public class ChildPoliciesController {
         );
     }
     @DeleteMapping(EndpointBundle.ID)
-    public ResponseEntity<ResponseWrapper<PoliciesResponseDto>> deleteChildPolicy(@PathVariable Long id){
+    public ResponseEntity<ResponseWrapper<Boolean>> deleteChildPolicy(@PathVariable Long id){
         try{
         boolean deleted=policiesService.deleteChildPolicy(id);
-            ResponseEntity.status(HttpStatus.OK).body(new ResponseWrapper<>(
+            return ResponseEntity.status(HttpStatus.OK).body(new ResponseWrapper<>(
                     RestApiResponseStatusCodes.OK.getCode(),
                     ValidationMessages.DELETED_SUCCESSFULLY,
-                    null
+                    deleted
             ));
         } catch (Exception e) {
             throw new BadCredentialsException(ValidationMessages.DELETE_FAILED);
         }
-        return null;
     }
 
 }

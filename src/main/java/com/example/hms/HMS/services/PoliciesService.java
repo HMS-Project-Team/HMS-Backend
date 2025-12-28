@@ -8,6 +8,12 @@ import org.springframework.data.domain.Pageable;
 import jakarta.validation.Valid;
 
 public interface PoliciesService {
+    Page<PoliciesResponseDto> fetchPoliciesByType(PolicyType type, Pageable pageable);
+    PoliciesResponseDto updatePolicy(Long id, PoliciesRequestDto policiesRequestDto);
+    PoliciesResponseDto createPolicy(PoliciesRequestDto requestDto);
+    PoliciesResponseDto fetchPolicyById(Long id);
+    boolean deletePolicy(Long id);
+
     PoliciesResponseDto updateChildPolicy(Long id, PoliciesRequestDto policiesRequestDto);
     Page<PoliciesResponseDto> getPolicies(PolicyType type, Pageable pageable);
     PoliciesResponseDto getChildPolicyById(@Valid Long id);
