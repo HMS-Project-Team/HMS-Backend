@@ -72,4 +72,19 @@ public class ChildPoliciesController {
                 policiesResponseDto
         ));
     }
+    @PostMapping(EndpointBundle.CREATE_POLICY)
+    public ResponseEntity<ResponseWrapper<PoliciesResponseDto>> addChildPolicy(
+            @Valid @RequestBody PoliciesRequestDto policiesRequestDto) {
+
+        PoliciesResponseDto savedPolicy = policiesService.addChildPolicy(policiesRequestDto);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+                new ResponseWrapper<>(
+                        RestApiResponseStatusCodes.CREATED.getCode(),
+                        ValidationMessages.SAVED_SUCCESSFULLY,
+                        savedPolicy
+                )
+        );
+    }
+
 }
