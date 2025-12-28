@@ -76,4 +76,12 @@ public class PoliciesServiceImpl implements PoliciesService {
         policy.setType(PolicyType.CHILD);
         return policiesMapper.toDto(policiesRepository.save(policy));
     }
+
+    @Override
+    public boolean deleteChildPolicy(Long id) {
+        Policies policy = policiesRepository.findById(id)
+                .orElseThrow(()->new ResourceNotFoundException(ValidationMessages.NOT_FOUND+"with id:"+id));
+        policiesRepository.deleteById(id);
+        return true;
+    }
 }
