@@ -16,12 +16,14 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class TaxServiceImpl implements TaxService {
-    private TaxRepository taxRepository;
-    private TaxMapper taxMapper;
-
+    private final TaxRepository taxRepository;
+    private final TaxMapper taxMapper;
 
     @Override
     public TaxResponseDto addTax(TaxRequestDto requestDto) {
+        if (taxRepository.existsByName(requestDto.getName())) {
+            throw new IllegalArgumentException(ValidationMessages.DUPLICATE_ENTRY);
+        }
         Tax tax = taxMapper.toEntity(requestDto);
         Tax savedTax = taxRepository.save(tax);
         return taxMapper.toDto(savedTax);
@@ -37,9 +39,8 @@ public class TaxServiceImpl implements TaxService {
 
     @Override
     public TaxResponseDto getById(Long id) {
-        TaxResponseDto taxResponseDto=taxMapper.toDto(taxRepository.findById(id)
-                .orElseThrow(()->new ResourceNotFoundException("Data not found")
-                ));
+        TaxResponseDto taxResponseDto = taxMapper.toDto(taxRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Data not found")));
         return taxResponseDto;
     }
 
@@ -56,6 +57,11 @@ public class TaxServiceImpl implements TaxService {
     public TaxResponseDto updateTax(Long id, TaxRequestDto requestDto) {
         Tax existingTax = taxRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Tax not found with id: " + id));
+
+        if (!existingTax.getName().equalsIgnoreCase(requestDto.getName())
+                && taxRepository.existsByName(requestDto.getName())) {
+            throw new IllegalArgumentException(ValidationMessages.DUPLICATE_ENTRY);
+        }
         taxMapper.updateEntity(existingTax, requestDto);
         Tax updatedTax = taxRepository.save(existingTax);
         return taxMapper.toDto(updatedTax);
