@@ -73,7 +73,7 @@ public class ChildPoliciesController {
                 policiesResponseDto
         ));
     }
-    @PostMapping(EndpointBundle.CREATE_POLICY)
+    @PostMapping(EndpointBundle.ADD)
     public ResponseEntity<ResponseWrapper<PoliciesResponseDto>> addChildPolicy(
             @Valid @RequestBody PoliciesRequestDto policiesRequestDto) {
 
