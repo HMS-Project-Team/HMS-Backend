@@ -4,6 +4,7 @@ import com.example.hms.HMS.dtos.requests.RoomTypeRequestDto;
 import com.example.hms.HMS.dtos.responses.RoomTypeResponseDto;
 import com.example.hms.HMS.entities.Amenities;
 import com.example.hms.HMS.entities.RoomType;
+import com.example.hms.HMS.exceptionHandlers.InvalidPageSizeException;
 import com.example.hms.HMS.exceptionHandlers.ResourceNotFoundException;
 import com.example.hms.HMS.mappers.RoomTypeMapper;
 import com.example.hms.HMS.repositories.AmenitiesRepository;
@@ -15,6 +16,8 @@ import com.example.hms.HMS.entities.RoomType;
 import com.example.hms.HMS.mappers.RoomTypeMapper;
 import com.example.hms.HMS.repositories.RoomTypeRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -96,6 +99,20 @@ public class RoomTypeServiceImpl implements RoomTypeService {
         return roomTypeMapper.toDto(updatedRoomType);
 
     }
+
+    @Override
+    public Page<RoomTypeResponseDto> getAllRoomtypes(Pageable pageable) {
+        if (pageable.getPageNumber() < 0 || pageable.getPageSize() <= 0){
+            throw new InvalidPageSizeException(ValidationMessages.INVALID_PAGE_SIZE_MSG);
+        }
+        Page<RoomType> getAllroomtypes = roomTypeRepository.findAll(pageable);
+
+        if(getAllroomtypes.isEmpty()){
+            throw new ResourceNotFoundException(ValidationMessages.NOT_FOUND);
+        }
+        return getAllroomtypes.map(roomTypeMapper::toDto);
+    }
+
     @Override
     public boolean deleteRoomType(Long id) {
         RoomType roomType = roomTypeRepository.findById(id)
