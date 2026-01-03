@@ -56,14 +56,14 @@ public class GlobalExceptionHandler {
             message = ValidationMessages.FOREIGN_KEY_CONSTRAINT;
             errorDetails.add(new ErrorDetail(
                     new Date(),
-                    message,
+                    message+e.getMessage(),
                     errorCodes.getAlreadyExist()
             ));
         } else {
             message = ValidationMessages.DUPLICATE_ENTRY;
             errorDetails.add(new ErrorDetail(
                     new Date(),
-                    message,
+                    message+e.getMessage(),
                     errorCodes.getAlreadyExist()
             ));
         }
@@ -201,7 +201,13 @@ public class GlobalExceptionHandler {
         );
     }
 
-
-
-
+    @ExceptionHandler({InvalidPageSizeException.class})
+    public ResponseEntity<ResponseWrapper<?>> handleInvalidPageSize(InvalidPageSizeException ex) {
+        ErrorDetail d = new ErrorDetail(new Date(), ex.getMessage(), errorCodes.getPaginationInvalid());
+        return ResponseEntity.badRequest().body(new ResponseWrapper<>(
+                RestApiResponseStatusCodes.BAD_REQUEST.getCode(),
+                InvalidPageSizeException.INVALID_PAGE_SIZE_MSG,
+                d
+        ));
+    }
 }
