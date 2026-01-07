@@ -1,7 +1,9 @@
 package com.example.hms.HMS.controllers;
 
+import com.example.hms.HMS.annotations.RequirePrivilege;
 import com.example.hms.HMS.dtos.requests.GuestsRequestDto;
 import com.example.hms.HMS.dtos.responses.GuestsResponseDto;
+import com.example.hms.HMS.enums.PrivilegeType;
 import com.example.hms.HMS.enums.RestApiResponseStatusCodes;
 import com.example.hms.HMS.services.GuestsService;
 import com.example.hms.HMS.utils.EndpointBundle;
@@ -26,6 +28,7 @@ public class GuestsController {
         private final GuestsService guestsService;
 
         @PostMapping(EndpointBundle.ADD)
+        @RequirePrivilege(privilege = "/customers", type = PrivilegeType.WRITE_ACCESS)
         public ResponseEntity<ResponseWrapper<GuestsResponseDto>> createGuest(
                         @Valid @RequestPart("guestsRequestDto") GuestsRequestDto guestsRequestDto,
                         @RequestPart("image") MultipartFile image) throws IOException {
@@ -38,6 +41,7 @@ public class GuestsController {
         }
 
         @GetMapping(EndpointBundle.SEARCH)
+        @RequirePrivilege(privilege = "/customers", type = PrivilegeType.READ_ACCESS)
         public ResponseEntity<ResponseWrapper<List<GuestsResponseDto>>> searchGuests(
                         @RequestParam(required = false) String query,
                         @RequestParam(required = false) String name,
@@ -53,6 +57,7 @@ public class GuestsController {
         }
 
         @GetMapping(EndpointBundle.ID)
+        @RequirePrivilege(privilege = "/customers", type = PrivilegeType.READ_ACCESS)
         public ResponseEntity<ResponseWrapper<GuestsResponseDto>> getGuestsById(@PathVariable Long id) {
                 GuestsResponseDto response = guestsService.getGuestsById(id);
                 return ResponseEntity.status(HttpStatus.OK).body(new ResponseWrapper<>(
@@ -62,6 +67,7 @@ public class GuestsController {
         }
 
         @PutMapping(EndpointBundle.ID)
+        @RequirePrivilege(privilege = "/customers", type = PrivilegeType.WRITE_ACCESS)
         public ResponseEntity<ResponseWrapper<GuestsResponseDto>> updateGuest(
                         @PathVariable Long id,
                         @Valid @RequestPart("guestsRequestDto") GuestsRequestDto guestsRequestDto,
@@ -75,6 +81,7 @@ public class GuestsController {
         }
 
         @GetMapping
+        @RequirePrivilege(privilege = "/customers", type = PrivilegeType.READ_ACCESS)
         public ResponseEntity<ResponseWrapper<Page<GuestsResponseDto>>> getAllGuests(
                         @RequestParam(defaultValue = "0") int page,
                         @RequestParam(defaultValue = "20") int size) {
@@ -87,6 +94,7 @@ public class GuestsController {
         }
 
         @DeleteMapping(EndpointBundle.ID)
+        @RequirePrivilege(privilege = "/customers", type = PrivilegeType.MAINTAIN_ACCESS)
         public ResponseEntity<ResponseWrapper<Boolean>> deleteGuest(@PathVariable Long id) {
                 boolean deleteGuest = guestsService.deleteGuest(id);
                 return ResponseEntity.status(HttpStatus.OK).body(new ResponseWrapper<>(

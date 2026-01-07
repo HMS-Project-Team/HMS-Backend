@@ -1,10 +1,12 @@
 package com.example.hms.HMS.controllers;
 
+import com.example.hms.HMS.annotations.RequirePrivilege;
 import com.example.hms.HMS.dtos.requests.AmenitiesRequestDto;
 import com.example.hms.HMS.dtos.responses.AmenitiesResponseDto;
 import com.example.hms.HMS.enums.RestApiResponseStatusCodes;
 import com.example.hms.HMS.exceptionHandlers.InvalidPageSizeException;
 import com.example.hms.HMS.services.AmenitiesService;
+import com.example.hms.HMS.enums.PrivilegeType;
 import com.example.hms.HMS.utils.EndpointBundle;
 import com.example.hms.HMS.utils.ResponseWrapper;
 import com.example.hms.HMS.utils.ValidationMessages;
@@ -21,7 +23,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.*;
 
-
 @RestController
 @RequestMapping(EndpointBundle.AMENITIES)
 @RequiredArgsConstructor
@@ -30,56 +31,57 @@ public class AmenitiesController {
     private final AmenitiesService amenitiesService;
 
     @PostMapping(EndpointBundle.ADD)
-    public ResponseEntity<ResponseWrapper<AmenitiesResponseDto>> addAmenities(@Valid @RequestBody AmenitiesRequestDto amenitiesRequestDto){
-            AmenitiesResponseDto amenitiesResponseDto=amenitiesService.addAmenities(amenitiesRequestDto);
-            return ResponseEntity.ok(new ResponseWrapper<>(
-                    RestApiResponseStatusCodes.CREATED.getCode(),
-                    ValidationMessages.SAVED_SUCCESSFULLY,
-                    amenitiesResponseDto
-                    ));
+    @RequirePrivilege(privilege = "/rooms/amenities", type = PrivilegeType.WRITE_ACCESS)
+    public ResponseEntity<ResponseWrapper<AmenitiesResponseDto>> addAmenities(
+            @Valid @RequestBody AmenitiesRequestDto amenitiesRequestDto) {
+        AmenitiesResponseDto amenitiesResponseDto = amenitiesService.addAmenities(amenitiesRequestDto);
+        return ResponseEntity.ok(new ResponseWrapper<>(
+                RestApiResponseStatusCodes.CREATED.getCode(),
+                ValidationMessages.SAVED_SUCCESSFULLY,
+                amenitiesResponseDto));
     }
-    @GetMapping
-    public ResponseEntity<ResponseWrapper<Page<AmenitiesResponseDto>>> getAllAmenities(
-            @RequestParam( required = false ,  defaultValue = "1")  int pageNo ,
-            @RequestParam ( required = false , defaultValue =  "5") int pageSize
-    ){
 
-        if(pageNo < 0 || pageSize < 0){
+    @GetMapping
+    @RequirePrivilege(privilege = "/rooms/amenities", type = PrivilegeType.READ_ACCESS)
+    public ResponseEntity<ResponseWrapper<Page<AmenitiesResponseDto>>> getAllAmenities(
+            @RequestParam(required = false, defaultValue = "1") int pageNo,
+            @RequestParam(required = false, defaultValue = "5") int pageSize) {
+
+        if (pageNo < 0 || pageSize < 0) {
             throw new InvalidPageSizeException(ValidationMessages.INVALID_PAGE_SIZE_MSG);
         }
 
-        Pageable pageable =  PageRequest.of(pageNo-1 , pageSize);
+        Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
 
         Page<AmenitiesResponseDto> amenities = amenitiesService.fetchAllAmenities(pageable);
 
         return ResponseEntity.status(HttpStatus.OK).body(new ResponseWrapper<>(
                 RestApiResponseStatusCodes.OK.getCode(),
                 ValidationMessages.SUCCESS,
-                amenities
-        ));
+                amenities));
     }
 
     @DeleteMapping(EndpointBundle.ID)
-    public ResponseEntity<ResponseWrapper<Boolean>> deleteAmenities(@PathVariable Long id){
+    @RequirePrivilege(privilege = "/rooms/amenities", type = PrivilegeType.MAINTAIN_ACCESS)
+    public ResponseEntity<ResponseWrapper<Boolean>> deleteAmenities(@PathVariable Long id) {
 
         Boolean isDelete = amenitiesService.deleteAmenities(id);
 
-        if(isDelete){
+        if (isDelete) {
             return ResponseEntity.status(HttpStatus.OK).body(new ResponseWrapper<>(
                     RestApiResponseStatusCodes.OK.getCode(),
                     ValidationMessages.DELETED_SUCCESSFULLY,
-                    null
-            ));
-        }else{
-            return  ResponseEntity.status(HttpStatus.OK).body(new ResponseWrapper<>(
+                    null));
+        } else {
+            return ResponseEntity.status(HttpStatus.OK).body(new ResponseWrapper<>(
                     RestApiResponseStatusCodes.NOT_FOUND.getCode(),
                     ValidationMessages.DELETE_FAILED,
-                    null
-            ));
+                    null));
         }
     }
 
     @GetMapping(EndpointBundle.ID)
+    @RequirePrivilege(privilege = "/rooms/amenities", type = PrivilegeType.READ_ACCESS)
     public ResponseEntity<ResponseWrapper<AmenitiesResponseDto>> addAmenities(@PathVariable Long id) {
         AmenitiesResponseDto amenitiesResponseDto = amenitiesService.getAmenitiesById(id);
         return ResponseEntity.status(HttpStatus.OK).body(new ResponseWrapper<>(
@@ -87,8 +89,11 @@ public class AmenitiesController {
                 ValidationMessages.RETRIEVED_SUCCESSFULLY,
                 amenitiesResponseDto));
     }
+
     @PutMapping(EndpointBundle.ID)
-    public ResponseEntity<ResponseWrapper<AmenitiesResponseDto>> updateAmenities(@PathVariable Long id, @Valid @RequestBody AmenitiesRequestDto amenitiesRequestDto) {
+    @RequirePrivilege(privilege = "/rooms/amenities", type = PrivilegeType.WRITE_ACCESS)
+    public ResponseEntity<ResponseWrapper<AmenitiesResponseDto>> updateAmenities(@PathVariable Long id,
+            @Valid @RequestBody AmenitiesRequestDto amenitiesRequestDto) {
 
         AmenitiesResponseDto responseDto = amenitiesService.updateAmenities(id, amenitiesRequestDto);
 
@@ -96,9 +101,7 @@ public class AmenitiesController {
                 new ResponseWrapper<>(
                         RestApiResponseStatusCodes.OK.getCode(),
                         ValidationMessages.UPDATED_SUCCESSFULLY,
-                        responseDto
-                )
-        );
+                        responseDto));
     }
 
 }

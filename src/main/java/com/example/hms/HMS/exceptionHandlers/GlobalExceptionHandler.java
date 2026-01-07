@@ -312,4 +312,19 @@ public class GlobalExceptionHandler {
                                                 ValidationMessages.TOKEN_EXPIRED,
                                                 errorDetails));
         }
+
+        @ExceptionHandler(InsufficientPrivilegeException.class)
+        public ResponseEntity<ResponseWrapper<?>> handleInsufficientPrivilegeResult(InsufficientPrivilegeException e) {
+                List<ErrorDetail> errorDetails = new ArrayList<>();
+                errorDetails.add(new ErrorDetail(
+                                new Date(),
+                                e.getMessage(),
+                                errorCodes.getUnauthorized()));
+
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(
+                                new ResponseWrapper<>(
+                                                HttpStatus.FORBIDDEN.value(),
+                                                "Insufficient Privileges",
+                                                errorDetails));
+        }
 }

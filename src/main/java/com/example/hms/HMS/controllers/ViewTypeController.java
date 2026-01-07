@@ -1,5 +1,6 @@
 package com.example.hms.HMS.controllers;
 
+import com.example.hms.HMS.annotations.RequirePrivilege;
 import com.example.hms.HMS.dtos.requests.ViewTypeRequestDto;
 import com.example.hms.HMS.dtos.responses.ViewTypeResponseDto;
 import com.example.hms.HMS.enums.RestApiResponseStatusCodes;
@@ -8,6 +9,7 @@ import com.example.hms.HMS.services.ViewTypeService;
 import com.example.hms.HMS.utils.EndpointBundle;
 import com.example.hms.HMS.utils.ResponseWrapper;
 import com.example.hms.HMS.utils.ValidationMessages;
+import com.example.hms.HMS.enums.PrivilegeType;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -29,6 +31,7 @@ public class ViewTypeController {
     private final ViewTypeService viewTypeService;
 
     @PostMapping(EndpointBundle.CREATE_VIEW_TYPE)
+    @RequirePrivilege(privilege = "/rooms/view-type", type = PrivilegeType.WRITE_ACCESS)
     public ResponseEntity<ResponseWrapper<ViewTypeResponseDto>> createViewType(
             @Valid @RequestBody ViewTypeRequestDto viewTypeRequestDto) {
         ViewTypeResponseDto createdViewType = viewTypeService.createViewType(viewTypeRequestDto);
@@ -40,6 +43,7 @@ public class ViewTypeController {
     }
 
     @GetMapping(EndpointBundle.ID)
+    @RequirePrivilege(privilege = "/rooms/view-type", type = PrivilegeType.READ_ACCESS)
     public ResponseEntity<ResponseWrapper<ViewTypeResponseDto>> getViewTypeById(@PathVariable Long id) {
         ViewTypeResponseDto response = viewTypeService.getViewTypeById(id);
 
@@ -50,36 +54,36 @@ public class ViewTypeController {
     }
 
     @DeleteMapping(EndpointBundle.ID)
-    public ResponseEntity<ResponseWrapper<Boolean>> deleteViewType(@PathVariable Long id){
+    @RequirePrivilege(privilege = "/rooms/view-type", type = PrivilegeType.MAINTAIN_ACCESS)
+    public ResponseEntity<ResponseWrapper<Boolean>> deleteViewType(@PathVariable Long id) {
         Boolean deleteviewType = viewTypeService.deleteViewType(id);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new ResponseWrapper<>(
                         RestApiResponseStatusCodes.OK.getCode(),
                         ValidationMessages.DELETED_SUCCESSFULLY,
-                        deleteviewType
-                ));
+                        deleteviewType));
     }
 
     @PutMapping(EndpointBundle.ID)
-    public ResponseEntity<ResponseWrapper<ViewTypeResponseDto>> updateViewType(@PathVariable Long id, @Valid @RequestBody ViewTypeRequestDto viewTypeRequestDto){
+    @RequirePrivilege(privilege = "/rooms/view-type", type = PrivilegeType.WRITE_ACCESS)
+    public ResponseEntity<ResponseWrapper<ViewTypeResponseDto>> updateViewType(@PathVariable Long id,
+            @Valid @RequestBody ViewTypeRequestDto viewTypeRequestDto) {
         ViewTypeResponseDto isUpdated = viewTypeService.updateViewType(id, viewTypeRequestDto);
-        if (isUpdated != null){
+        if (isUpdated != null) {
             return ResponseEntity.status(HttpStatus.OK).body(new ResponseWrapper<>(
                     RestApiResponseStatusCodes.CREATED.getCode(),
                     ValidationMessages.UPDATED_SUCCESSFULLY,
-                    isUpdated
-            ));
-        }
-        else{
+                    isUpdated));
+        } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseWrapper<>(
                     RestApiResponseStatusCodes.BAD_REQUEST.getCode(),
                     ValidationMessages.UPDATE_FAILED,
-                    null
-            ));
+                    null));
         }
     }
 
     @GetMapping
+    @RequirePrivilege(privilege = "/rooms/view-type", type = PrivilegeType.READ_ACCESS)
     public ResponseEntity<ResponseWrapper<Page<ViewTypeResponseDto>>> getAllViewType(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
@@ -93,8 +97,6 @@ public class ViewTypeController {
                 new ResponseWrapper<>(
                         RestApiResponseStatusCodes.OK.getCode(),
                         ValidationMessages.SUCCESS,
-                        viewTypesPage
-                )
-        );
+                        viewTypesPage));
     }
 }

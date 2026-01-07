@@ -1,8 +1,10 @@
 package com.example.hms.HMS.controllers;
 
+import com.example.hms.HMS.annotations.RequirePrivilege;
 import com.example.hms.HMS.dtos.requests.PoliciesRequestDto;
 import com.example.hms.HMS.dtos.responses.PoliciesResponseDto;
 import com.example.hms.HMS.enums.PolicyType;
+import com.example.hms.HMS.enums.PrivilegeType;
 import com.example.hms.HMS.enums.RestApiResponseStatusCodes;
 import com.example.hms.HMS.exceptionHandlers.InvalidPageSizeException;
 import com.example.hms.HMS.services.PoliciesService;
@@ -26,6 +28,7 @@ public class CancellationPoliciesController {
         private final PoliciesService policiesService;
 
         @GetMapping
+        @RequirePrivilege(privilege = "/policies/cancellation", type = PrivilegeType.READ_ACCESS)
         public ResponseEntity<ResponseWrapper<Page<PoliciesResponseDto>>> getAllCancellationPolicies(
                         @RequestParam(required = false, defaultValue = "1") int page,
                         @RequestParam(required = false, defaultValue = "10") int size) {
@@ -44,6 +47,7 @@ public class CancellationPoliciesController {
         }
 
         @PutMapping(EndpointBundle.ID)
+        @RequirePrivilege(privilege = "/policies/cancellation", type = PrivilegeType.WRITE_ACCESS)
         public ResponseEntity<ResponseWrapper<PoliciesResponseDto>> updateCancellationPolicy(
                         @PathVariable Long id,
                         @Valid @RequestBody PoliciesRequestDto policiesRequestDto) {
@@ -57,6 +61,7 @@ public class CancellationPoliciesController {
         }
 
         @PostMapping(EndpointBundle.ADD)
+        @RequirePrivilege(privilege = "/policies/cancellation", type = PrivilegeType.WRITE_ACCESS)
         public ResponseEntity<ResponseWrapper<?>> createPolicy(
                         @RequestBody PoliciesRequestDto requestDto) {
 
@@ -70,6 +75,7 @@ public class CancellationPoliciesController {
         }
 
         @GetMapping(EndpointBundle.ID)
+        @RequirePrivilege(privilege = "/policies/cancellation", type = PrivilegeType.READ_ACCESS)
         public ResponseEntity<ResponseWrapper<PoliciesResponseDto>> getCancellationPolicyById(@PathVariable Long id) {
                 PoliciesResponseDto policy = policiesService.fetchPolicyById(id);
 
@@ -80,6 +86,7 @@ public class CancellationPoliciesController {
         }
 
         @DeleteMapping(EndpointBundle.ID)
+        @RequirePrivilege(privilege = "/policies/cancellation", type = PrivilegeType.MAINTAIN_ACCESS)
         public ResponseEntity<ResponseWrapper<Boolean>> deleteCancellationPolicy(@PathVariable Long id) {
                 boolean isDeleted = policiesService.deletePolicy(id);
                 if (isDeleted) {

@@ -1,36 +1,37 @@
 package com.example.hms.HMS.utils;
 
-public final class  EndpointBundle {
+public final class EndpointBundle {
     public static final String BASE_URL = "/api/v1";
-    public static final String ID ="/{id}";
+    public static final String ID = "/{id}";
     public static final String SEARCH = "/search";
-    public static final String SETTINGS = BASE_URL +"/settings";
-    public static final String HOTEL = SETTINGS+"/hotel";
+    public static final String SETTINGS = BASE_URL + "/settings";
+    public static final String HOTEL = SETTINGS + "/hotel";
     public static final String CREATE_HOTEL = "/add";
     public static final String ROOM = BASE_URL + "/room";
     public static final String CHANNEL = "/channel";
 
+    public static final String ADD = "/add";
 
-    public  static  final String ADD="/add";
-
-    //Roles
+    // Roles
     public static final String ROLES = "/roles";
     public static final String ROLES_BY_ID = ROLES + ID;
     public static final String ROLES_BY_HOTEL = "/{hotelId}" + ROLES;
 
     public static final String HOTEL_ID = "/{hotelId}";
-    public static final String CREATE_ROLE = HOTEL_ID+ROLES+"/add";
+    public static final String CREATE_ROLE = HOTEL_ID + ROLES + "/add";
+    public static final String ROLE_ID = "/{roleId}";
 
-    //Users
+    // Users
     public static final String USERS = "/users";
+    public static final String USER_ID = "/{userId}";
     public static final String USERS_BY_ID = USERS + ID;
-    public static final String GET_ALL_USERS =HOTEL_ID+USERS;
+    public static final String GET_ALL_USERS = HOTEL_ID + USERS;
     public static final String CREATE_USER = HOTEL_ID + USERS + "/add";
 
     // ViewType
 
     public static final String VIEW_TYPE = ROOM + "/viewtype";
-    public static final String CREATE_VIEW_TYPE ="/add";
+    public static final String CREATE_VIEW_TYPE = "/add";
 
     // Login
     public static final String LOGIN = "/login";
@@ -38,37 +39,42 @@ public final class  EndpointBundle {
     public static final String OTP = "/otp";
     public static final String VERIFY_OTP = OTP + "/verify";
     public static final String NEW_PASSWORD = "/new-Password";
-    public static final String LOGOUT="/logout";
+    public static final String LOGOUT = "/logout";
 
-    //RoomArea
+    // RoomArea
     public static final String ROOMAREA = ROOM + "/roomarea";
     public static final String CREATE_ROOMAREA = "/add";
 
-    //Meal plan
-    public static final String MEAL_PLAN= ROOM + "/mealplan";
+    // Meal plan
+    public static final String MEAL_PLAN = ROOM + "/mealplan";
 
-
-    //Amenities
+    // Amenities
     public static final String AMENITIES = ROOM + "/amenities";
 
-    //Currency
+    // Currency
     public static final String CURRENCY = BASE_URL + "/currency";
 
-    //Guests
-    public static  final String GUESTS = BASE_URL + "/guests";
+    // Guests
+    public static final String GUESTS = BASE_URL + "/guests";
 
-    //RoomType
+    // RoomType
     public static final String ROOMTYPE = ROOM + "/roomtype";
 
-    //Reservation Type
+    // Reservation Type
     public static final String RESERVATIONTYPE = BASE_URL + CHANNEL + "/reservationtype";
 
-    //Tax
-    public static final String TAX = BASE_URL +"/tax";
+    // Tax
+    public static final String TAX = BASE_URL + "/tax";
 
-    //Policies
-    public static final String POLICIES = BASE_URL +"/policy";
-    public static final String CHILD_POLICIES = POLICIES+ "/childpolicy";
-    public static final String CANCELLATION_POLICIES = POLICIES+ "/cancellationpolicy";
+    // Policies
+    public static final String POLICIES = BASE_URL + "/policy";
+    public static final String CHILD_POLICIES = POLICIES + "/childpolicy";
+    public static final String CANCELLATION_POLICIES = POLICIES + "/cancellationpolicy";
+
+    // Privileges
+    public static final String PRIVILEGES = SETTINGS + "/privileges";
+    public static final String HOTEL_PRIVILEGES = SETTINGS + "/hotel-privileges";
+    public static final String ROLE_PRIVILEGES = SETTINGS + "/hotel-role-privileges";
+    public static final String USER_PRIVILEGES = SETTINGS + "/user-privileges";
 
 }

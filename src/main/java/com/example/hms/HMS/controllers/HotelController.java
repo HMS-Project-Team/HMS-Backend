@@ -1,6 +1,6 @@
 package com.example.hms.HMS.controllers;
 
-
+import com.example.hms.HMS.annotations.RequirePrivilege;
 import com.example.hms.HMS.dtos.responses.HotelResponseDto;
 import com.example.hms.HMS.dtos.requests.HotelRequestDto;
 import com.example.hms.HMS.enums.RestApiResponseStatusCodes;
@@ -10,6 +10,7 @@ import com.example.hms.HMS.services.HotelService;
 import com.example.hms.HMS.utils.EndpointBundle;
 import com.example.hms.HMS.utils.ResponseWrapper;
 import com.example.hms.HMS.utils.ValidationMessages;
+import com.example.hms.HMS.enums.PrivilegeType;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,93 +33,88 @@ public class HotelController {
     @Autowired
     private HotelService hotelService;
 
-    @PutMapping(EndpointBundle.ID)
-    public ResponseEntity<ResponseWrapper<HotelResponseDto>> updateHotel(@PathVariable Long id, @Valid @RequestBody HotelRequestDto hotelRequestDto){
-        try{
-            HotelResponseDto updatedHotel = hotelService.updateHotel(id, hotelRequestDto);
-            if (updatedHotel != null){
+    @PutMapping(EndpointBundle.HOTEL_ID)
+    @RequirePrivilege(privilege = "/settings/hotels", type = PrivilegeType.WRITE_ACCESS)
+    public ResponseEntity<ResponseWrapper<HotelResponseDto>> updateHotel(@PathVariable Long hotelId,
+            @Valid @RequestBody HotelRequestDto hotelRequestDto) {
+        try {
+            HotelResponseDto updatedHotel = hotelService.updateHotel(hotelId, hotelRequestDto);
+            if (updatedHotel != null) {
                 return ResponseEntity.status(HttpStatus.OK).body(new ResponseWrapper<>(
                         RestApiResponseStatusCodes.OK.getCode(),
                         ValidationMessages.UPDATED_SUCCESSFULLY,
-                        updatedHotel
-                ));
-            }
-            else{
+                        updatedHotel));
+            } else {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseWrapper<>(
                         RestApiResponseStatusCodes.BAD_REQUEST.getCode(),
                         ValidationMessages.BAD_REQUEST,
-                        null
-                ));
+                        null));
             }
-        }catch(HttpRequestMethodNotSupportedException e){
+        } catch (HttpRequestMethodNotSupportedException e) {
             throw new RuntimeException(e.getMessage());
         }
     }
 
     @PostMapping(EndpointBundle.CREATE_HOTEL)
-    public ResponseEntity<ResponseWrapper<HotelResponseDto>> createHotel(@RequestBody @Valid  HotelRequestDto hotelRequestDto){
-        try{
+    @RequirePrivilege(privilege = "/settings/hotels", type = PrivilegeType.WRITE_ACCESS)
+    public ResponseEntity<ResponseWrapper<HotelResponseDto>> createHotel(
+            @RequestBody @Valid HotelRequestDto hotelRequestDto) {
+        try {
             HotelResponseDto createHotel = hotelService.createHotel(hotelRequestDto);
-            if (createHotel != null){
+            if (createHotel != null) {
                 return ResponseEntity.status(HttpStatus.OK).body(new ResponseWrapper<>(
                         RestApiResponseStatusCodes.OK.getCode(),
                         ValidationMessages.SAVED_SUCCESSFULLY,
-                        createHotel
-                ));
-            }
-            else{
+                        createHotel));
+            } else {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseWrapper<>(
                         RestApiResponseStatusCodes.BAD_REQUEST.getCode(),
                         ValidationMessages.BAD_REQUEST,
-                        null
-                ));
+                        null));
             }
-        }catch(HttpRequestMethodNotSupportedException e){
+        } catch (HttpRequestMethodNotSupportedException e) {
             throw new RuntimeException(e.getMessage());
         }
     }
 
-    @DeleteMapping(EndpointBundle.ID)
-    public ResponseEntity<ResponseWrapper<Boolean>> deleteHotel(@PathVariable Long id){
+    @DeleteMapping(EndpointBundle.HOTEL_ID)
+    @RequirePrivilege(privilege = "/settings/hotels", type = PrivilegeType.MAINTAIN_ACCESS)
+    public ResponseEntity<ResponseWrapper<Boolean>> deleteHotel(@PathVariable Long hotelId) {
 
-        boolean isDeleted = hotelService.deleteHotel(id);
+        boolean isDeleted = hotelService.deleteHotel(hotelId);
 
-        if (isDeleted){
+        if (isDeleted) {
             return ResponseEntity.ok(
                     new ResponseWrapper<>(
                             RestApiResponseStatusCodes.NO_CONTENT.getCode(),
                             ValidationMessages.DELETED_SUCCESSFULLY,
-                            null
-                    )
-            );
+                            null));
         }
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
                 new ResponseWrapper<>(
                         RestApiResponseStatusCodes.NOT_FOUND.getCode(),
                         ValidationMessages.NOT_FOUND,
-                        false
-                )
-        );
+                        false));
 
     }
 
-    @GetMapping(EndpointBundle.ID)
-    public ResponseEntity<ResponseWrapper<HotelResponseDto>> getHotelById(@PathVariable Long id){
-        HotelResponseDto response = hotelService.getHotelById(id);
+    @GetMapping(EndpointBundle.HOTEL_ID)
+    @RequirePrivilege(privilege = "/settings/hotels", type = PrivilegeType.READ_ACCESS)
+    public ResponseEntity<ResponseWrapper<HotelResponseDto>> getHotelById(@PathVariable Long hotelId) {
+        HotelResponseDto response = hotelService.getHotelById(hotelId);
 
         return ResponseEntity.status(HttpStatus.OK).body(new ResponseWrapper<>(
                 HttpStatus.OK.value(),
-                ValidationMessages.SUCCESS ,
-                response
-        ));
+                ValidationMessages.SUCCESS,
+                response));
     }
 
     @GetMapping
+    @RequirePrivilege(privilege = "/settings/hotels", type = PrivilegeType.READ_ACCESS)
     public ResponseEntity<ResponseWrapper<Page<HotelResponseDto>>> getHotels(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "5") int size
-    ) {
+            @RequestParam(defaultValue = "5") int size) {
 
         // Validate page and size
         if (page < 0 || size <= 0) {
@@ -136,10 +132,6 @@ public class HotelController {
                 new ResponseWrapper<>(
                         RestApiResponseStatusCodes.OK.getCode(),
                         ValidationMessages.SUCCESS,
-                        hotels)
-        );
+                        hotels));
     }
 }
-
-
-

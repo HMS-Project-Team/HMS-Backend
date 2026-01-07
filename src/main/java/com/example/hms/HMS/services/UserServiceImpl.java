@@ -5,12 +5,14 @@ import com.example.hms.HMS.dtos.responses.UserResponseDto;
 import com.example.hms.HMS.entities.Role;
 import com.example.hms.HMS.entities.Hotel;
 import com.example.hms.HMS.entities.User;
+import com.example.hms.HMS.entities.UserPrivilege;
 import com.example.hms.HMS.exceptionHandlers.InvalidPageSizeException;
 import com.example.hms.HMS.exceptionHandlers.ResourceNotFoundException;
 import com.example.hms.HMS.mappers.UserMapper;
 import com.example.hms.HMS.repositories.HotelRepository;
 import com.example.hms.HMS.repositories.RoleRepository;
 import com.example.hms.HMS.repositories.UserRepository;
+import com.example.hms.HMS.repositories.UserPrivilegeRepository;
 import com.example.hms.HMS.utils.ValidationMessages;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -36,6 +38,7 @@ public class UserServiceImpl implements UserService {
     private final HotelRepository hotelRepository;
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
+    private final UserPrivilegeRepository userPrivilegeRepository;
 
     @Override
     public UserResponseDto getUserById(Long id) {
@@ -69,6 +72,20 @@ public class UserServiceImpl implements UserService {
 
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User" + ValidationMessages.NOT_FOUND));
+
+        // Delete all user privileges associated with this user
+        List<UserPrivilege> userPrivileges = userPrivilegeRepository.findByUserId(id);
+        if (!userPrivileges.isEmpty()) {
+            userPrivilegeRepository.deleteAll(userPrivileges);
+        }
+
+        // Clear the many-to-many relationship with roles
+        if (user.getRoles() != null && !user.getRoles().isEmpty()) {
+            user.getRoles().clear();
+            userRepository.save(user);
+        }
+
+        // Now delete the user (tokens will be cascade deleted automatically)
         userRepository.deleteById(id);
         return true;
     }

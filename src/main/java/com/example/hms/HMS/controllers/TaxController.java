@@ -1,5 +1,6 @@
 package com.example.hms.HMS.controllers;
 
+import com.example.hms.HMS.annotations.RequirePrivilege;
 import com.example.hms.HMS.dtos.requests.TaxRequestDto;
 import com.example.hms.HMS.dtos.responses.TaxResponseDto;
 import com.example.hms.HMS.enums.RestApiResponseStatusCodes;
@@ -10,6 +11,7 @@ import com.example.hms.HMS.services.TaxService;
 import com.example.hms.HMS.utils.EndpointBundle;
 import com.example.hms.HMS.utils.ResponseWrapper;
 import com.example.hms.HMS.utils.ValidationMessages;
+import com.example.hms.HMS.enums.PrivilegeType;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -27,62 +29,63 @@ public class TaxController {
     private final TaxService taxService;
 
     @PostMapping(EndpointBundle.ADD)
+    @RequirePrivilege(privilege = "/tax", type = PrivilegeType.WRITE_ACCESS)
     public ResponseWrapper<TaxResponseDto> addTax(@Valid @RequestBody TaxRequestDto requestDto) {
         return new ResponseWrapper<>(
                 RestApiResponseStatusCodes.CREATED.getCode(),
                 ValidationMessages.SAVED_SUCCESSFULLY,
-                taxService.addTax(requestDto)
-        );
+                taxService.addTax(requestDto));
     }
 
     @DeleteMapping(EndpointBundle.ID)
-    public ResponseWrapper<Void> deleteTax(@PathVariable Long id) {taxService.deleteTax(id);
+    @RequirePrivilege(privilege = "/tax", type = PrivilegeType.MAINTAIN_ACCESS)
+    public ResponseWrapper<Void> deleteTax(@PathVariable Long id) {
+        taxService.deleteTax(id);
         return new ResponseWrapper<>(
                 RestApiResponseStatusCodes.OK.getCode(),
                 ValidationMessages.DELETED_SUCCESSFULLY,
-                null
-        );
+                null);
     }
 
     @GetMapping(EndpointBundle.ID)
-    public ResponseEntity<ResponseWrapper<TaxResponseDto>>getByIdTax(@PathVariable Long id){
+    @RequirePrivilege(privilege = "/tax", type = PrivilegeType.READ_ACCESS)
+    public ResponseEntity<ResponseWrapper<TaxResponseDto>> getByIdTax(@PathVariable Long id) {
         try {
             TaxResponseDto taxResponseDto = taxService.getById(id);
             return ResponseEntity.status(HttpStatus.OK).body(new ResponseWrapper<>(
                     RestApiResponseStatusCodes.OK.getCode(),
                     ValidationMessages.SUCCESS,
-                    taxResponseDto
-            ));
+                    taxResponseDto));
         } catch (Exception e) {
             throw new BadCredentialsException("Unable to get");
         }
     }
 
     @PutMapping(EndpointBundle.ID)
-    public ResponseEntity<ResponseWrapper<TaxResponseDto>> updateTax(@PathVariable Long id, @Valid @RequestBody TaxRequestDto taxRequestDto) {
-        TaxResponseDto updateTax = taxService.updateTax(id,taxRequestDto);
+    @RequirePrivilege(privilege = "/tax", type = PrivilegeType.WRITE_ACCESS)
+    public ResponseEntity<ResponseWrapper<TaxResponseDto>> updateTax(@PathVariable Long id,
+            @Valid @RequestBody TaxRequestDto taxRequestDto) {
+        TaxResponseDto updateTax = taxService.updateTax(id, taxRequestDto);
         if (updateTax != null) {
             return ResponseEntity.status(HttpStatus.OK).body(new ResponseWrapper<>(
                     RestApiResponseStatusCodes.CREATED.getCode(),
                     ValidationMessages.SAVED_SUCCESSFULLY,
-                    updateTax
-            ));}
-        else {
+                    updateTax));
+        } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseWrapper<>(
                     RestApiResponseStatusCodes.BAD_REQUEST.getCode(),
                     ValidationMessages.SAVE_FAILED,
-                    null
-            ));
+                    null));
         }
     }
 
     @GetMapping
+    @RequirePrivilege(privilege = "/tax", type = PrivilegeType.READ_ACCESS)
     public ResponseEntity<ResponseWrapper<Page<TaxResponseDto>>> getAllTax(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
-    ) {
-        if (page<0 || size <= 0) {
-            throw  new InvalidPageSizeException(ValidationMessages.INVALID_PAGE_SIZE_MSG);
+            @RequestParam(defaultValue = "10") int size) {
+        if (page < 0 || size <= 0) {
+            throw new InvalidPageSizeException(ValidationMessages.INVALID_PAGE_SIZE_MSG);
         }
 
         Pageable pageable = PageRequest.of(page, size);
@@ -96,8 +99,7 @@ public class TaxController {
                 new ResponseWrapper<>(
                         RestApiResponseStatusCodes.OK.getCode(),
                         ValidationMessages.RETRIEVED_SUCCESSFULLY,
-                        taxPlans)
-        );
+                        taxPlans));
 
     }
 }

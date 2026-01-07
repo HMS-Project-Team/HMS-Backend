@@ -1,8 +1,10 @@
 package com.example.hms.HMS.controllers;
 
+import com.example.hms.HMS.annotations.RequirePrivilege;
 import com.example.hms.HMS.dtos.requests.PoliciesRequestDto;
 import com.example.hms.HMS.dtos.responses.PoliciesResponseDto;
 import com.example.hms.HMS.enums.PolicyType;
+import com.example.hms.HMS.enums.PrivilegeType;
 import com.example.hms.HMS.enums.RestApiResponseStatusCodes;
 import com.example.hms.HMS.exceptionHandlers.BadCredentialsException;
 import com.example.hms.HMS.exceptionHandlers.InvalidPageSizeException;
@@ -27,18 +29,18 @@ public class ChildPoliciesController {
     private final PoliciesService policiesService;
 
     @GetMapping
+    @RequirePrivilege(privilege = "/policies/child", type = PrivilegeType.READ_ACCESS)
     public ResponseEntity<ResponseWrapper<Page<PoliciesResponseDto>>> getChildPolicies(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
-    ){
-        if(page<0 || size <=0){
+            @RequestParam(defaultValue = "10") int size) {
+        if (page < 0 || size <= 0) {
             throw new InvalidPageSizeException(ValidationMessages.INVALID_PAGE_SIZE_MSG);
         }
 
         Pageable pageable = PageRequest.of(page, size);
         Page<PoliciesResponseDto> policies = policiesService.getPolicies(PolicyType.CHILD, pageable);
 
-        if(policies.isEmpty()) {
+        if (policies.isEmpty()) {
             throw new ResourceNotFoundException(ValidationMessages.NOT_FOUND);
         }
 
@@ -46,11 +48,11 @@ public class ChildPoliciesController {
                 new ResponseWrapper<>(
                         RestApiResponseStatusCodes.OK.getCode(),
                         ValidationMessages.SUCCESS,
-                        policies)
-        );
+                        policies));
     }
 
     @PutMapping(EndpointBundle.ID)
+    @RequirePrivilege(privilege = "/policies/child", type = PrivilegeType.WRITE_ACCESS)
     public ResponseEntity<ResponseWrapper<PoliciesResponseDto>> updateChildPolicy(
             @PathVariable Long id,
             @Valid @RequestBody PoliciesRequestDto policiesRequestDto) {
@@ -64,16 +66,18 @@ public class ChildPoliciesController {
     }
 
     @GetMapping(EndpointBundle.ID)
-    public ResponseEntity<ResponseWrapper<PoliciesResponseDto>> getChildPolicyById(@Valid @PathVariable Long id){
+    @RequirePrivilege(privilege = "/policies/child", type = PrivilegeType.READ_ACCESS)
+    public ResponseEntity<ResponseWrapper<PoliciesResponseDto>> getChildPolicyById(@Valid @PathVariable Long id) {
         PoliciesResponseDto policiesResponseDto = policiesService.getChildPolicyById(id);
 
         return ResponseEntity.status(HttpStatus.OK).body(new ResponseWrapper<>(
                 RestApiResponseStatusCodes.OK.getCode(),
-                ValidationMessages.SUCCESS ,
-                policiesResponseDto
-        ));
+                ValidationMessages.SUCCESS,
+                policiesResponseDto));
     }
+
     @PostMapping(EndpointBundle.ADD)
+    @RequirePrivilege(privilege = "/policies/child", type = PrivilegeType.WRITE_ACCESS)
     public ResponseEntity<ResponseWrapper<PoliciesResponseDto>> addChildPolicy(
             @Valid @RequestBody PoliciesRequestDto policiesRequestDto) {
 
@@ -83,19 +87,18 @@ public class ChildPoliciesController {
                 new ResponseWrapper<>(
                         RestApiResponseStatusCodes.CREATED.getCode(),
                         ValidationMessages.SAVED_SUCCESSFULLY,
-                        savedPolicy
-                )
-        );
+                        savedPolicy));
     }
+
     @DeleteMapping(EndpointBundle.ID)
-    public ResponseEntity<ResponseWrapper<Boolean>> deleteChildPolicy(@PathVariable Long id){
-        try{
-        boolean deleted=policiesService.deleteChildPolicy(id);
+    @RequirePrivilege(privilege = "/policies/child", type = PrivilegeType.MAINTAIN_ACCESS)
+    public ResponseEntity<ResponseWrapper<Boolean>> deleteChildPolicy(@PathVariable Long id) {
+        try {
+            boolean deleted = policiesService.deleteChildPolicy(id);
             return ResponseEntity.status(HttpStatus.OK).body(new ResponseWrapper<>(
                     RestApiResponseStatusCodes.OK.getCode(),
                     ValidationMessages.DELETED_SUCCESSFULLY,
-                    deleted
-            ));
+                    deleted));
         } catch (Exception e) {
             throw new BadCredentialsException(ValidationMessages.DELETE_FAILED);
         }

@@ -1,0 +1,39 @@
+package com.example.hms.HMS.entities;
+
+import com.example.hms.HMS.utils.DateAudit;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+
+@Data
+@Entity
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name = "role_hotel_privileges", uniqueConstraints = {
+        @UniqueConstraint(columnNames = { "role_id", "hotel_privilege_id" })
+})
+@EqualsAndHashCode(callSuper = false)
+public class RoleHotelPrivilege extends DateAudit {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "role_id", nullable = false)
+    private Role role;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "hotel_privilege_id", nullable = false)
+    private HotelPrivilege hotelPrivilege;
+
+    @Column(name = "is_read")
+    private boolean isRead = false;
+
+    @Column(name = "is_write")
+    private boolean isWrite = false;
+
+    @Column(name = "is_maintain")
+    private boolean isMaintain = false;
+}

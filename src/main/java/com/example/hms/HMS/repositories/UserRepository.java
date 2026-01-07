@@ -31,7 +31,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
         // Query with JOIN FETCH to eagerly load roles (fixes
         // LazyInitializationException)
-        @Query("SELECT u FROM User u LEFT JOIN FETCH u.roles WHERE u.email = :email")
+        @Query("SELECT u FROM User u LEFT JOIN FETCH u.roles r LEFT JOIN FETCH r.hotel WHERE u.email = :email")
         Optional<User> findByEmailWithRoles(@Param("email") String email);
 
         User findByNIC(String nic);
@@ -43,12 +43,12 @@ public interface UserRepository extends JpaRepository<User, Long> {
                         Pageable pageable);
 
         @Query("""
-                SELECT DISTINCT u
-                FROM User u
-                LEFT JOIN u.roles r
-                WHERE r.hotel.id = :hotelId OR r IS NULL
-                """)
-    Page<User> findByHotelId(@Param("hotelId") Long hotelId, Pageable pageable);
+                        SELECT DISTINCT u
+                        FROM User u
+                        LEFT JOIN u.roles r
+                        WHERE r.hotel.id = :hotelId OR r IS NULL
+                        """)
+        Page<User> findByHotelId(@Param("hotelId") Long hotelId, Pageable pageable);
 
         @Query("SELECT u FROM User u " +
                         "JOIN u.roles r " + // Join with roles

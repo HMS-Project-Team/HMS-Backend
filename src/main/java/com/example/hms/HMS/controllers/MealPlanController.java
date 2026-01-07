@@ -1,6 +1,6 @@
 package com.example.hms.HMS.controllers;
 
-
+import com.example.hms.HMS.annotations.RequirePrivilege;
 import com.example.hms.HMS.dtos.requests.MealPlanRequestDto;
 import com.example.hms.HMS.dtos.responses.MealPlanResponseDto;
 import com.example.hms.HMS.enums.RestApiResponseStatusCodes;
@@ -10,6 +10,7 @@ import com.example.hms.HMS.services.MealPlanService;
 import com.example.hms.HMS.utils.EndpointBundle;
 import com.example.hms.HMS.utils.ResponseWrapper;
 import com.example.hms.HMS.utils.ValidationMessages;
+import com.example.hms.HMS.enums.PrivilegeType;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -23,88 +24,86 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 public class MealPlanController {
-    private final MealPlanService mealPlanService;
+        private final MealPlanService mealPlanService;
 
-    @DeleteMapping(EndpointBundle.ID)
-    public ResponseEntity<ResponseWrapper<Boolean>> deleteMealplan(@PathVariable Long id){
-        boolean isDeleted = mealPlanService.deleteMealplan(id);
-        if(isDeleted) {
-            return ResponseEntity.status(HttpStatus.OK).body(new ResponseWrapper<>(
-                    RestApiResponseStatusCodes.OK.getCode(),
-                    ValidationMessages.DELETED_SUCCESSFULLY,
-                    true
-            ));
-        }
-        else{
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseWrapper<>(
-                    RestApiResponseStatusCodes.BAD_REQUEST.getCode(),
-                    ValidationMessages.DELETE_FAILED,
-                    false
-            ));
-        }
-    }
-    @GetMapping(EndpointBundle.ID)
-    public ResponseEntity<ResponseWrapper<MealPlanResponseDto>> GetMealPlan (@PathVariable Long id){
-        MealPlanResponseDto response =mealPlanService.GetByIdMealplan(id);
-        return ResponseEntity.status(HttpStatus.OK).body(
-                new ResponseWrapper(
-                        RestApiResponseStatusCodes.OK.getCode(),
-                        ValidationMessages.RETRIEVED_SUCCESSFULLY,
-                        response
-                )
-        );
-
-    }
-    @GetMapping
-    public ResponseEntity<ResponseWrapper<Page<MealPlanResponseDto>>> getMealPlans(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
-    ) {
-        if (page<0 || size <= 0) {
-            throw  new InvalidPageSizeException(ValidationMessages.INVALID_PAGE_SIZE_MSG);
+        @DeleteMapping(EndpointBundle.ID)
+        @RequirePrivilege(privilege = "/rooms/meal-plan", type = PrivilegeType.MAINTAIN_ACCESS)
+        public ResponseEntity<ResponseWrapper<Boolean>> deleteMealplan(@PathVariable Long id) {
+                boolean isDeleted = mealPlanService.deleteMealplan(id);
+                if (isDeleted) {
+                        return ResponseEntity.status(HttpStatus.OK).body(new ResponseWrapper<>(
+                                        RestApiResponseStatusCodes.OK.getCode(),
+                                        ValidationMessages.DELETED_SUCCESSFULLY,
+                                        true));
+                } else {
+                        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseWrapper<>(
+                                        RestApiResponseStatusCodes.BAD_REQUEST.getCode(),
+                                        ValidationMessages.DELETE_FAILED,
+                                        false));
+                }
         }
 
-        Pageable pageable = PageRequest.of(page, size);
-        Page<MealPlanResponseDto> mealPlans = mealPlanService.getMealPlans(pageable);
+        @GetMapping(EndpointBundle.ID)
+        @RequirePrivilege(privilege = "/rooms/meal-plan", type = PrivilegeType.READ_ACCESS)
+        public ResponseEntity<ResponseWrapper<MealPlanResponseDto>> GetMealPlan(@PathVariable Long id) {
+                MealPlanResponseDto response = mealPlanService.GetByIdMealplan(id);
+                return ResponseEntity.status(HttpStatus.OK).body(
+                                new ResponseWrapper(
+                                                RestApiResponseStatusCodes.OK.getCode(),
+                                                ValidationMessages.RETRIEVED_SUCCESSFULLY,
+                                                response));
 
-        if (mealPlans.isEmpty()) {
-            throw new ResourceNotFoundException(ValidationMessages.NOT_FOUND);
         }
 
-        return ResponseEntity.ok(
-                new ResponseWrapper<>(
-                        RestApiResponseStatusCodes.OK.getCode(),
-                        ValidationMessages.RETRIEVED_SUCCESSFULLY,
-                        mealPlans)
-        );
+        @GetMapping
+        @RequirePrivilege(privilege = "/rooms/meal-plan", type = PrivilegeType.READ_ACCESS)
+        public ResponseEntity<ResponseWrapper<Page<MealPlanResponseDto>>> getMealPlans(
+                        @RequestParam(defaultValue = "0") int page,
+                        @RequestParam(defaultValue = "10") int size) {
+                if (page < 0 || size <= 0) {
+                        throw new InvalidPageSizeException(ValidationMessages.INVALID_PAGE_SIZE_MSG);
+                }
 
-    }
-    @PutMapping(EndpointBundle.ID)
-    public ResponseEntity<ResponseWrapper<MealPlanResponseDto>> updateMealPlan(
-            @PathVariable Long id,
-            @Valid @RequestBody MealPlanRequestDto requestDto
-    ) {
-        requestDto.trim();
-        MealPlanResponseDto updatedMealPlan = mealPlanService.updateMealPlan(id, requestDto);
+                Pageable pageable = PageRequest.of(page, size);
+                Page<MealPlanResponseDto> mealPlans = mealPlanService.getMealPlans(pageable);
 
-        return ResponseEntity.ok(
-                new ResponseWrapper<>(
-                        RestApiResponseStatusCodes.OK.getCode(),
-                        ValidationMessages.UPDATED_SUCCESSFULLY,
-                        updatedMealPlan
-                )
-        );
-    }
-    @PostMapping(EndpointBundle.ADD)
+                if (mealPlans.isEmpty()) {
+                        throw new ResourceNotFoundException(ValidationMessages.NOT_FOUND);
+                }
 
-    public ResponseEntity<ResponseWrapper<MealPlanResponseDto>> createMealPlan(@Valid @RequestBody MealPlanRequestDto mealPlanRequestDto) {
-        mealPlanRequestDto.trim();
-        MealPlanResponseDto createdMealPlan = mealPlanService.createMealPlan(mealPlanRequestDto);
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(new ResponseWrapper<>(
-                        RestApiResponseStatusCodes.CREATED.getCode(),
-                        ValidationMessages.SUCCESS,
-                        createdMealPlan
-                ));
-    }
+                return ResponseEntity.ok(
+                                new ResponseWrapper<>(
+                                                RestApiResponseStatusCodes.OK.getCode(),
+                                                ValidationMessages.RETRIEVED_SUCCESSFULLY,
+                                                mealPlans));
+
+        }
+
+        @PutMapping(EndpointBundle.ID)
+        @RequirePrivilege(privilege = "/rooms/meal-plan", type = PrivilegeType.WRITE_ACCESS)
+        public ResponseEntity<ResponseWrapper<MealPlanResponseDto>> updateMealPlan(
+                        @PathVariable Long id,
+                        @Valid @RequestBody MealPlanRequestDto requestDto) {
+                requestDto.trim();
+                MealPlanResponseDto updatedMealPlan = mealPlanService.updateMealPlan(id, requestDto);
+
+                return ResponseEntity.ok(
+                                new ResponseWrapper<>(
+                                                RestApiResponseStatusCodes.OK.getCode(),
+                                                ValidationMessages.UPDATED_SUCCESSFULLY,
+                                                updatedMealPlan));
+        }
+
+        @PostMapping(EndpointBundle.ADD)
+        @RequirePrivilege(privilege = "/rooms/meal-plan", type = PrivilegeType.WRITE_ACCESS)
+        public ResponseEntity<ResponseWrapper<MealPlanResponseDto>> createMealPlan(
+                        @Valid @RequestBody MealPlanRequestDto mealPlanRequestDto) {
+                mealPlanRequestDto.trim();
+                MealPlanResponseDto createdMealPlan = mealPlanService.createMealPlan(mealPlanRequestDto);
+                return ResponseEntity.status(HttpStatus.CREATED)
+                                .body(new ResponseWrapper<>(
+                                                RestApiResponseStatusCodes.CREATED.getCode(),
+                                                ValidationMessages.SUCCESS,
+                                                createdMealPlan));
+        }
 }
