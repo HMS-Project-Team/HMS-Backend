@@ -20,5 +20,17 @@ public class SettingsPrivilegeController {
 
     private final PrivilegeService privilegeService;
 
+    @GetMapping
+    @RequirePrivilege(privilege = "/settings", type = PrivilegeType.READ_ACCESS)
+    public ResponseEntity<ResponseWrapper<Page<PrivilegeResponseDto>>> getAllPrivileges(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Page<PrivilegeResponseDto> privileges = privilegeService.getAllPrivileges(page, size);
+        return ResponseEntity.ok(new ResponseWrapper<>(
+                RestApiResponseStatusCodes.OK.getCode(),
+                RestApiResponseStatusCodes.OK.getMessage(),
+                privileges));
+    }
+
 
 }
