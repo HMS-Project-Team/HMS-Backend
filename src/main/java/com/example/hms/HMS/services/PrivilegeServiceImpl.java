@@ -15,4 +15,10 @@ import org.springframework.stereotype.Service;
 public class PrivilegeServiceImpl implements PrivilegeService {
     private final PrivilegeRepository privilegeRepository;
     private final PrivilegeMapper privilegeMapper;
+
+    @Override
+    public Page<PrivilegeResponseDto> getAllPrivileges(int page, int size) {
+        return privilegeRepository.findAll(PageRequest.of(page, size))
+                .map(privilegeMapper::toDto);
+    }
 }
