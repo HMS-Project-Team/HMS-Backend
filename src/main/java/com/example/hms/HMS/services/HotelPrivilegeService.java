@@ -7,5 +7,5 @@ import com.example.hms.HMS.dtos.responses.HotelPrivilegeResponseDto;
 import java.util.List;
 
 public interface HotelPrivilegeService {
-
+    HotelPrivilegeResponseDto updateHotelPrivilege(Long hotelId, HotelPrivilegeRequestDto dto);
 }
