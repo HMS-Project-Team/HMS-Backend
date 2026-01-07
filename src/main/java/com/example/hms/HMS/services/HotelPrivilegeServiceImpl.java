@@ -1,5 +1,6 @@
 package com.example.hms.HMS.services;
 
+
 import com.example.hms.HMS.dtos.requests.BulkPrivilegeAssignmentDto;
 import com.example.hms.HMS.dtos.requests.HotelPrivilegeRequestDto;
 import com.example.hms.HMS.dtos.responses.HotelPrivilegeResponseDto;
@@ -14,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,5 +27,49 @@ public class HotelPrivilegeServiceImpl implements HotelPrivilegeService {
     private final PrivilegeRepository privilegeRepository;
     private final HotelPrivilegeMapper hotelPrivilegeMapper;
 
+    @Override
+    @Transactional
+    public void addHotelPrivileges(Long hotelId, BulkPrivilegeAssignmentDto dto) {
+        Hotel hotel = hotelRepository.findById(hotelId)
+                .orElseThrow(() -> new RuntimeException("Hotel not found with id: " + hotelId));
+
+        for (HotelPrivilegeRequestDto requestDto : dto.getHotelPrivileges()) {
+            Privilege privilege = privilegeRepository.findById(requestDto.getPrivilegeId())
+                    .orElseThrow(
+                            () -> new RuntimeException("Privilege not found with id: " + requestDto.getPrivilegeId()));
+
+            // Check if already assigned
+            HotelPrivilege hotelPrivilege = hotelPrivilegeRepository
+                    .findByHotelIdAndPrivilegeId(hotelId, privilege.getId())
+                    .orElse(new HotelPrivilege());
+
+            if (hotelPrivilege.getId() == null) {
+                hotelPrivilege.setHotel(hotel);
+                hotelPrivilege.setPrivilege(privilege);
+            }
+
+            hotelPrivilege.setActive(requestDto.isActive());
+            hotelPrivilegeRepository.save(hotelPrivilege);
+        }
+    }
+
+
+
+    @Override
+    public HotelPrivilegeResponseDto updateHotelPrivilege(Long hotelId, HotelPrivilegeRequestDto dto) {
+        HotelPrivilege hotelPrivilege = hotelPrivilegeRepository
+                .findByHotelIdAndPrivilegeId(hotelId, dto.getPrivilegeId())
+                .orElseThrow(() -> new RuntimeException("Hotel Privilege not found"));
+
+        hotelPrivilege.setActive(dto.isActive());
+        return hotelPrivilegeMapper.toDto(hotelPrivilegeRepository.save(hotelPrivilege));
+    }
+
+    @Override
+    public List<HotelPrivilegeResponseDto> getHotelPrivileges(Long hotelId) {
+        return hotelPrivilegeRepository.findByHotelId(hotelId).stream()
+                .map(hotelPrivilegeMapper::toDto)
+                .collect(Collectors.toList());
+    }
 
 }
