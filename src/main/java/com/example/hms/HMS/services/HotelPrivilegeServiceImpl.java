@@ -1,5 +1,6 @@
 package com.example.hms.HMS.services;
 
+
 import com.example.hms.HMS.dtos.requests.BulkPrivilegeAssignmentDto;
 import com.example.hms.HMS.dtos.requests.HotelPrivilegeRequestDto;
 import com.example.hms.HMS.dtos.responses.HotelPrivilegeResponseDto;
@@ -13,6 +14,7 @@ import com.example.hms.HMS.repositories.PrivilegeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -61,6 +63,13 @@ public class HotelPrivilegeServiceImpl implements HotelPrivilegeService {
 
         hotelPrivilege.setActive(dto.isActive());
         return hotelPrivilegeMapper.toDto(hotelPrivilegeRepository.save(hotelPrivilege));
+    }
+
+    @Override
+    public List<HotelPrivilegeResponseDto> getHotelPrivileges(Long hotelId) {
+        return hotelPrivilegeRepository.findByHotelId(hotelId).stream()
+                .map(hotelPrivilegeMapper::toDto)
+                .collect(Collectors.toList());
     }
 
 }
