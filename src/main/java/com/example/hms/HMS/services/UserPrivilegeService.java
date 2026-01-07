@@ -8,5 +8,6 @@ import java.util.List;
 
 public interface UserPrivilegeService {
     List<UserPrivilegeResponseDto> getUserPrivileges(Long userId);
+    void addUserPrivileges(Long userId, BulkPrivilegeAssignmentDto dto);
 
 }
