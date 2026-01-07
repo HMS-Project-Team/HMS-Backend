@@ -53,4 +53,14 @@ public class HotelPrivilegeServiceImpl implements HotelPrivilegeService {
 
 
 
+    @Override
+    public HotelPrivilegeResponseDto updateHotelPrivilege(Long hotelId, HotelPrivilegeRequestDto dto) {
+        HotelPrivilege hotelPrivilege = hotelPrivilegeRepository
+                .findByHotelIdAndPrivilegeId(hotelId, dto.getPrivilegeId())
+                .orElseThrow(() -> new RuntimeException("Hotel Privilege not found"));
+
+        hotelPrivilege.setActive(dto.isActive());
+        return hotelPrivilegeMapper.toDto(hotelPrivilegeRepository.save(hotelPrivilege));
+    }
+
 }
