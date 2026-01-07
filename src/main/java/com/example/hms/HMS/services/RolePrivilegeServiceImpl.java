@@ -38,4 +38,11 @@ public class RolePrivilegeServiceImpl implements RolePrivilegeService {
         return rolePrivilegeMapper.toDto(roleHotelPrivilegeRepository.save(rolePrivilege));
     }
 
+    @Override
+    public List<RolePrivilegeResponseDto> getRolePrivileges(Long roleId) {
+        return roleHotelPrivilegeRepository.findByRoleId(roleId).stream()
+                .map(rolePrivilegeMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
 }
