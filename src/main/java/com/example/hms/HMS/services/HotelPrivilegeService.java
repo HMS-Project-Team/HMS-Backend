@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface HotelPrivilegeService {
     HotelPrivilegeResponseDto updateHotelPrivilege(Long hotelId, HotelPrivilegeRequestDto dto);
+    void addHotelPrivileges(Long hotelId, BulkPrivilegeAssignmentDto dto);
+
 }

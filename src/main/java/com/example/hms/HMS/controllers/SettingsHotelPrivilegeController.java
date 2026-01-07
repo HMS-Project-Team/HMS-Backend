@@ -32,4 +32,18 @@ public class SettingsHotelPrivilegeController {
                 RestApiResponseStatusCodes.OK.getMessage(),
                 hotelPrivilegeService.updateHotelPrivilege(hotelId, dto)));
     }
+    @PostMapping(EndpointBundle.ADD)
+    @RequirePrivilege(privilege = "/settings/hotel-privileges", type = PrivilegeType.WRITE_ACCESS)
+    public ResponseEntity<ResponseWrapper<String>> addHotelPrivileges(
+            @RequestParam Long hotelId,
+            @RequestBody BulkPrivilegeAssignmentDto dto) {
+        hotelPrivilegeService.addHotelPrivileges(hotelId, dto);
+        return ResponseEntity.ok(new ResponseWrapper<>(
+                RestApiResponseStatusCodes.CREATED.getCode(),
+                RestApiResponseStatusCodes.CREATED.getMessage(),
+                "Hotel privileges added successfully"
+        ));
+    }
+
+
 }

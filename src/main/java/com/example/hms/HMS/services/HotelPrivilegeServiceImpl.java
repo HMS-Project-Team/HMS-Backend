@@ -25,6 +25,33 @@ public class HotelPrivilegeServiceImpl implements HotelPrivilegeService {
     private final PrivilegeRepository privilegeRepository;
     private final HotelPrivilegeMapper hotelPrivilegeMapper;
 
+    @Override
+    @Transactional
+    public void addHotelPrivileges(Long hotelId, BulkPrivilegeAssignmentDto dto) {
+        Hotel hotel = hotelRepository.findById(hotelId)
+                .orElseThrow(() -> new RuntimeException("Hotel not found with id: " + hotelId));
+
+        for (HotelPrivilegeRequestDto requestDto : dto.getHotelPrivileges()) {
+            Privilege privilege = privilegeRepository.findById(requestDto.getPrivilegeId())
+                    .orElseThrow(
+                            () -> new RuntimeException("Privilege not found with id: " + requestDto.getPrivilegeId()));
+
+            // Check if already assigned
+            HotelPrivilege hotelPrivilege = hotelPrivilegeRepository
+                    .findByHotelIdAndPrivilegeId(hotelId, privilege.getId())
+                    .orElse(new HotelPrivilege());
+
+            if (hotelPrivilege.getId() == null) {
+                hotelPrivilege.setHotel(hotel);
+                hotelPrivilege.setPrivilege(privilege);
+            }
+
+            hotelPrivilege.setActive(requestDto.isActive());
+            hotelPrivilegeRepository.save(hotelPrivilege);
+        }
+    }
+
+
 
     @Override
     public HotelPrivilegeResponseDto updateHotelPrivilege(Long hotelId, HotelPrivilegeRequestDto dto) {
