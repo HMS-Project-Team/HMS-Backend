@@ -33,4 +33,15 @@ public class SettingsUserPrivilegeController {
                 "User privileges added successfully"));
     }
 
+        @PutMapping(EndpointBundle.USER_ID)
+        @RequirePrivilege(privilege = "/settings/user-privileges", type = PrivilegeType.WRITE_ACCESS)
+        public ResponseEntity<ResponseWrapper<UserPrivilegeResponseDto>> updateUserPrivilege(
+                @PathVariable Long userId,
+                @RequestBody UserPrivilegeRequestDto dto) {
+                return ResponseEntity.ok(new ResponseWrapper<>(
+                        RestApiResponseStatusCodes.OK.getCode(),
+                        RestApiResponseStatusCodes.OK.getMessage(),
+                        userPrivilegeService.updateUserPrivilege(userId, dto)));
+        }
+
 }
