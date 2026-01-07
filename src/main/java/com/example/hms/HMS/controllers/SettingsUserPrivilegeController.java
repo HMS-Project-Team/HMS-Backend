@@ -21,6 +21,17 @@ import java.util.List;
 public class SettingsUserPrivilegeController {
 
         private final UserPrivilegeService userPrivilegeService;
+    @PostMapping(EndpointBundle.ADD)
+    @RequirePrivilege(privilege = "/settings/user-privileges", type = PrivilegeType.WRITE_ACCESS)
+    public ResponseEntity<ResponseWrapper<String>> addUserPrivileges(
+            @RequestParam Long userId,
+            @RequestBody BulkPrivilegeAssignmentDto dto) {
+        userPrivilegeService.addUserPrivileges(userId, dto);
+        return ResponseEntity.ok(new ResponseWrapper<>(
+                RestApiResponseStatusCodes.CREATED.getCode(),
+                RestApiResponseStatusCodes.CREATED.getMessage(),
+                "User privileges added successfully"));
+    }
 
         @PutMapping(EndpointBundle.USER_ID)
         @RequirePrivilege(privilege = "/settings/user-privileges", type = PrivilegeType.WRITE_ACCESS)

@@ -27,6 +27,34 @@ public class UserPrivilegeServiceImpl implements UserPrivilegeService {
 
     @Override
     @Transactional
+    public void addUserPrivileges(Long userId, BulkPrivilegeAssignmentDto dto) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+
+        for (UserPrivilegeRequestDto requestDto : dto.getUserPrivileges()) {
+            HotelPrivilege hotelPrivilege = hotelPrivilegeRepository.findById(requestDto.getHotelPrivilegeId())
+                    .orElseThrow(() -> new RuntimeException(
+                            "Hotel Privilege not found with id: " + requestDto.getHotelPrivilegeId()));
+
+            // Check if already assigned
+            UserPrivilege userPrivilege = userPrivilegeRepository
+                    .findByUserIdAndHotelPrivilegeId(userId, hotelPrivilege.getId())
+                    .orElse(new UserPrivilege());
+
+            if (userPrivilege.getId() == null) {
+                userPrivilege.setUser(user);
+                userPrivilege.setHotelPrivilege(hotelPrivilege);
+            }
+
+            userPrivilege.setRead(requestDto.isRead());
+            userPrivilege.setWrite(requestDto.isWrite());
+            userPrivilege.setMaintain(requestDto.isMaintain());
+            userPrivilegeRepository.save(userPrivilege);
+        }
+    }
+
+    @Override
+    @Transactional
     public UserPrivilegeResponseDto updateUserPrivilege(Long userId, UserPrivilegeRequestDto dto) {
         UserPrivilege userPrivilege = userPrivilegeRepository
                 .findByUserIdAndHotelPrivilegeId(userId, dto.getHotelPrivilegeId())
