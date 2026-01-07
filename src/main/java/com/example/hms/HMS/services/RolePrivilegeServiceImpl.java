@@ -53,4 +53,16 @@ public class RolePrivilegeServiceImpl implements RolePrivilegeService {
         }
     }
 
+    @Override
+    @Transactional
+    public RolePrivilegeResponseDto updateRolePrivilege(Long roleId, RolePrivilegeRequestDto dto) {
+        RoleHotelPrivilege rolePrivilege = roleHotelPrivilegeRepository
+                .findByRoleIdAndHotelPrivilegeId(roleId, dto.getHotelPrivilegeId())
+                .orElseThrow(() -> new RuntimeException("Role Privilege not found"));
+
+        rolePrivilege.setRead(dto.isRead());
+        rolePrivilege.setWrite(dto.isWrite());
+        rolePrivilege.setMaintain(dto.isMaintain());
+        return rolePrivilegeMapper.toDto(roleHotelPrivilegeRepository.save(rolePrivilege));
+    }
 }
