@@ -22,5 +22,14 @@ public class SettingsHotelPrivilegeController {
 
         private final HotelPrivilegeService hotelPrivilegeService;
 
-
+    @PutMapping(EndpointBundle.HOTEL_ID)
+    @RequirePrivilege(privilege = "/settings/hotel-privileges", type = PrivilegeType.WRITE_ACCESS)
+    public ResponseEntity<ResponseWrapper<HotelPrivilegeResponseDto>> updateHotelPrivilege(
+            @PathVariable Long hotelId,
+            @RequestBody HotelPrivilegeRequestDto dto) {
+        return ResponseEntity.ok(new ResponseWrapper<>(
+                RestApiResponseStatusCodes.OK.getCode(),
+                RestApiResponseStatusCodes.OK.getMessage(),
+                hotelPrivilegeService.updateHotelPrivilege(hotelId, dto)));
+    }
 }
