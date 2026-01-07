@@ -7,5 +7,5 @@ import com.example.hms.HMS.dtos.responses.RolePrivilegeResponseDto;
 import java.util.List;
 
 public interface RolePrivilegeService {
-
+    RolePrivilegeResponseDto updateRolePrivilege(Long roleId, RolePrivilegeRequestDto dto);
 }
