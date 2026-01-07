@@ -22,5 +22,15 @@ public class SettingsUserPrivilegeController {
 
         private final UserPrivilegeService userPrivilegeService;
 
-
+        @GetMapping
+        @RequirePrivilege(privilege = "/settings/user-privileges", type = PrivilegeType.READ_ACCESS)
+        public ResponseEntity<ResponseWrapper<List<UserPrivilegeResponseDto>>> getUserPrivileges(
+                @RequestParam Long userId,
+                @RequestParam(required = false) Long hotelId,
+                @RequestParam(required = false) Long roleId) {
+                return ResponseEntity.ok(new ResponseWrapper<>(
+                        RestApiResponseStatusCodes.OK.getCode(),
+                        RestApiResponseStatusCodes.OK.getMessage(),
+                        userPrivilegeService.getUserPrivileges(userId)));
+        }
 }
