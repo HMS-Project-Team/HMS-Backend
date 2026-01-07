@@ -44,5 +44,14 @@ public class SettingsRolePrivilegeController {
                 RestApiResponseStatusCodes.OK.getMessage(),
                 rolePrivilegeService.updateRolePrivilege(roleId, dto)));
     }
+    @GetMapping(EndpointBundle.ROLE_ID)
+    @RequirePrivilege(privilege = "/settings/hotel-role-privileges", type = PrivilegeType.READ_ACCESS)
+    public ResponseEntity<ResponseWrapper<List<RolePrivilegeResponseDto>>> getRolePrivileges(
+            @PathVariable Long roleId) {
+        return ResponseEntity.ok(new ResponseWrapper<>(
+                RestApiResponseStatusCodes.OK.getCode(),
+                RestApiResponseStatusCodes.OK.getMessage(),
+                rolePrivilegeService.getRolePrivileges(roleId)));
+    }
 
 }
