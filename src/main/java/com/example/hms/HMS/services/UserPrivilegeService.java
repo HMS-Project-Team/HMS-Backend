@@ -7,5 +7,8 @@ import com.example.hms.HMS.dtos.responses.UserPrivilegeResponseDto;
 import java.util.List;
 
 public interface UserPrivilegeService {
+    List<UserPrivilegeResponseDto> getUserPrivileges(Long userId);
+    void addUserPrivileges(Long userId, BulkPrivilegeAssignmentDto dto);
 
+    UserPrivilegeResponseDto updateUserPrivilege(Long userId, UserPrivilegeRequestDto dto);
 }
