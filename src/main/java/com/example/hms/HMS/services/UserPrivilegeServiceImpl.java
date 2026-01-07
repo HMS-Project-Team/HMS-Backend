@@ -25,4 +25,10 @@ public class UserPrivilegeServiceImpl implements UserPrivilegeService {
     private final HotelPrivilegeRepository hotelPrivilegeRepository;
     private final UserPrivilegeMapper userPrivilegeMapper;
 
+    @Override
+    public List<UserPrivilegeResponseDto> getUserPrivileges(Long userId) {
+        return userPrivilegeRepository.findByUserId(userId).stream()
+                .map(userPrivilegeMapper::toDto)
+                .collect(Collectors.toList());}
+
 }
