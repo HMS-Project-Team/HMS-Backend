@@ -27,6 +27,34 @@ public class RolePrivilegeServiceImpl implements RolePrivilegeService {
 
     @Override
     @Transactional
+    public void addRolePrivileges(Long roleId, BulkPrivilegeAssignmentDto dto) {
+        Role role = roleRepository.findById(roleId)
+                .orElseThrow(() -> new RuntimeException("Role not found with id: " + roleId));
+
+        for (RolePrivilegeRequestDto requestDto : dto.getRolePrivileges()) {
+            HotelPrivilege hotelPrivilege = hotelPrivilegeRepository.findById(requestDto.getHotelPrivilegeId())
+                    .orElseThrow(() -> new RuntimeException(
+                            "Hotel Privilege not found with id: " + requestDto.getHotelPrivilegeId()));
+
+            // Check if already assigned
+            RoleHotelPrivilege rolePrivilege = roleHotelPrivilegeRepository
+                    .findByRoleIdAndHotelPrivilegeId(roleId, hotelPrivilege.getId())
+                    .orElse(new RoleHotelPrivilege());
+
+            if (rolePrivilege.getId() == null) {
+                rolePrivilege.setRole(role);
+                rolePrivilege.setHotelPrivilege(hotelPrivilege);
+            }
+
+            rolePrivilege.setRead(requestDto.isRead());
+            rolePrivilege.setWrite(requestDto.isWrite());
+            rolePrivilege.setMaintain(requestDto.isMaintain());
+            roleHotelPrivilegeRepository.save(rolePrivilege);
+        }
+    }
+
+    @Override
+    @Transactional
     public RolePrivilegeResponseDto updateRolePrivilege(Long roleId, RolePrivilegeRequestDto dto) {
         RoleHotelPrivilege rolePrivilege = roleHotelPrivilegeRepository
                 .findByRoleIdAndHotelPrivilegeId(roleId, dto.getHotelPrivilegeId())
@@ -37,5 +65,4 @@ public class RolePrivilegeServiceImpl implements RolePrivilegeService {
         rolePrivilege.setMaintain(dto.isMaintain());
         return rolePrivilegeMapper.toDto(roleHotelPrivilegeRepository.save(rolePrivilege));
     }
-
 }
