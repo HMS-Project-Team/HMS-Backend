@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface RolePrivilegeService {
     RolePrivilegeResponseDto updateRolePrivilege(Long roleId, RolePrivilegeRequestDto dto);
+
+    List<RolePrivilegeResponseDto> getRolePrivileges(Long roleId);
 }
