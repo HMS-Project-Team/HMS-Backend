@@ -1,11 +1,14 @@
-package com.example.hms.HMS.dtos.requests;
+package com.example.hms.HMS.dtos.responses;
 
-import jakarta.persistence.Lob;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
-public class HotelRequestDto {
-
+@AllArgsConstructor
+@NoArgsConstructor
+public class HotelResponseDto {
+    private Long id;
     private String hotelName;
     private String address;
     private String city;
@@ -14,5 +17,5 @@ public class HotelRequestDto {
     private String website;
     private byte[] logoImage;
     private String email;
-    private Long hotelId;
 }
+

@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.*;
 
 
 @ControllerAdvice
@@ -28,6 +29,27 @@ public class GlobalExceptionHandler {
 
     @Autowired
     ErrorCodes errorCodes;
+
+    // -------------------- BAD CREDENTIALS --------------------
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ResponseWrapper<?>> handleBadCredentials(BadCredentialsException e) {
+        ErrorDetail d = new ErrorDetail(new Date(), e.getMessage(), errorCodes.getBadRequest());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseWrapper<>(
+                RestApiResponseStatusCodes.INVALID_CREDENTIALS.getCode(),
+                ValidationMessages.INVALID_CREDENTIALS,
+                Collections.singletonList(d)
+        ));
+    }
+
+    @ExceptionHandler({InvalidPageSizeException.class})
+    public ResponseEntity<ResponseWrapper<?>> handleInvalidPageSize(InvalidPageSizeException ex) {
+        ErrorDetail d = new ErrorDetail(new Date(), ex.getMessage(), errorCodes.getPaginationInvalid());
+        return ResponseEntity.badRequest().body(new ResponseWrapper<>(
+                RestApiResponseStatusCodes.BAD_REQUEST.getCode(),
+                InvalidPageSizeException.INVALID_PAGE_SIZE_MSG,
+                d
+        ));
+    }
 
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ResponseWrapper<?>> handleResourceNotFoundException(ResourceNotFoundException e) {
@@ -201,13 +223,8 @@ public class GlobalExceptionHandler {
         );
     }
 
-    @ExceptionHandler({InvalidPageSizeException.class})
-    public ResponseEntity<ResponseWrapper<?>> handleInvalidPageSize(InvalidPageSizeException ex) {
-        ErrorDetail d = new ErrorDetail(new Date(), ex.getMessage(), errorCodes.getPaginationInvalid());
-        return ResponseEntity.badRequest().body(new ResponseWrapper<>(
-                RestApiResponseStatusCodes.BAD_REQUEST.getCode(),
-                InvalidPageSizeException.INVALID_PAGE_SIZE_MSG,
-                d
-        ));
-    }
+
+
+
+
 }
