@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface RolePrivilegeService {
 
+    void addRolePrivileges(Long roleId, BulkPrivilegeAssignmentDto dto);
 }
