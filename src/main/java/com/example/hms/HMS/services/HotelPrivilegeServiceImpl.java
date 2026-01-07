@@ -1,18 +1,26 @@
 package com.example.hms.HMS.services;
 
+import com.example.hms.HMS.annotations.RequirePrivilege;
 import com.example.hms.HMS.dtos.requests.BulkPrivilegeAssignmentDto;
 import com.example.hms.HMS.dtos.requests.HotelPrivilegeRequestDto;
 import com.example.hms.HMS.dtos.responses.HotelPrivilegeResponseDto;
 import com.example.hms.HMS.entities.Hotel;
 import com.example.hms.HMS.entities.HotelPrivilege;
 import com.example.hms.HMS.entities.Privilege;
+import com.example.hms.HMS.enums.PrivilegeType;
+import com.example.hms.HMS.enums.RestApiResponseStatusCodes;
 import com.example.hms.HMS.mappers.HotelPrivilegeMapper;
 import com.example.hms.HMS.repositories.HotelPrivilegeRepository;
 import com.example.hms.HMS.repositories.HotelRepository;
 import com.example.hms.HMS.repositories.PrivilegeRepository;
+import com.example.hms.HMS.utils.EndpointBundle;
+import com.example.hms.HMS.utils.ResponseWrapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,6 +32,13 @@ public class HotelPrivilegeServiceImpl implements HotelPrivilegeService {
     private final HotelRepository hotelRepository;
     private final PrivilegeRepository privilegeRepository;
     private final HotelPrivilegeMapper hotelPrivilegeMapper;
+
+    @Override
+    public List<HotelPrivilegeResponseDto> getHotelPrivileges(Long hotelId) {
+        return hotelPrivilegeRepository.findByHotelId(hotelId).stream()
+                .map(hotelPrivilegeMapper::toDto)
+                .collect(Collectors.toList());
+    }
 
 
 }
