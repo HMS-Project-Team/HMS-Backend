@@ -20,7 +20,17 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SettingsRolePrivilegeController {
 
-        private final RolePrivilegeService rolePrivilegeService;
+    private final RolePrivilegeService rolePrivilegeService;
 
+    @PutMapping(EndpointBundle.ROLE_ID)
+    @RequirePrivilege(privilege = "/settings/hotel-role-privileges", type = PrivilegeType.WRITE_ACCESS)
+    public ResponseEntity<ResponseWrapper<RolePrivilegeResponseDto>> updateRolePrivilege(
+            @PathVariable Long roleId,
+            @RequestBody RolePrivilegeRequestDto dto) {
+        return ResponseEntity.ok(new ResponseWrapper<>(
+                RestApiResponseStatusCodes.OK.getCode(),
+                RestApiResponseStatusCodes.OK.getMessage(),
+                rolePrivilegeService.updateRolePrivilege(roleId, dto)));
+    }
 
 }
