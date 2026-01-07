@@ -25,4 +25,17 @@ public class UserPrivilegeServiceImpl implements UserPrivilegeService {
     private final HotelPrivilegeRepository hotelPrivilegeRepository;
     private final UserPrivilegeMapper userPrivilegeMapper;
 
+    @Override
+    @Transactional
+    public UserPrivilegeResponseDto updateUserPrivilege(Long userId, UserPrivilegeRequestDto dto) {
+        UserPrivilege userPrivilege = userPrivilegeRepository
+                .findByUserIdAndHotelPrivilegeId(userId, dto.getHotelPrivilegeId())
+                .orElseThrow(() -> new RuntimeException("User Privilege not found"));
+
+        userPrivilege.setRead(dto.isRead());
+        userPrivilege.setWrite(dto.isWrite());
+        userPrivilege.setMaintain(dto.isMaintain());
+        return userPrivilegeMapper.toDto(userPrivilegeRepository.save(userPrivilege));
+    }
+
 }
