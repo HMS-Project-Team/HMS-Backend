@@ -1,10 +1,7 @@
 package com.example.hms.HMS.dtos.requests;
 
 import com.example.hms.HMS.utils.ValidationMessages;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -37,6 +34,7 @@ public class GuestsRequestDto {
     private String identityNumber;
 
     @NotNull(message = ValidationMessages.REQUIRED_FIELD_MISSING)
+    @PastOrPresent(message = "Date of birth cannot be in the future")
     private LocalDate dateOfBirth;
 
     @Email(message = ValidationMessages.INVALID_EMAIL)
