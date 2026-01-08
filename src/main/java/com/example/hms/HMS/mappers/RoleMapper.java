@@ -5,6 +5,8 @@ import com.example.hms.HMS.entities.Role;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+import java.util.List;
+
 @Mapper(componentModel = "spring")
 public interface RoleMapper {
     @Mapping(source = "hotel.id", target = "hotelId")
