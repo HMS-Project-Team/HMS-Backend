@@ -18,4 +18,9 @@ public final class  EndpointBundle {
     public static final String CREATE_ROLE = HOTEL_ID+ROLES+"/add";
 
 
+
+    //Users
+    public static final String USERS = "/users";
+    public static final String USERS_BY_ID = USERS + ID;
+    public static final String GET_ALL_USERS =HOTEL_ID+USERS;
 }

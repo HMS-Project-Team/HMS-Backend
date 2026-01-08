@@ -2,6 +2,7 @@ package com.example.hms.HMS.entities;
 
 import com.example.hms.HMS.utils.DateAudit;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -35,6 +36,7 @@ public class User extends DateAudit {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
+    @JsonManagedReference
     private List<Role> roles;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
