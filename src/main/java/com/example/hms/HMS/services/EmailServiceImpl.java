@@ -8,6 +8,7 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Service;
 
 import java.util.Properties;
+
 @Service
 public class EmailServiceImpl implements EmailService {
 
@@ -36,6 +37,11 @@ public class EmailServiceImpl implements EmailService {
         message.setSubject("Your OTP Code");
         message.setText("Your OTP for HMS verification is: " + otp);
 
+        // Add CC if configured
+        if (emailConfig.getCcMailAddress() != null && !emailConfig.getCcMailAddress().trim().isEmpty()) {
+            message.setCc(emailConfig.getCcMailAddress());
+        }
+
         sender.send(message);
     }
 
@@ -63,6 +69,11 @@ public class EmailServiceImpl implements EmailService {
                 "Username: " + username + "\n" +
                 "Password: " + password + "\n\n" +
                 "Please log in and change your password for security reasons.");
+
+        // Add CC if configured
+        if (emailConfig.getCcMailAddress() != null && !emailConfig.getCcMailAddress().trim().isEmpty()) {
+            message.setCc(emailConfig.getCcMailAddress());
+        }
 
         sender.send(message);
     }

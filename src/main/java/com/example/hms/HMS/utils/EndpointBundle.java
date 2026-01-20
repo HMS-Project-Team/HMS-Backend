@@ -77,4 +77,7 @@ public final class EndpointBundle {
     public static final String ROLE_PRIVILEGES = SETTINGS + "/hotel-role-privileges";
     public static final String USER_PRIVILEGES = SETTINGS + "/user-privileges";
 
+    // Email Configuration
+    public static final String EMAIL_CONFIG = SETTINGS + "/email-config";
+
 }
